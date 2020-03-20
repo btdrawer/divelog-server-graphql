@@ -1,5 +1,5 @@
-const UserModel = require("../../models/user");
-const { getUserId } = require("../../authentication/authTools");
+const UserModel = require("../../models/UserModel");
+const { getUserId } = require("../../authentication/authUtils");
 
 module.exports = {
   users: (parent, { limit, skip }) =>

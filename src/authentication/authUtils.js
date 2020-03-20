@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { INVALID_AUTH } = require("../variables/errorKeys");
+const { INVALID_AUTH } = require("../constants/errorKeys");
 
 const getAuthData = req => {
   if (!req.header("Authorization")) throw new Error(INVALID_AUTH);

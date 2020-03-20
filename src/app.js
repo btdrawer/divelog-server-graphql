@@ -7,13 +7,15 @@ require("./db");
 const Query = require("./resolvers/Query");
 const Mutation = require("./resolvers/Mutation");
 const User = require("./resolvers/types/User");
+const Club = require("./resolvers/types/Club");
 
 const server = new GraphQLServer({
   typeDefs: "./src/schema.graphql",
   resolvers: {
     Query,
     Mutation,
-    User
+    User,
+    Club
   },
   context: request => request
 });

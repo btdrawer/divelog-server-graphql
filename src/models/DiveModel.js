@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const {
   INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT,
   INVALID_ARGUMENT_DIVE_TIME_EXCEEDED
-} = require("../variables/errorKeys");
+} = require("../constants/errorKeys");
 
 const DiveSchema = new Schema({
   time_in: Date,

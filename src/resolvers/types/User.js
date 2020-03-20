@@ -1,7 +1,7 @@
-const { getUserId } = require("../../authentication/authTools");
+const { getUserId } = require("../../authentication/authUtils");
 
 module.exports = {
-  email: ({ id, email }, args, { request }) => {
+  email: async ({ id, email }, args, { request }) => {
     const userId = getUserId(request);
     if (userId && userId === id) {
       return email;

@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const { USERNAME_EXISTS, INVALID_AUTH } = require("../variables/errorKeys");
+const { USERNAME_EXISTS, INVALID_AUTH } = require("../constants/errorKeys");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
-const { signJwt } = require("../authentication/authTools");
+const { signJwt } = require("../authentication/authUtils");
 
 const UserSchema = new Schema({
   name: {

@@ -1,18 +1,17 @@
-const ClubModel = require("../../models/club");
-const { NOT_FOUND, FORBIDDEN } = require("../../variables/errorKeys");
+const ClubModel = require("../../models/ClubModel");
+const { FORBIDDEN } = require("../../constants/errorKeys");
+const { getUserId } = require("../authUtils");
+const { UPDATE, DELETE } = require("../../constants/methods");
 
-module.exports = async (req, data) => {
-  if (req.method !== "POST" && req.params.id) {
+module.exports = async ({ method, clubId, request }) => {
+  if (method === UPDATE || method === DELETE) {
+    const userId = getUserId(request);
     const club = await ClubModel.findOne({
-      _id: req.params.id
+      _id: clubId
     });
-
-    if (!club) {
-      throw new Error(NOT_FOUND);
-    } else if (req.method === "PUT" || req.method === "DELETE") {
-      if (!club.managers.includes(data._id.toString())) {
-        throw new Error(FORBIDDEN);
-      }
+    if (!club.managers.includes(userId)) {
+      throw new Error(FORBIDDEN);
     }
   }
+  return undefined;
 };

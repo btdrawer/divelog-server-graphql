@@ -1,4 +1,5 @@
-const UserModel = require("../../models/user");
+const UserModel = require("../../models/UserModel");
+const { getUserId } = require("../../authentication/authUtils");
 
 const formatAuthPayload = result => ({
   user: {
@@ -19,5 +20,17 @@ module.exports = {
   login: async (parent, { username, password }) => {
     const result = await UserModel.authenticate(username, password);
     return formatAuthPayload(result);
-  }
+  },
+  updateUser: async (parent, { data }, { request }) =>
+    UserModel.findOneAndUpdate(
+      {
+        _id: getUserId(request)
+      },
+      data,
+      { new: true }
+    ),
+  deleteUser: async (parent, args, { request }) =>
+    UserModel.findOneAndDelete({
+      _id: getUserId(request)
+    })
 };

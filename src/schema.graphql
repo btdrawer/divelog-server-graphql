@@ -1,11 +1,19 @@
 type Query {
   users(limit: Int, skip: Int): [User!]!
+  clubs(name: String, location: String, limit: Int, skip: Int): [Club!]!
   me: User!
 }
 
 type Mutation {
   createUser(data: CreateUserInput!): AuthPayload!
   login(username: String!, password: String!): AuthPayload!
+  updateUser(data: UpdateUserInput!): User!
+  deleteUser: User!
+  createClub(data: CreateClubInput!): Club!
+  updateClub(id: ID!, data: UpdateClubInput): Club!
+  addClubManager(clubId: ID!, userId: ID!): Club!
+  removeClubManager(clubId: ID!, managerId: ID!): Club!
+  deleteClub(id: ID!): Club!
 }
 
 type User {
@@ -27,9 +35,36 @@ type FriendRequests {
   sent: [User]
 }
 
+type Club {
+  id: ID!
+  name: String!
+  location: String!
+  managers: [User!]!
+  website: String
+}
+
 input CreateUserInput {
   name: String!
   username: String!
   email: String!
   password: String!
+}
+
+input UpdateUserInput {
+  name: String
+  username: String
+  email: String
+  password: String
+}
+
+input CreateClubInput {
+  name: String!
+  location: String!
+  website: String
+}
+
+input UpdateClubInput {
+  name: String
+  location: String
+  website: String
 }

@@ -1,0 +1,32 @@
+{
+  "name": "divelog-server-graphql",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "env-cmd -f ./.env nodemon src/app.js",
+    "lint": "eslint --fix .",
+    "test": "env-cmd -f ./.env node ./node_modules/mocha/bin/mocha ./tests/index",
+    "watch": "env-cmd -f ./.env node ./node_modules/mocha/bin/mocha --watch ./tests/index"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "cookie-parser": "^1.4.4",
+    "env-cmd": "^10.0.1",
+    "express": "~4.16.0",
+    "graphql-yoga": "^1.18.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.7.5"
+  },
+  "devDependencies": {
+    "acorn": "^7.1.1",
+    "acorn-jsx": "^5.1.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.19.2",
+    "prettier": "^1.19.1"
+  }
+}

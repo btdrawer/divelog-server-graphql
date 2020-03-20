@@ -1,0 +1,35 @@
+type Query {
+  users(limit: Int, skip: Int): [User!]!
+  me: User!
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): AuthPayload!
+  login(username: String!, password: String!): AuthPayload!
+}
+
+type User {
+  id: ID!
+  name: String!
+  username: String!
+  email: String
+  friends: [User]
+  friend_requests: FriendRequests
+}
+
+type AuthPayload {
+  user: User!
+  token: String!
+}
+
+type FriendRequests {
+  inbox: [User]
+  sent: [User]
+}
+
+input CreateUserInput {
+  name: String!
+  username: String!
+  email: String!
+  password: String!
+}

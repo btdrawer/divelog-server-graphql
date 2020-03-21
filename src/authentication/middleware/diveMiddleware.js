@@ -1,5 +1,5 @@
 const DiveModel = require("../../models/dive");
-const { NOT_FOUND, FORBIDDEN } = require("../../constants/errorKeys");
+const { NOT_FOUND, FORBIDDEN } = require("../../constants/errorCodes");
 
 module.exports = async (req, data) => {
   if (req.method !== "POST" && req.params.id) {

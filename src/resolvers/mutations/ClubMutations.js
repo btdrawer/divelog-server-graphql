@@ -3,11 +3,17 @@ const { getUserId } = require("../../authentication/authUtils");
 const clubMiddleware = require("../../authentication/middleware/clubMiddleware");
 const { UPDATE, DELETE } = require("../../constants/methods");
 
-const updateOperationTemplate = async ({ clubId, data, request }) => {
+const updateOperationTemplate = async ({
+  clubId,
+  data,
+  request,
+  removingManagers = false
+}) => {
   await clubMiddleware({
     method: UPDATE,
     clubId,
-    request
+    request,
+    removingManagers
   });
   return ClubModel.findOneAndUpdate(
     {
@@ -28,13 +34,13 @@ module.exports = {
     await club.save();
     return club;
   },
-  updateClub: async (parent, { id, data }, { request }) =>
+  updateClub: (parent, { id, data }, { request }) =>
     updateOperationTemplate({
       clubId: id,
       data,
       request
     }),
-  addClubManager: async (parent, { clubId, userId }, { request }) =>
+  addClubManager: (parent, { clubId, userId }, { request }) =>
     updateOperationTemplate({
       clubId,
       data: {
@@ -52,7 +58,8 @@ module.exports = {
           managers: managerId
         }
       },
-      request
+      request,
+      removingManagers: true
     }),
   deleteClub: async (parent, { id }, { request }) => {
     await clubMiddleware({

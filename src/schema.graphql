@@ -1,6 +1,7 @@
 type Query {
   users(limit: Int, skip: Int): [User!]!
   clubs(name: String, location: String, limit: Int, skip: Int): [Club!]!
+  gear(limit: Int, skip: Int): [Gear!]!
   me: User!
 }
 
@@ -14,6 +15,9 @@ type Mutation {
   addClubManager(clubId: ID!, userId: ID!): Club!
   removeClubManager(clubId: ID!, managerId: ID!): Club!
   deleteClub(id: ID!): Club!
+  createGear(data: CreateUpdateGearInput!): Gear!
+  updateGear(id: ID!, data: CreateUpdateGearInput!): Gear!
+  deleteGear(id: ID!): Gear!
 }
 
 type User {
@@ -43,6 +47,14 @@ type Club {
   website: String
 }
 
+type Gear {
+  id: ID!
+  name: String
+  brand: String
+  model: String
+  type: String
+}
+
 input CreateUserInput {
   name: String!
   username: String!
@@ -67,4 +79,11 @@ input UpdateClubInput {
   name: String
   location: String
   website: String
+}
+
+input CreateUpdateGearInput {
+  name: String
+  brand: String
+  model: String
+  type: String
 }

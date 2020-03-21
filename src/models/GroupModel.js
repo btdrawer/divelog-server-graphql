@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const { USER_ALREADY_IN_GROUP, NOT_FOUND } = require("../constants/errorKeys");
+const { USER_ALREADY_IN_GROUP, NOT_FOUND } = require("../constants/errorCodes");
 
 const GroupSchema = new Schema({
   name: {

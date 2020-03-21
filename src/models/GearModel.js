@@ -2,11 +2,15 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const GearSchema = new Schema({
-  brand: {
+  name: {
     type: String,
     max: 30
   },
-  name: {
+  model: {
+    type: String,
+    max: 30
+  },
+  brand: {
     type: String,
     max: 30
   },

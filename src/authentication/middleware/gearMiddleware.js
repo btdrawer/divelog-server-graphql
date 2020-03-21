@@ -1,16 +1,20 @@
-const GearModel = require("../../models/gear");
-const { NOT_FOUND, FORBIDDEN } = require("../../constants/errorKeys");
+const GearModel = require("../../models/GearModel");
+const { NOT_FOUND, FORBIDDEN } = require("../../constants/errorCodes");
+const { getUserId } = require("../authUtils");
+const { UPDATE, DELETE } = require("../../constants/methods");
 
-module.exports = async (req, data) => {
-  if (req.method !== "POST" && req.params.id) {
+module.exports = async ({ method, gearId, request }) => {
+  if (method === UPDATE || method === DELETE) {
+    const userId = getUserId(request);
     const gear = await GearModel.findOne({
-      _id: req.params.id
+      _id: gearId
     });
-
     if (!gear) {
       throw new Error(NOT_FOUND);
-    } else if (gear.owner.toString() !== data._id.toString()) {
+    }
+    if (!gear.owner === userId) {
       throw new Error(FORBIDDEN);
     }
   }
+  return undefined;
 };

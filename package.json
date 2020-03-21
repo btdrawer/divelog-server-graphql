@@ -13,7 +13,9 @@
     "cookie-parser": "^1.4.4",
     "env-cmd": "^10.0.1",
     "express": "~4.16.0",
+    "graphql-redis-subscriptions": "^2.2.1",
     "graphql-yoga": "^1.18.3",
+    "ioredis": "^4.16.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.5"
   },

@@ -2,8 +2,8 @@ const GroupModel = require("../../models/GroupModel");
 const { NOT_FOUND, FORBIDDEN } = require("../../constants/errorCodes");
 const { getUserId } = require("../authUtils");
 
-module.exports = async ({ groupId, request }) => {
-  const userId = getUserId(request);
+module.exports = async ({ groupId, request, isSubscription = false }) => {
+  const userId = getUserId(request, isSubscription);
   const group = await GroupModel.findOne({
     _id: groupId
   });

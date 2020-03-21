@@ -45,6 +45,10 @@ type Mutation {
   leaveGroup(id: ID!): Group!
 }
 
+type Subscription {
+  newMessage(groupId: ID!): Group!
+}
+
 type User {
   id: ID!
   name: String!

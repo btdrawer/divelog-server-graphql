@@ -1,6 +1,9 @@
 const GroupModel = require("../../models/GroupModel");
 const { getUserId } = require("../../authentication/authUtils");
 const groupMiddleware = require("../../authentication/middleware/groupMiddleware");
+const {
+  newMessageSubscriptionKey
+} = require("../../constants/subscriptionKeys");
 
 const updateOperationTemplate = async ({ groupId, data, request }) => {
   await groupMiddleware({
@@ -42,9 +45,9 @@ module.exports = {
       },
       request
     }),
-  sendMessage: (parent, { id, text }, { request }) => {
+  sendMessage: async (parent, { id, text }, { request, pubsub }) => {
     const userId = getUserId(request);
-    return updateOperationTemplate({
+    const group = await updateOperationTemplate({
       groupId: id,
       data: {
         $push: {
@@ -56,6 +59,19 @@ module.exports = {
       },
       request
     });
+    pubsub.publish(newMessageSubscriptionKey(id), {
+      newMessage: {
+        id: group._id,
+        name: group.name,
+        participants: group.participants,
+        messages: group.messages.map(message => ({
+          id: message._id,
+          text: message.text,
+          sender: message.sender
+        }))
+      }
+    });
+    return group;
   },
   addGroupParticipant: (parent, { groupId, memberId }, { request }) =>
     updateOperationTemplate({

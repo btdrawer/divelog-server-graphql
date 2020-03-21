@@ -11,6 +11,8 @@ type Mutation {
   createUser(data: CreateUserInput!): AuthPayload!
   login(username: String!, password: String!): AuthPayload!
   updateUser(data: UpdateUserInput!): User!
+  sendOrAcceptFriendRequest(id: ID!): User!
+  unfriend(id: ID!): User!
   deleteUser: User!
   createDive(data: CreateDiveInput!): Dive!
   updateDive(id: ID!, data: UpdateDiveInput!): Dive!

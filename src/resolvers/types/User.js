@@ -1,7 +1,8 @@
 const { getUserId } = require("../../authentication/authUtils");
+const UserModel = require("../../models/UserModel");
+const DiveModel = require("../../models/DiveModel");
 const ClubModel = require("../../models/ClubModel");
 const GearModel = require("../../models/GearModel");
-const DiveModel = require("../../models/DiveModel");
 
 module.exports = {
   email: ({ id, email }, args, { request }) => {
@@ -42,6 +43,37 @@ module.exports = {
           $in: gear
         }
       });
+    }
+    return undefined;
+  },
+  friends: ({ id, friends }, args, { request }) => {
+    const userId = getUserId(request);
+    if (userId && userId === id) {
+      return UserModel.find({
+        _id: {
+          $in: friends
+        }
+      });
+    }
+    return undefined;
+  },
+  friendRequests: async ({ id, friendRequests }, args, { request }) => {
+    const userId = getUserId(request);
+    if (userId && userId === id) {
+      const inbox = await UserModel.find({
+        _id: {
+          $in: friendRequests.inbox
+        }
+      });
+      const sent = await UserModel.find({
+        _id: {
+          $in: friendRequests.sent
+        }
+      });
+      return {
+        inbox,
+        sent
+      };
     }
     return undefined;
   }

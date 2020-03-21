@@ -1,5 +1,10 @@
 const UserModel = require("../../models/UserModel");
 const { getUserId } = require("../../authentication/authUtils");
+const {
+  CANNOT_ADD_YOURSELF,
+  FRIEND_REQUEST_ALREADY_SENT,
+  ALREADY_FRIENDS
+} = require("../../constants/errorCodes");
 
 const formatAuthPayload = result => ({
   user: {
@@ -29,6 +34,32 @@ module.exports = {
       data,
       { new: true }
     ),
+  sendOrAcceptFriendRequest: async (parent, { id }, { request }) => {
+    const myId = getUserId(request);
+    if (id === myId) {
+      throw new Error(CANNOT_ADD_YOURSELF);
+    }
+    const checkInbox = await UserModel.findOne(
+      {
+        _id: myId
+      },
+      ["friends", "friendRequests"]
+    );
+    if (checkInbox.friendRequests.sent.includes(id)) {
+      throw new Error(FRIEND_REQUEST_ALREADY_SENT);
+    } else if (checkInbox.friends.includes(id)) {
+      throw new Error(ALREADY_FRIENDS);
+    } else if (checkInbox.friendRequests.inbox.includes(id)) {
+      // Accept request
+      return UserModel.accept(myId, id);
+    }
+    // Send request
+    return UserModel.add(myId, id);
+  },
+  unfriend: async (parent, { id }, { request }) => {
+    const myId = getUserId(request);
+    return UserModel.unfriend(myId, id);
+  },
   deleteUser: async (parent, args, { request }) =>
     UserModel.findOneAndDelete({
       _id: getUserId(request)

@@ -130,7 +130,7 @@ UserSchema.statics.add = async (myId, friendId) => {
     },
     {
       $push: {
-        "friend_requests.sent": friendId
+        "friendRequests.sent": friendId
       }
     },
     { new: true }
@@ -142,7 +142,7 @@ UserSchema.statics.add = async (myId, friendId) => {
     },
     {
       $push: {
-        "friend_requests.inbox": myId
+        "friendRequests.inbox": myId
       }
     }
   );
@@ -160,7 +160,7 @@ UserSchema.statics.accept = async (myId, friendId) => {
         friends: friendId
       },
       $pull: {
-        "friend_requests.inbox": friendId
+        "friendRequests.inbox": friendId
       }
     },
     { new: true }
@@ -175,7 +175,7 @@ UserSchema.statics.accept = async (myId, friendId) => {
         friends: myId
       },
       $pull: {
-        "friend_requests.sent": myId
+        "friendRequests.sent": myId
       }
     }
   );

@@ -22,6 +22,13 @@ const ClubSchema = new Schema({
       required: true
     }
   ],
+  members: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    }
+  ],
   website: {
     type: String,
     max: 40

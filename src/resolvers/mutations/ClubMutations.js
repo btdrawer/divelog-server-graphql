@@ -1,4 +1,5 @@
 const ClubModel = require("../../models/ClubModel");
+const UserModel = require("../../models/UserModel");
 const { getUserId } = require("../../authentication/authUtils");
 const clubMiddleware = require("../../authentication/middleware/clubMiddleware");
 const { UPDATE, DELETE } = require("../../constants/methods");
@@ -24,6 +25,60 @@ const updateOperationTemplate = async ({
   );
 };
 
+const updateClubManagersTemplate = async ({
+  clubId,
+  userId,
+  request,
+  action
+}) => {
+  const club = await updateOperationTemplate({
+    clubId,
+    data: {
+      [action]: {
+        managers: userId
+      }
+    },
+    request,
+    removingManagers: action === "$pull"
+  });
+  await UserModel.findOneAndUpdate(
+    {
+      _id: userId
+    },
+    {
+      [action]: {
+        "clubs.manager": club.id
+      }
+    }
+  );
+  return club;
+};
+
+const updateClubMembershipTemplate = async ({ clubId, userId, action }) => {
+  const club = await ClubModel.findOneAndUpdate(
+    {
+      _id: clubId
+    },
+    {
+      [action]: {
+        members: userId
+      }
+    },
+    { new: true }
+  );
+  await UserModel.findOneAndUpdate(
+    {
+      _id: userId
+    },
+    {
+      [action]: {
+        "clubs.member": clubId
+      }
+    }
+  );
+  return club;
+};
+
 module.exports = {
   createClub: async (parent, { data }, { request }) => {
     const userId = getUserId(request);
@@ -32,35 +87,66 @@ module.exports = {
       managers: [userId]
     });
     await club.save();
+    await UserModel.findOneAndUpdate(
+      {
+        _id: userId
+      },
+      {
+        $push: {
+          "clubs.manager": club.id
+        }
+      }
+    );
     return club;
   },
-  updateClub: (parent, { id, data }, { request }) =>
+  updateClub: async (parent, { id, data }, { request }) =>
     updateOperationTemplate({
       clubId: id,
       data,
       request
     }),
   addClubManager: (parent, { clubId, userId }, { request }) =>
-    updateOperationTemplate({
+    updateClubManagersTemplate({
       clubId,
-      data: {
-        $push: {
-          managers: userId
-        }
-      },
-      request
+      userId,
+      request,
+      action: "$push"
     }),
   removeClubManager: async (parent, { clubId, managerId }, { request }) =>
-    updateOperationTemplate({
+    updateClubManagersTemplate({
       clubId,
-      data: {
-        $pull: {
-          managers: managerId
-        }
-      },
+      userId: managerId,
       request,
-      removingManagers: true
+      action: "$pull"
     }),
+  joinClub: (parent, { id }, { request }) => {
+    const userId = getUserId(request);
+    return updateClubMembershipTemplate({
+      clubId: id,
+      userId,
+      action: "$push"
+    });
+  },
+  leaveClub: (parent, { id }, { request }) => {
+    const userId = getUserId(request);
+    return updateClubMembershipTemplate({
+      clubId: id,
+      userId,
+      action: "$pull"
+    });
+  },
+  removeClubMember: async (parent, { clubId, memberId }, { request }) => {
+    await clubMiddleware({
+      method: UPDATE,
+      clubId,
+      request
+    });
+    return updateClubMembershipTemplate({
+      clubId,
+      userId: memberId,
+      action: "$pull"
+    });
+  },
   deleteClub: async (parent, { id }, { request }) => {
     await clubMiddleware({
       method: DELETE,

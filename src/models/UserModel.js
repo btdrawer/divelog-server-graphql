@@ -25,13 +25,33 @@ const UserSchema = new Schema({
     required: true
   },
   token: String,
+  clubs: {
+    manager: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Club"
+      }
+    ],
+    member: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Club"
+      }
+    ]
+  },
+  gear: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Gear"
+    }
+  ],
   friends: [
     {
       type: Schema.Types.ObjectId,
       ref: "User"
     }
   ],
-  friend_requests: {
+  friendRequests: {
     inbox: [
       {
         type: Schema.Types.ObjectId,

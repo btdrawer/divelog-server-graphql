@@ -1,7 +1,7 @@
 type Query {
-  users(limit: Int, skip: Int): [User!]!
-  clubs(name: String, location: String, limit: Int, skip: Int): [Club!]!
-  gear(limit: Int, skip: Int): [Gear!]!
+  users(where: UserWhereInput, limit: Int, skip: Int): [User!]!
+  clubs(where: ClubWhereInput, limit: Int, skip: Int): [Club!]!
+  gear(where: GearInput, limit: Int, skip: Int): [Gear!]!
   me: User!
 }
 
@@ -14,9 +14,12 @@ type Mutation {
   updateClub(id: ID!, data: UpdateClubInput): Club!
   addClubManager(clubId: ID!, userId: ID!): Club!
   removeClubManager(clubId: ID!, managerId: ID!): Club!
+  joinClub(id: ID!): Club!
+  leaveClub(id: ID!): Club!
+  removeClubMember(clubId: ID!, memberId: ID!): Club!
   deleteClub(id: ID!): Club!
-  createGear(data: CreateUpdateGearInput!): Gear!
-  updateGear(id: ID!, data: CreateUpdateGearInput!): Gear!
+  createGear(data: GearInput!): Gear!
+  updateGear(id: ID!, data: GearInput!): Gear!
   deleteGear(id: ID!): Gear!
 }
 
@@ -25,8 +28,10 @@ type User {
   name: String!
   username: String!
   email: String
+  clubs: UserClub
+  gear: [Gear]
   friends: [User]
-  friend_requests: FriendRequests
+  friendRequests: FriendRequests
 }
 
 type AuthPayload {
@@ -39,11 +44,17 @@ type FriendRequests {
   sent: [User]
 }
 
+type UserClub {
+  manager: [Club]
+  member: [Club]
+}
+
 type Club {
   id: ID!
   name: String!
   location: String!
   managers: [User!]!
+  members: [User]
   website: String
 }
 
@@ -53,6 +64,11 @@ type Gear {
   brand: String
   model: String
   type: String
+}
+
+input UserWhereInput {
+  name: String
+  username: String
 }
 
 input CreateUserInput {
@@ -69,6 +85,11 @@ input UpdateUserInput {
   password: String
 }
 
+input ClubWhereInput {
+  name: String
+  location: String
+}
+
 input CreateClubInput {
   name: String!
   location: String!
@@ -81,7 +102,7 @@ input UpdateClubInput {
   website: String
 }
 
-input CreateUpdateGearInput {
+input GearInput {
   name: String
   brand: String
   model: String

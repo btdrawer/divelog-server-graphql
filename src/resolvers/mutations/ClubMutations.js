@@ -153,6 +153,30 @@ module.exports = {
       clubId: id,
       request
     });
+    await UserModel.updateMany(
+      {
+        clubs: {
+          manager: id
+        }
+      },
+      {
+        $pull: {
+          "clubs.manager": id
+        }
+      }
+    );
+    await UserModel.updateMany(
+      {
+        clubs: {
+          member: id
+        }
+      },
+      {
+        $pull: {
+          "clubs.member": id
+        }
+      }
+    );
     return ClubModel.findOneAndDelete({
       _id: id
     });

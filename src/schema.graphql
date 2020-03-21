@@ -4,16 +4,19 @@ type Query {
   myDives(where: UpdateDiveInput, limit: Int, skip: Int): [Dive!]!
   clubs(where: ClubWhereInput, limit: Int, skip: Int): [Club!]!
   gear(where: GearInput, limit: Int, skip: Int): [Gear!]!
+  myGroups(limit: Int, skip: Int): [Group!]!
   me: User!
 }
 
 type Mutation {
+  # User
   createUser(data: CreateUserInput!): AuthPayload!
   login(username: String!, password: String!): AuthPayload!
   updateUser(data: UpdateUserInput!): User!
   sendOrAcceptFriendRequest(id: ID!): User!
   unfriend(id: ID!): User!
   deleteUser: User!
+  # Dive
   createDive(data: CreateDiveInput!): Dive!
   updateDive(id: ID!, data: UpdateDiveInput!): Dive!
   addGearToDive(diveId: ID!, gearId: ID!): Dive!
@@ -21,6 +24,7 @@ type Mutation {
   addBuddyToDive(diveId: ID!, buddyId: ID!): Dive!
   removeBuddyFromDive(diveId: ID!, buddyId: ID!): Dive!
   deleteDive(id: ID!): Dive!
+  # Club
   createClub(data: CreateClubInput!): Club!
   updateClub(id: ID!, data: UpdateClubInput): Club!
   addClubManager(clubId: ID!, userId: ID!): Club!
@@ -29,9 +33,16 @@ type Mutation {
   leaveClub(id: ID!): Club!
   removeClubMember(clubId: ID!, memberId: ID!): Club!
   deleteClub(id: ID!): Club!
+  # Gear
   createGear(data: GearInput!): Gear!
   updateGear(id: ID!, data: GearInput!): Gear!
   deleteGear(id: ID!): Gear!
+  # Group
+  createGroup(data: CreateGroupInput!): Group!
+  renameGroup(id: ID!, name: String!): Group!
+  sendMessage(id: ID!, text: String!): Group!
+  addGroupParticipant(groupId: ID!, memberId: ID!): Group!
+  leaveGroup(id: ID!): Group!
 }
 
 type User {
@@ -61,6 +72,23 @@ type UserClub {
   member: [Club]
 }
 
+type Dive {
+  id: ID!
+  timeIn: String
+  timeOut: String
+  bottomTime: Float
+  safetyStopTime: Float
+  diveTime: Float
+  maxDepth: Float
+  location: String
+  description: String
+  club: Club
+  user: User!
+  buddies: [User]
+  gear: [Gear]
+  public: Boolean
+}
+
 type Club {
   id: ID!
   name: String!
@@ -78,21 +106,17 @@ type Gear {
   type: String
 }
 
-type Dive {
+type Group {
   id: ID!
-  timeIn: String
-  timeOut: String
-  bottomTime: Float
-  safetyStopTime: Float
-  diveTime: Float
-  maxDepth: Float
-  location: String
-  description: String
-  club: Club
-  user: User!
-  buddies: [User]
-  gear: [Gear]
-  public: Boolean
+  name: String!
+  participants: [User!]!
+  messages: [Message!]!
+}
+
+type Message {
+  id: ID!
+  text: String!
+  sender: User!
 }
 
 input UserWhereInput {
@@ -174,4 +198,10 @@ input GearInput {
   brand: String
   model: String
   type: String
+}
+
+input CreateGroupInput {
+  name: String!
+  participants: [ID!]!
+  text: String!
 }

@@ -9,6 +9,7 @@ const Mutation = require("./resolvers/Mutation");
 const Dive = require("./resolvers/types/Dive");
 const User = require("./resolvers/types/User");
 const Club = require("./resolvers/types/Club");
+const Group = require("./resolvers/types/Group");
 
 const server = new GraphQLServer({
   typeDefs: "./src/schema.graphql",
@@ -17,7 +18,8 @@ const server = new GraphQLServer({
     Mutation,
     User,
     Club,
-    Dive
+    Dive,
+    Group
   },
   context: request => request
 });

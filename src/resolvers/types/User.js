@@ -19,17 +19,18 @@ module.exports = {
       }
     }),
   clubs: async ({ clubs }) => {
-    // TODO run these promises simultaneously
-    const manager = await ClubModel.find({
-      _id: {
-        $in: clubs.manager
-      }
-    });
-    const member = await ClubModel.find({
-      _id: {
-        $in: clubs.member
-      }
-    });
+    const [manager, member] = await Promise.all([
+      ClubModel.find({
+        _id: {
+          $in: clubs.manager
+        }
+      }),
+      ClubModel.find({
+        _id: {
+          $in: clubs.member
+        }
+      })
+    ]);
     return {
       manager,
       member
@@ -60,16 +61,18 @@ module.exports = {
   friendRequests: async ({ id, friendRequests }, args, { request }) => {
     const userId = getUserId(request);
     if (userId && userId === id) {
-      const inbox = await UserModel.find({
-        _id: {
-          $in: friendRequests.inbox
-        }
-      });
-      const sent = await UserModel.find({
-        _id: {
-          $in: friendRequests.sent
-        }
-      });
+      const [inbox, sent] = await Promise.all([
+        UserModel.find({
+          _id: {
+            $in: friendRequests.inbox
+          }
+        }),
+        UserModel.find({
+          _id: {
+            $in: friendRequests.sent
+          }
+        })
+      ]);
       return {
         inbox,
         sent

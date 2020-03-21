@@ -25,6 +25,12 @@ const UserSchema = new Schema({
     required: true
   },
   token: String,
+  dives: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Dive"
+    }
+  ],
   clubs: {
     manager: [
       {

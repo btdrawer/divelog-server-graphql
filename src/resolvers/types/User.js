@@ -1,6 +1,7 @@
 const { getUserId } = require("../../authentication/authUtils");
 const ClubModel = require("../../models/ClubModel");
 const GearModel = require("../../models/GearModel");
+const DiveModel = require("../../models/DiveModel");
 
 module.exports = {
   email: ({ id, email }, args, { request }) => {
@@ -10,6 +11,12 @@ module.exports = {
     }
     return undefined;
   },
+  dives: ({ dives }) =>
+    DiveModel.find({
+      _id: {
+        $in: dives
+      }
+    }),
   clubs: async ({ clubs }) => {
     // TODO run these promises simultaneously
     const manager = await ClubModel.find({

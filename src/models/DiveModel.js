@@ -6,12 +6,12 @@ const {
 } = require("../constants/errorCodes");
 
 const DiveSchema = new Schema({
-  time_in: Date,
-  time_out: Date,
-  bottom_time: Number,
-  safety_stop_time: Number,
-  dive_time: Number,
-  max_depth: Number,
+  timeIn: Date,
+  timeOut: Date,
+  bottomTime: Number,
+  safetyStopTime: Number,
+  diveTime: Number,
+  maxDepth: Number,
   location: String,
   description: String,
   club: {
@@ -42,12 +42,12 @@ const DiveSchema = new Schema({
 });
 
 DiveSchema.pre("save", function(next) {
-  this.dive_time = (this.time_out - this.time_in) / 60000;
+  this.diveTime = (this.timeOut - this.timeIn) / 60000;
 
-  if (this.dive_time < 0)
+  if (this.diveTime < 0)
     throw new Error(INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT);
 
-  if (this.dive_time < this.bottom_time + this.safety_stop_time) {
+  if (this.diveTime < this.bottomTime + this.safetyStopTime) {
     throw new Error(INVALID_ARGUMENT_DIVE_TIME_EXCEEDED);
   }
 

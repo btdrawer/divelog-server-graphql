@@ -6,6 +6,7 @@ require("./db");
 // Resolvers
 const Query = require("./resolvers/Query");
 const Mutation = require("./resolvers/Mutation");
+const Dive = require("./resolvers/types/Dive");
 const User = require("./resolvers/types/User");
 const Club = require("./resolvers/types/Club");
 
@@ -15,7 +16,8 @@ const server = new GraphQLServer({
     Query,
     Mutation,
     User,
-    Club
+    Club,
+    Dive
   },
   context: request => request
 });

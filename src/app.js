@@ -45,4 +45,6 @@ const serverOptions = {
   endpoint: "/graphql"
 };
 
-server.start(serverOptions, () => "Server listening");
+server.start(serverOptions, () =>
+  console.log(`Server listening on port ${process.env.SERVER_PORT}.`)
+);

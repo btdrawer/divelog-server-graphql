@@ -46,7 +46,7 @@ type Mutation {
 }
 
 type Subscription {
-  newMessage(groupId: ID!): Group!
+  newMessage(groupId: ID!): NewMessagePayload!
 }
 
 type User {
@@ -121,6 +121,11 @@ type Message {
   id: ID!
   text: String!
   sender: User!
+}
+
+type NewMessagePayload {
+  message: Message!
+  group: Group!
 }
 
 input UserWhereInput {

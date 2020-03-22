@@ -59,16 +59,24 @@ module.exports = {
       },
       request
     });
+    const message = group.messages.pop();
     pubsub.publish(newMessageSubscriptionKey(id), {
       newMessage: {
-        id: group._id,
-        name: group.name,
-        participants: group.participants,
-        messages: group.messages.map(message => ({
+        message: {
           id: message._id,
           text: message.text,
           sender: message.sender
-        }))
+        },
+        group: {
+          id: group._id,
+          name: group.name,
+          participants: group.participants,
+          messages: group.messages.map(message => ({
+            id: message._id,
+            text: message.text,
+            sender: message.sender
+          }))
+        }
       }
     });
     return group;

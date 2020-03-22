@@ -1,4 +1,6 @@
-const { GraphQLServer } = require("graphql-yoga");
+const { ApolloServer } = require("apollo-server");
+const { importSchema } = require("graphql-import");
+const { makeExecutableSchema } = require("graphql-tools");
 const { RedisPubSub } = require("graphql-redis-subscriptions");
 const Redis = require("ioredis");
 
@@ -23,8 +25,8 @@ const pubsub = new RedisPubSub({
   subscribe: new Redis(redisOptions)
 });
 
-const server = new GraphQLServer({
-  typeDefs: "./src/schema.graphql",
+const executableSchema = makeExecutableSchema({
+  typeDefs: importSchema("src/schema.graphql"),
   resolvers: {
     Query,
     Mutation,
@@ -33,18 +35,15 @@ const server = new GraphQLServer({
     Club,
     Dive,
     Group
-  },
+  }
+});
+
+const server = new ApolloServer({
+  schema: executableSchema,
   context: request => ({
     request,
     pubsub
   })
 });
 
-const serverOptions = {
-  port: process.env.SERVER_PORT,
-  endpoint: "/graphql"
-};
-
-server.start(serverOptions, () =>
-  console.log(`Server listening on port ${process.env.SERVER_PORT}.`)
-);
+server.listen().then(({ url }) => console.log(`Server listening on ${url}.`));

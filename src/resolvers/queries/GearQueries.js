@@ -1,9 +1,10 @@
 const GearModel = require("../../models/GearModel");
 const { getUserId } = require("../../authentication/authUtils");
 const removeFalseyProps = require("../../utils/removeFalseyProps");
+const formatQueryOptions = require("../../utils/formatQueryOptions");
 
 module.exports = {
-  gear: async (parent, { where, limit, skip }, { request }) => {
+  gear: async (parent, { where, ...args }, { request }) => {
     const userId = getUserId(request);
     return GearModel.find(
       {
@@ -13,7 +14,7 @@ module.exports = {
         })
       },
       null,
-      { limit, skip }
+      formatQueryOptions(args)
     );
   }
 };

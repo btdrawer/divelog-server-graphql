@@ -1,10 +1,47 @@
 type Query {
-  users(where: UserWhereInput, limit: Int, skip: Int): [User!]!
-  dives(userId: ID!, where: DiveWhereInput, limit: Int, skip: Int): [Dive!]!
-  myDives(where: UpdateDiveInput, limit: Int, skip: Int): [Dive!]!
-  clubs(where: ClubWhereInput, limit: Int, skip: Int): [Club!]!
-  gear(where: GearInput, limit: Int, skip: Int): [Gear!]!
-  myGroups(limit: Int, skip: Int): [Group!]!
+  users(
+    where: UserWhereInput
+    sortBy: UserSortEnum
+    sortOrder: SortOrderEnum
+    limit: Int
+    skip: Int
+  ): [User!]!
+  dives(
+    userId: ID!
+    where: DiveWhereInput
+    sortBy: DiveSortEnum
+    sortOrder: SortOrderEnum
+    limit: Int
+    skip: Int
+  ): [Dive!]!
+  myDives(
+    where: UpdateDiveInput
+    sortBy: DiveSortEnum
+    sortOrder: SortOrderEnum
+    limit: Int
+    skip: Int
+  ): [Dive!]!
+  clubs(
+    where: ClubWhereInput
+    sortBy: ClubSortEnum
+    sortOrder: SortOrderEnum
+    limit: Int
+    skip: Int
+  ): [Club!]!
+  gear(
+    where: GearInput
+    sortBy: GearSortEnum
+    sortOrder: SortOrderEnum
+    limit: Int
+    skip: Int
+  ): [Gear!]!
+  myGroups(
+    where: GroupWhereInput
+    sortBy: GroupSortEnum
+    sortOrder: SortOrderEnum
+    limit: Int
+    skip: Int
+  ): [Group!]!
   me: User!
 }
 
@@ -209,8 +246,47 @@ input GearInput {
   type: String
 }
 
+input GroupWhereInput {
+  name: String
+}
+
 input CreateGroupInput {
   name: String!
   participants: [ID!]!
   text: String!
+}
+
+enum SortOrderEnum {
+  ASC
+  DESC
+}
+
+enum UserSortEnum {
+  name
+  username
+}
+
+enum DiveSortEnum {
+  timeIn
+  timeOut
+  bottomTime
+  safetyStopTime
+  diveTime
+  location
+}
+
+enum ClubSortEnum {
+  name
+  location
+}
+
+enum GearSortEnum {
+  name
+  brand
+  model
+  type
+}
+
+enum GroupSortEnum {
+  name
 }

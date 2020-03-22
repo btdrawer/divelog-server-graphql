@@ -1,9 +1,10 @@
 const DiveModel = require("../../models/DiveModel");
 const { getUserId } = require("../../authentication/authUtils");
 const removeFalseyProps = require("../../utils/removeFalseyProps");
+const formatQueryOptions = require("../../utils/formatQueryOptions");
 
 module.exports = {
-  dives: (parent, { userId, where, limit, skip }) => {
+  dives: (parent, { userId, where, ...args }) => {
     if (where) {
       if (where.public) delete where.public;
     }
@@ -16,10 +17,10 @@ module.exports = {
         })
       },
       null,
-      { limit, skip }
+      formatQueryOptions(args)
     );
   },
-  myDives: (parent, { where, limit, skip }, { request }) => {
+  myDives: (parent, { where, ...args }, { request }) => {
     const userId = getUserId(request);
     return DiveModel.find(
       {
@@ -29,7 +30,7 @@ module.exports = {
         })
       },
       null,
-      { limit, skip }
+      formatQueryOptions(args)
     );
   }
 };

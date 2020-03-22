@@ -11,7 +11,7 @@ module.exports = {
     participants: getParticipants,
     messages: async ({ participants, messages }) => {
         const participantsDetails = await getParticipants({ participants });
-        const participantsDetailsReduced = await participantsDetails.reduce(
+        const participantsDetailsReduced = participantsDetails.reduce(
             (acc, participant) => ({
                 ...acc,
                 [participant.id]: participant

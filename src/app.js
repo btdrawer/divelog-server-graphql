@@ -16,34 +16,34 @@ const Group = require("./resolvers/types/Group");
 require("./db");
 
 const redisOptions = {
-  host: process.env.REDIS_HOST,
-  port: process.env.REDIS_PORT
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT
 };
 
 const pubsub = new RedisPubSub({
-  publisher: new Redis(redisOptions),
-  subscribe: new Redis(redisOptions)
+    publisher: new Redis(redisOptions),
+    subscribe: new Redis(redisOptions)
 });
 
 const executableSchema = makeExecutableSchema({
-  typeDefs: importSchema("src/schema.graphql"),
-  resolvers: {
-    Query,
-    Mutation,
-    Subscription,
-    User,
-    Club,
-    Dive,
-    Group
-  }
+    typeDefs: importSchema("src/schema.graphql"),
+    resolvers: {
+        Query,
+        Mutation,
+        Subscription,
+        User,
+        Club,
+        Dive,
+        Group
+    }
 });
 
 const server = new ApolloServer({
-  schema: executableSchema,
-  context: request => ({
-    request,
-    pubsub
-  })
+    schema: executableSchema,
+    context: request => ({
+        request,
+        pubsub
+    })
 });
 
 server.listen().then(({ url }) => console.log(`Server listening on ${url}.`));

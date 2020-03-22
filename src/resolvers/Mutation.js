@@ -5,9 +5,9 @@ const GearMutations = require("./mutations/GearMutations");
 const GroupMutations = require("./mutations/GroupMutations");
 
 module.exports = {
-  ...UserMutations,
-  ...DiveMutations,
-  ...ClubMutations,
-  ...GearMutations,
-  ...GroupMutations
+    ...UserMutations,
+    ...DiveMutations,
+    ...ClubMutations,
+    ...GearMutations,
+    ...GroupMutations
 };

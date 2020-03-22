@@ -5,9 +5,9 @@ const GearQueries = require("./queries/GearQueries");
 const GroupQueries = require("./queries/GroupQueries");
 
 module.exports = {
-  ...UserQueries,
-  ...DiveQueries,
-  ...ClubQueries,
-  ...GearQueries,
-  ...GroupQueries
+    ...UserQueries,
+    ...DiveQueries,
+    ...ClubQueries,
+    ...GearQueries,
+    ...GroupQueries
 };

@@ -5,209 +5,209 @@ const bcrypt = require("bcrypt");
 const { signJwt } = require("../authentication/authUtils");
 
 const UserSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    max: 40
-  },
-  username: {
-    type: String,
-    required: true,
-    max: 15
-  },
-  email: {
-    type: String,
-    required: true,
-    max: 30
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  token: String,
-  dives: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Dive"
-    }
-  ],
-  clubs: {
-    manager: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Club"
-      }
+    name: {
+        type: String,
+        required: true,
+        max: 40
+    },
+    username: {
+        type: String,
+        required: true,
+        max: 15
+    },
+    email: {
+        type: String,
+        required: true,
+        max: 30
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    token: String,
+    dives: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Dive"
+        }
     ],
-    member: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Club"
-      }
-    ]
-  },
-  gear: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Gear"
-    }
-  ],
-  friends: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User"
-    }
-  ],
-  friendRequests: {
-    inbox: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User"
-      }
+    clubs: {
+        manager: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Club"
+            }
+        ],
+        member: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Club"
+            }
+        ]
+    },
+    gear: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Gear"
+        }
     ],
-    sent: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User"
-      }
-    ]
-  }
+    friends: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
+    friendRequests: {
+        inbox: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }
+        ],
+        sent: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }
+        ]
+    }
 });
 
 UserSchema.pre("save", async function(next) {
-  if (this.isModified("password"))
-    this.password = bcrypt.hashSync(this.password, 10);
+    if (this.isModified("password"))
+        this.password = bcrypt.hashSync(this.password, 10);
 
-  if (this.isModified("username")) {
-    const user = await UserModel.findOne({
-      username: this.username
-    });
+    if (this.isModified("username")) {
+        const user = await UserModel.findOne({
+            username: this.username
+        });
 
-    if (user) throw new Error(USERNAME_EXISTS);
-  }
+        if (user) throw new Error(USERNAME_EXISTS);
+    }
 
-  this.token = signJwt(this._id);
+    this.token = signJwt(this._id);
 
-  next();
+    next();
 });
 
 UserSchema.pre("findOneAndUpdate", async function(next) {
-  if (this._update.password) {
-    this._update.password = bcrypt.hashSync(this._update.password, 10);
-  }
+    if (this._update.password) {
+        this._update.password = bcrypt.hashSync(this._update.password, 10);
+    }
 
-  if (this._update.username) {
-    const user = await UserModel.findOne({
-      username: this._update.username
-    });
+    if (this._update.username) {
+        const user = await UserModel.findOne({
+            username: this._update.username
+        });
 
-    if (user) throw new Error(USERNAME_EXISTS);
-  }
+        if (user) throw new Error(USERNAME_EXISTS);
+    }
 
-  next();
+    next();
 });
 
 UserSchema.statics.authenticate = async (username, password) => {
-  const user = await UserModel.findOne({
-    username: username
-  });
+    const user = await UserModel.findOne({
+        username: username
+    });
 
-  const errorMessage = INVALID_AUTH;
+    const errorMessage = INVALID_AUTH;
 
-  if (!user) throw new Error(errorMessage);
-  else if (!bcrypt.compareSync(password, user.password))
-    throw new Error(errorMessage);
+    if (!user) throw new Error(errorMessage);
+    else if (!bcrypt.compareSync(password, user.password))
+        throw new Error(errorMessage);
 
-  user.token = signJwt(user._id);
-  user.save();
+    user.token = signJwt(user._id);
+    user.save();
 
-  return user;
+    return user;
 };
 
 UserSchema.statics.add = async (myId, friendId) => {
-  const user = await UserModel.findOneAndUpdate(
-    {
-      _id: myId
-    },
-    {
-      $push: {
-        "friendRequests.sent": friendId
-      }
-    },
-    { new: true }
-  );
+    const user = await UserModel.findOneAndUpdate(
+        {
+            _id: myId
+        },
+        {
+            $push: {
+                "friendRequests.sent": friendId
+            }
+        },
+        { new: true }
+    );
 
-  await UserModel.findOneAndUpdate(
-    {
-      _id: friendId
-    },
-    {
-      $push: {
-        "friendRequests.inbox": myId
-      }
-    }
-  );
+    await UserModel.findOneAndUpdate(
+        {
+            _id: friendId
+        },
+        {
+            $push: {
+                "friendRequests.inbox": myId
+            }
+        }
+    );
 
-  return user;
+    return user;
 };
 
 UserSchema.statics.accept = async (myId, friendId) => {
-  const user = await UserModel.findOneAndUpdate(
-    {
-      _id: myId
-    },
-    {
-      $push: {
-        friends: friendId
-      },
-      $pull: {
-        "friendRequests.inbox": friendId
-      }
-    },
-    { new: true }
-  );
+    const user = await UserModel.findOneAndUpdate(
+        {
+            _id: myId
+        },
+        {
+            $push: {
+                friends: friendId
+            },
+            $pull: {
+                "friendRequests.inbox": friendId
+            }
+        },
+        { new: true }
+    );
 
-  await UserModel.findOneAndUpdate(
-    {
-      _id: friendId
-    },
-    {
-      $push: {
-        friends: myId
-      },
-      $pull: {
-        "friendRequests.sent": myId
-      }
-    }
-  );
+    await UserModel.findOneAndUpdate(
+        {
+            _id: friendId
+        },
+        {
+            $push: {
+                friends: myId
+            },
+            $pull: {
+                "friendRequests.sent": myId
+            }
+        }
+    );
 
-  return user;
+    return user;
 };
 
 UserSchema.statics.unfriend = async (myId, friendId) => {
-  const user = await UserModel.findOneAndUpdate(
-    {
-      _id: myId
-    },
-    {
-      $pull: {
-        friends: friendId
-      }
-    },
-    { new: true }
-  );
+    const user = await UserModel.findOneAndUpdate(
+        {
+            _id: myId
+        },
+        {
+            $pull: {
+                friends: friendId
+            }
+        },
+        { new: true }
+    );
 
-  await UserModel.findOneAndUpdate(
-    {
-      _id: friendId
-    },
-    {
-      $pull: {
-        friends: myId
-      }
-    }
-  );
+    await UserModel.findOneAndUpdate(
+        {
+            _id: friendId
+        },
+        {
+            $pull: {
+                friends: myId
+            }
+        }
+    );
 
-  return user;
+    return user;
 };
 
 const UserModel = mongoose.model("User", UserSchema);

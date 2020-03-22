@@ -1,6 +1,6 @@
 module.exports = {
-  CREATE: "CREATE",
-  UPDATE: "UPDATE",
-  READ: "READ",
-  DELETE: "DELETE"
+    CREATE: "CREATE",
+    UPDATE: "UPDATE",
+    READ: "READ",
+    DELETE: "DELETE"
 };

@@ -7,7 +7,7 @@ module.exports = {
     },
     "extends": [
         "eslint:recommended",
-        "plugin:prettier/recommended"
+        "prettier"
     ],
     "globals": {
         "Atomics": "readonly",

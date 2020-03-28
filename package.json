@@ -3,10 +3,11 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "start": "env-cmd -f ./.env nodemon src/app.js",
-        "start:noredis": "env-cmd -f ./.env nodemon src/appNoRedis.js",
+        "start": "env-cmd -f ./config/.env nodemon src/app.js",
+        "start:noredis": "env-cmd -f ./config/.env nodemon src/appNoRedis.js",
         "lint": "eslint --fix .",
-        "test": "env-cmd -f ./.test.env jest --detectOpenHandles"
+        "test": "env-cmd -f ./config/.test.env jest --runInBand",
+        "test:watch": "env-cmd -f ./config/.test.env jest --runInBand --watch"
     },
     "jest": {
         "globalSetup": "./tests/setup/globalSetup.js",

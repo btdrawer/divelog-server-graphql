@@ -14,5 +14,6 @@ module.exports = {
     INVALID_ARGUMENT_DIVE_TIME_EXCEEDED:
         "Bottom and safety stop time cannot exceed dive time (The difference between time in and time out).",
     INVALID_ARGUMENT_ONLY_MANAGER:
-        "You cannot remove the only manager of the club."
+        "You cannot remove the only manager of the club.",
+    NO_PUBSUB: "No PubSub has been instantiated."
 };

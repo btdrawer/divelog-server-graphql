@@ -1,20 +1,26 @@
 const jwt = require("jsonwebtoken");
 const { INVALID_AUTH } = require("../constants/errorCodes");
 
-const getAuthData = (req, isSubscription = false) => {
+const getAuthData = (req, isSubscription = false, authIsRequired = true) => {
     const header = isSubscription
         ? req.connection.context.Authorization
-        : req.request.header("Authorization");
-    if (!header) throw new Error(INVALID_AUTH);
+        : req.req.headers.authorization;
+    if (!header && authIsRequired) throw new Error(INVALID_AUTH);
 
-    const token = header.replace("Bearer ", "");
-    const data = jwt.verify(token, process.env.JWT_KEY);
+    if (header) {
+        const token = header.replace("Bearer ", "");
+        const data = jwt.verify(token, process.env.JWT_KEY);
 
-    return { token, data };
+        return { token, data };
+    }
+
+    return null;
 };
 
-const getUserId = (req, isSubscription = false) =>
-    getAuthData(req, isSubscription).data._id;
+const getUserId = (req, isSubscription = false, authIsRequired = true) => {
+    const authData = getAuthData(req, isSubscription, authIsRequired);
+    return authData ? authData.data._id : null;
+};
 
 const signJwt = id =>
     jwt.sign({ _id: id }, process.env.JWT_KEY, {

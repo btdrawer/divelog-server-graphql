@@ -6,7 +6,7 @@ const GearModel = require("../../models/GearModel");
 
 module.exports = {
     email: ({ id, email }, args, { request }) => {
-        const userId = getUserId(request);
+        const userId = getUserId(request, false, false);
         if (userId && userId === id) {
             return email;
         }
@@ -37,7 +37,7 @@ module.exports = {
         };
     },
     gear: ({ id, gear }, args, { request }) => {
-        const userId = getUserId(request);
+        const userId = getUserId(request, false, false);
         if (userId && userId === id) {
             return GearModel.find({
                 _id: {
@@ -48,7 +48,7 @@ module.exports = {
         return undefined;
     },
     friends: ({ id, friends }, args, { request }) => {
-        const userId = getUserId(request);
+        const userId = getUserId(request, false, false);
         if (userId && userId === id) {
             return UserModel.find({
                 _id: {
@@ -59,7 +59,7 @@ module.exports = {
         return undefined;
     },
     friendRequests: async ({ id, friendRequests }, args, { request }) => {
-        const userId = getUserId(request);
+        const userId = getUserId(request, false, false);
         if (userId && userId === id) {
             const [inbox, sent] = await Promise.all([
                 UserModel.find({

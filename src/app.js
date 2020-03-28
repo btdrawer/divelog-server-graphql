@@ -14,9 +14,11 @@ const pubsub = new RedisPubSub({
     subscribe: new Redis(redisOptions)
 });
 
-server.context.pubsub = pubsub;
-
-server
+server({
+    context: {
+        ...pubsub
+    }
+})
     .listen({
         port: process.env.SERVER_PORT
     })

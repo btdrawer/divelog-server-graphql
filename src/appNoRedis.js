@@ -1,6 +1,6 @@
 const server = require("./server");
 require("./db");
-server
+server()
     .listen({
         port: process.env.SERVER_PORT
     })

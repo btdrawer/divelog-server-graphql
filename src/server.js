@@ -24,9 +24,11 @@ const executableSchema = makeExecutableSchema({
     }
 });
 
-module.exports = new ApolloServer({
-    schema: executableSchema,
-    context: request => ({
-        request
-    })
-});
+module.exports = ({ context = {} } = {}) =>
+    new ApolloServer({
+        schema: executableSchema,
+        context: request => ({
+            request,
+            ...context
+        })
+    });

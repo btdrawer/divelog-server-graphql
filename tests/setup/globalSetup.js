@@ -1,6 +1,11 @@
-const getServer = require("../../src/server");
+const server = require("../../src/server");
 
 module.exports = async () => {
-    const server = getServer();
-    global.httpServer = await server.listen();
+    require("../../src/db");
+    global.httpServer = server;
+    await global.httpServer
+        .listen({
+            port: process.env.SERVER_PORT
+        })
+        .then(({ url }) => console.log(`Server started on ${url}.`));
 };

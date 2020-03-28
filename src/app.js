@@ -1,4 +1,4 @@
-const getServer = require("./server");
+const server = require("./server");
 require("./db");
 
 const { RedisPubSub } = require("graphql-redis-subscriptions");
@@ -14,10 +14,10 @@ const pubsub = new RedisPubSub({
     subscribe: new Redis(redisOptions)
 });
 
-const server = getServer({
-    context: {
-        ...pubsub
-    }
-});
+server.context.pubsub = pubsub;
 
-server.listen().then(({ url }) => console.log(`Server listening on ${url}.`));
+server
+    .listen({
+        port: process.env.SERVER_PORT
+    })
+    .then(({ url }) => console.log(`Server listening on ${url}.`));

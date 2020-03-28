@@ -1,6 +1,7 @@
-const getServer = require("./server");
+const server = require("./server");
 require("./db");
-
-const server = getServer();
-
-server.listen().then(({ url }) => console.log(`Server listening on ${url}.`));
+server
+    .listen({
+        port: process.env.SERVER_PORT
+    })
+    .then(({ url }) => console.log(`Server listening on ${url}.`));

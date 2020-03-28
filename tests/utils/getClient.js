@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 
 module.exports = jwt =>
     new ApolloClient({
-        uri: "http://localhost:4000/graphql",
+        uri: `http://localhost:${process.env.SERVER_PORT}`,
         request: operation => {
             if (jwt) {
                 operation.setContext({

@@ -28,6 +28,7 @@ const saveUser = async (users, index) => {
     const user = new UserModel(users[index].input);
     await user.save();
     users[index].output = user;
+    users[index].token = user.token;
     return user;
 };
 

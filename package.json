@@ -23,6 +23,8 @@
         "graphql-tools": "^4.0.7",
         "ioredis": "^4.16.0",
         "jsonwebtoken": "^8.5.1",
+        "moment": "^2.24.0",
+        "moment-timezone": "^0.5.28",
         "mongoose": "^5.7.5",
         "nodemon": "^1.19.2"
     },

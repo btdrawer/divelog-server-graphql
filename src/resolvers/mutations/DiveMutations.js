@@ -6,7 +6,7 @@ const { UPDATE, DELETE } = require("../../constants/methods");
 
 const updateOperationTemplate = async ({ diveId, data, request }) => {
     await diveMiddleware({
-        update: UPDATE,
+        method: UPDATE,
         diveId,
         request
     });

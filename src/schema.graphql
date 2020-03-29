@@ -15,7 +15,7 @@ type Query {
         skip: Int
     ): [Dive!]!
     myDives(
-        where: UpdateDiveInput
+        where: MyDiveWhereInput
         sortBy: DiveSortEnum
         sortOrder: SortOrderEnum
         limit: Int
@@ -213,6 +213,7 @@ input UpdateDiveInput {
 }
 
 input DiveWhereInput {
+    id: ID
     timeIn: String
     timeOut: String
     bottomTime: Float
@@ -222,6 +223,19 @@ input DiveWhereInput {
     location: String
     description: String
     club: ID
+}
+
+input MyDiveWhereInput {
+    id: ID
+    timeIn: String
+    timeOut: String
+    bottomTime: Float
+    safetyStopTime: Float
+    maxDepth: Float
+    location: String
+    description: String
+    club: ID
+    public: Boolean
 }
 
 input ClubWhereInput {

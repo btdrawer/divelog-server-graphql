@@ -1,4 +1,5 @@
 const UserModel = require("../../src/models/UserModel");
+const DiveModel = require("../../src/models/DiveModel");
 const ClubModel = require("../../src/models/ClubModel");
 const GearModel = require("../../src/models/GearModel");
 
@@ -31,6 +32,48 @@ const users = [
             username: "user3",
             email: "user3@example.com",
             password: "hd8y78rw4y"
+        },
+        output: undefined
+    }
+];
+
+const dives = [
+    {
+        input: {
+            timeIn: "2020-01-01T11:00:00",
+            timeOut: "2020-01-01T11:25:00",
+            bottomTime: 22.0,
+            safetyStopTime: 3.0,
+            maxDepth: 17.3,
+            location: "Sample location",
+            description: "Dive description",
+            public: true
+        },
+        output: undefined
+    },
+    {
+        input: {
+            timeIn: "2020-01-02T11:00:00",
+            timeOut: "2020-01-02T11:22:00",
+            bottomTime: 19.0,
+            safetyStopTime: 3.0,
+            maxDepth: 15.5,
+            location: "Sample location",
+            description: "Dive description",
+            public: false
+        },
+        output: undefined
+    },
+    {
+        input: {
+            timeIn: "2020-01-03T11:00:00",
+            timeOut: "2020-01-03T11:22:00",
+            bottomTime: 19.0,
+            safetyStopTime: 3.0,
+            maxDepth: 15.9,
+            location: "Sample location 2",
+            description: "Dive description 2",
+            public: true
         },
         output: undefined
     }
@@ -103,6 +146,18 @@ const saveGear = async (index, ownerId) => {
     return savedGear;
 };
 
+const saveDive = async (index, userId, clubId, buddyIds, gearIds) => {
+    dives[index].input.user = userId;
+    dives[index].input.club = clubId;
+    dives[index].input.buddies = buddyIds;
+    dives[index].input.gear = gearIds;
+
+    const dive = new DiveModel(dives[index].input);
+    await dive.save();
+    dives[index].output = dive;
+    return dive;
+};
+
 const seedDatabase = async ({ resources = {} } = {}) => {
     await UserModel.deleteMany();
     await ClubModel.deleteMany();
@@ -127,11 +182,31 @@ const seedDatabase = async ({ resources = {} } = {}) => {
         await saveGear(0, users[0].output.id);
         await saveGear(1, users[0].output.id);
     }
+
+    // Example dives
+    if (resources.dives) {
+        await saveDive(
+            0,
+            users[0].output.id,
+            clubs[0].output.id,
+            [users[1].output.id],
+            [gear[0].output.id]
+        );
+        await saveDive(
+            1,
+            users[0].output.id,
+            null,
+            [users[1].output.id, users[2].output.id],
+            [gear[0].output.id, gear[1].output.id]
+        );
+        await saveDive(2, users[0].output.id, null, [], []);
+    }
 };
 
 module.exports = {
     seedDatabase,
     users,
+    dives,
     clubs,
     gear
 };

@@ -237,7 +237,7 @@ describe("Gear", () => {
         expect(gearInDatabase).toBe(null);
     });
 
-    test("Should fail to update gear if not logged in", async () => {
+    test("Should fail to delete gear if not logged in", async () => {
         const variables = {
             id: gear[0].output.id
         };
@@ -250,7 +250,7 @@ describe("Gear", () => {
         ).rejects.toThrow();
     });
 
-    test("Should fail to update another users gear", async () => {
+    test("Should fail to delete another users gear", async () => {
         const authenticatedClient = getClient(users[1].token);
 
         const variables = {

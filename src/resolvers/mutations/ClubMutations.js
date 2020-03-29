@@ -3,6 +3,12 @@ const UserModel = require("../../models/UserModel");
 const { getUserId } = require("../../authentication/authUtils");
 const clubMiddleware = require("../../authentication/middleware/clubMiddleware");
 const { UPDATE, DELETE } = require("../../constants/methods");
+const {
+    ALREADY_A_MANAGER,
+    NOT_A_MANAGER,
+    ALREADY_A_MEMBER,
+    NOT_A_MEMBER
+} = require("../../constants/errorCodes");
 
 const updateOperationTemplate = async ({
     clubId,
@@ -31,6 +37,15 @@ const updateClubManagersTemplate = async ({
     request,
     action
 }) => {
+    const { managers: currentManagers } = await ClubModel.findOne({
+        _id: clubId
+    });
+    if (action === "$push" && currentManagers.includes(userId)) {
+        throw new Error(ALREADY_A_MANAGER);
+    }
+    if (action === "$pull" && !currentManagers.includes(userId)) {
+        throw new Error(NOT_A_MANAGER);
+    }
     const club = await updateOperationTemplate({
         clubId,
         data: {
@@ -55,6 +70,15 @@ const updateClubManagersTemplate = async ({
 };
 
 const updateClubMembershipTemplate = async ({ clubId, userId, action }) => {
+    const { members: currentMembers } = await ClubModel.findOne({
+        _id: clubId
+    });
+    if (action === "$push" && currentMembers.includes(userId)) {
+        throw new Error(ALREADY_A_MEMBER);
+    }
+    if (action === "$pull" && !currentMembers.includes(userId)) {
+        throw new Error(NOT_A_MEMBER);
+    }
     const club = await ClubModel.findOneAndUpdate(
         {
             _id: clubId

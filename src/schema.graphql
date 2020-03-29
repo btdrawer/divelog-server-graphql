@@ -225,6 +225,7 @@ input DiveWhereInput {
 }
 
 input ClubWhereInput {
+    id: ID
     name: String
     location: String
 }

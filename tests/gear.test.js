@@ -11,7 +11,14 @@ const GearModel = require("../src/models/GearModel");
 const client = getClient();
 
 describe("Gear", () => {
-    beforeEach(seedDatabase);
+    beforeEach(
+        async () =>
+            await seedDatabase({
+                resources: {
+                    gear: true
+                }
+            })
+    );
 
     test("Should create gear", async () => {
         const authenticatedClient = getClient(users[0].token);

@@ -18,9 +18,9 @@ describe("Users", () => {
     test("Should create new user", async () => {
         const variables = {
             data: {
-                name: "User 3",
-                username: "user3",
-                email: "email3@example.com",
+                name: "User 4",
+                username: "user4",
+                email: "email4@example.com",
                 password: "hjsat367"
             }
         };
@@ -30,22 +30,22 @@ describe("Users", () => {
             variables
         });
 
-        expect(data.createUser.user.name).toEqual("User 3");
-        expect(data.createUser.user.username).toEqual("user3");
+        expect(data.createUser.user.name).toEqual("User 4");
+        expect(data.createUser.user.username).toEqual("user4");
 
         const user = await UserModel.findOne({
             _id: data.createUser.user.id
         });
 
-        expect(user.name).toEqual("User 3");
+        expect(user.name).toEqual("User 4");
     });
 
     test("Should fail to create new user where username has been taken", async () => {
         const variables = {
             data: {
-                name: "User 3",
+                name: "User 4",
                 username: users[0].input,
-                email: "email3@example.com",
+                email: "email4@example.com",
                 password: "hjsat367"
             }
         };
@@ -61,8 +61,8 @@ describe("Users", () => {
     test("Should fail to create new user where email has been taken", async () => {
         const variables = {
             data: {
-                name: "User 3",
-                username: "user3",
+                name: "User 4",
+                username: "user4",
                 email: users[0].input.email,
                 password: "hjsat367"
             }
@@ -120,7 +120,7 @@ describe("Users", () => {
             query: getUsers
         });
 
-        expect(data.users.length).toEqual(2);
+        expect(data.users.length).toEqual(3);
     });
 
     test("Should only return emails for logged in users", async () => {
@@ -177,13 +177,13 @@ describe("Users", () => {
             variables
         });
 
-        expect(data.users.length).toEqual(2);
-        expect(data.users[0].name).toEqual(users[1].input.name);
+        expect(data.users.length).toEqual(3);
+        expect(data.users[0].name).toEqual(users[2].input.name);
     });
 
     test("Should limit results", async () => {
         const variables = {
-            limit: 1
+            limit: 2
         };
 
         const { data } = await client.query({
@@ -191,7 +191,7 @@ describe("Users", () => {
             variables
         });
 
-        expect(data.users.length).toEqual(1);
+        expect(data.users.length).toEqual(2);
         expect(data.users[0].name).toEqual(users[0].input.name);
     });
 
@@ -205,7 +205,7 @@ describe("Users", () => {
             variables
         });
 
-        expect(data.users.length).toEqual(1);
+        expect(data.users.length).toEqual(2);
         expect(data.users[0].name).toEqual(users[1].input.name);
     });
 

@@ -8,6 +8,7 @@ module.exports = {
     FORBIDDEN: "You do not have access to this resource.",
     NOT_FOUND: "Resource not found.",
     USERNAME_EXISTS: "A user with that username already exists.",
+    EMAIL_EXISTS: "A user with that email address already exists.",
     USER_ALREADY_IN_GROUP: "That user is already present in the group.",
     INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT:
         "Time in cannot be later than time out.",

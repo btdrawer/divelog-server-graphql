@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
-const { USERNAME_EXISTS, INVALID_AUTH } = require("../constants/errorCodes");
+const {
+    USERNAME_EXISTS,
+    EMAIL_EXISTS,
+    INVALID_AUTH
+} = require("../constants/errorCodes");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 const { signJwt } = require("../authentication/authUtils");
@@ -83,6 +87,14 @@ UserSchema.pre("save", async function(next) {
         });
 
         if (user) throw new Error(USERNAME_EXISTS);
+    }
+
+    if (this.isModified("email")) {
+        const user = await UserModel.findOne({
+            email: this.email
+        });
+
+        if (user) throw new Error(EMAIL_EXISTS);
     }
 
     this.token = signJwt(this._id);

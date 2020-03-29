@@ -29,7 +29,7 @@ type Query {
         skip: Int
     ): [Club!]!
     gear(
-        where: GearInput
+        where: GearWhereInput
         sortBy: GearSortEnum
         sortOrder: SortOrderEnum
         limit: Int
@@ -166,6 +166,7 @@ type NewMessagePayload {
 }
 
 input UserWhereInput {
+    id: ID
     name: String
     username: String
 }
@@ -185,6 +186,7 @@ input UpdateUserInput {
 }
 
 input CreateDiveInput {
+    id: ID
     timeIn: String
     timeOut: String
     bottomTime: Float
@@ -240,6 +242,14 @@ input UpdateClubInput {
 }
 
 input GearInput {
+    name: String
+    brand: String
+    model: String
+    type: String
+}
+
+input GearWhereInput {
+    id: ID
     name: String
     brand: String
     model: String

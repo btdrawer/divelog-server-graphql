@@ -1,7 +1,7 @@
 const server = require("../../src/server");
+require("../../src/db");
 
 module.exports = async () => {
-    require("../../src/db");
     global.httpServer = server();
     await global.httpServer
         .listen({

@@ -1,292 +1,292 @@
 type Query {
-  users(
-    where: UserWhereInput
-    sortBy: UserSortEnum
-    sortOrder: SortOrderEnum
-    limit: Int
-    skip: Int
-  ): [User!]!
-  dives(
-    userId: ID!
-    where: DiveWhereInput
-    sortBy: DiveSortEnum
-    sortOrder: SortOrderEnum
-    limit: Int
-    skip: Int
-  ): [Dive!]!
-  myDives(
-    where: UpdateDiveInput
-    sortBy: DiveSortEnum
-    sortOrder: SortOrderEnum
-    limit: Int
-    skip: Int
-  ): [Dive!]!
-  clubs(
-    where: ClubWhereInput
-    sortBy: ClubSortEnum
-    sortOrder: SortOrderEnum
-    limit: Int
-    skip: Int
-  ): [Club!]!
-  gear(
-    where: GearInput
-    sortBy: GearSortEnum
-    sortOrder: SortOrderEnum
-    limit: Int
-    skip: Int
-  ): [Gear!]!
-  myGroups(
-    where: GroupWhereInput
-    sortBy: GroupSortEnum
-    sortOrder: SortOrderEnum
-    limit: Int
-    skip: Int
-  ): [Group!]!
-  me: User!
+    users(
+        where: UserWhereInput
+        sortBy: UserSortEnum
+        sortOrder: SortOrderEnum
+        limit: Int
+        skip: Int
+    ): [User!]!
+    dives(
+        userId: ID!
+        where: DiveWhereInput
+        sortBy: DiveSortEnum
+        sortOrder: SortOrderEnum
+        limit: Int
+        skip: Int
+    ): [Dive!]!
+    myDives(
+        where: UpdateDiveInput
+        sortBy: DiveSortEnum
+        sortOrder: SortOrderEnum
+        limit: Int
+        skip: Int
+    ): [Dive!]!
+    clubs(
+        where: ClubWhereInput
+        sortBy: ClubSortEnum
+        sortOrder: SortOrderEnum
+        limit: Int
+        skip: Int
+    ): [Club!]!
+    gear(
+        where: GearInput
+        sortBy: GearSortEnum
+        sortOrder: SortOrderEnum
+        limit: Int
+        skip: Int
+    ): [Gear!]!
+    myGroups(
+        where: GroupWhereInput
+        sortBy: GroupSortEnum
+        sortOrder: SortOrderEnum
+        limit: Int
+        skip: Int
+    ): [Group!]!
+    me: User!
 }
 
 type Mutation {
-  # User
-  createUser(data: CreateUserInput!): AuthPayload!
-  login(username: String!, password: String!): AuthPayload!
-  updateUser(data: UpdateUserInput!): User!
-  sendOrAcceptFriendRequest(id: ID!): User!
-  unfriend(id: ID!): User!
-  deleteUser: User!
-  # Dive
-  createDive(data: CreateDiveInput!): Dive!
-  updateDive(id: ID!, data: UpdateDiveInput!): Dive!
-  addGearToDive(diveId: ID!, gearId: ID!): Dive!
-  removeGearFromDive(diveId: ID!, gearId: ID!): Dive!
-  addBuddyToDive(diveId: ID!, buddyId: ID!): Dive!
-  removeBuddyFromDive(diveId: ID!, buddyId: ID!): Dive!
-  deleteDive(id: ID!): Dive!
-  # Club
-  createClub(data: CreateClubInput!): Club!
-  updateClub(id: ID!, data: UpdateClubInput): Club!
-  addClubManager(clubId: ID!, userId: ID!): Club!
-  removeClubManager(clubId: ID!, managerId: ID!): Club!
-  joinClub(id: ID!): Club!
-  leaveClub(id: ID!): Club!
-  removeClubMember(clubId: ID!, memberId: ID!): Club!
-  deleteClub(id: ID!): Club!
-  # Gear
-  createGear(data: GearInput!): Gear!
-  updateGear(id: ID!, data: GearInput!): Gear!
-  deleteGear(id: ID!): Gear!
-  # Group
-  createGroup(data: CreateGroupInput!): Group!
-  renameGroup(id: ID!, name: String!): Group!
-  sendMessage(id: ID!, text: String!): Group!
-  addGroupParticipant(groupId: ID!, memberId: ID!): Group!
-  leaveGroup(id: ID!): Group!
+    # User
+    createUser(data: CreateUserInput!): AuthPayload!
+    login(username: String!, password: String!): AuthPayload!
+    updateUser(data: UpdateUserInput!): User!
+    sendOrAcceptFriendRequest(id: ID!): User!
+    unfriend(id: ID!): User!
+    deleteUser: User!
+    # Dive
+    createDive(data: CreateDiveInput!): Dive!
+    updateDive(id: ID!, data: UpdateDiveInput!): Dive!
+    addGearToDive(diveId: ID!, gearId: ID!): Dive!
+    removeGearFromDive(diveId: ID!, gearId: ID!): Dive!
+    addBuddyToDive(diveId: ID!, buddyId: ID!): Dive!
+    removeBuddyFromDive(diveId: ID!, buddyId: ID!): Dive!
+    deleteDive(id: ID!): Dive!
+    # Club
+    createClub(data: CreateClubInput!): Club!
+    updateClub(id: ID!, data: UpdateClubInput): Club!
+    addClubManager(clubId: ID!, userId: ID!): Club!
+    removeClubManager(clubId: ID!, managerId: ID!): Club!
+    joinClub(id: ID!): Club!
+    leaveClub(id: ID!): Club!
+    removeClubMember(clubId: ID!, memberId: ID!): Club!
+    deleteClub(id: ID!): Club!
+    # Gear
+    createGear(data: GearInput!): Gear!
+    updateGear(id: ID!, data: GearInput!): Gear!
+    deleteGear(id: ID!): Gear!
+    # Group
+    createGroup(data: CreateGroupInput!): Group!
+    renameGroup(id: ID!, name: String!): Group!
+    sendMessage(id: ID!, text: String!): Group!
+    addGroupParticipant(groupId: ID!, memberId: ID!): Group!
+    leaveGroup(id: ID!): Group!
 }
 
 type Subscription {
-  newMessage(groupId: ID!): NewMessagePayload!
+    newMessage(groupId: ID!): NewMessagePayload!
 }
 
 type User {
-  id: ID!
-  name: String!
-  username: String!
-  email: String
-  dives: [Dive]
-  clubs: UserClub
-  gear: [Gear]
-  friends: [User]
-  friendRequests: FriendRequests
+    id: ID!
+    name: String!
+    username: String!
+    email: String
+    dives: [Dive]
+    clubs: UserClub
+    gear: [Gear]
+    friends: [User]
+    friendRequests: FriendRequests
 }
 
 type AuthPayload {
-  user: User!
-  token: String!
+    user: User!
+    token: String!
 }
 
 type FriendRequests {
-  inbox: [User]
-  sent: [User]
+    inbox: [User]
+    sent: [User]
 }
 
 type UserClub {
-  manager: [Club]
-  member: [Club]
+    manager: [Club]
+    member: [Club]
 }
 
 type Dive {
-  id: ID!
-  timeIn: String
-  timeOut: String
-  bottomTime: Float
-  safetyStopTime: Float
-  diveTime: Float
-  maxDepth: Float
-  location: String
-  description: String
-  club: Club
-  user: User!
-  buddies: [User]
-  gear: [Gear]
-  public: Boolean
+    id: ID!
+    timeIn: String
+    timeOut: String
+    bottomTime: Float
+    safetyStopTime: Float
+    diveTime: Float
+    maxDepth: Float
+    location: String
+    description: String
+    club: Club
+    user: User!
+    buddies: [User]
+    gear: [Gear]
+    public: Boolean
 }
 
 type Club {
-  id: ID!
-  name: String!
-  location: String!
-  managers: [User!]!
-  members: [User]
-  website: String
+    id: ID!
+    name: String!
+    location: String!
+    managers: [User!]!
+    members: [User]
+    website: String
 }
 
 type Gear {
-  id: ID!
-  name: String
-  brand: String
-  model: String
-  type: String
+    id: ID!
+    name: String
+    brand: String
+    model: String
+    type: String
 }
 
 type Group {
-  id: ID!
-  name: String!
-  participants: [User!]!
-  messages: [Message!]!
+    id: ID!
+    name: String!
+    participants: [User!]!
+    messages: [Message!]!
 }
 
 type Message {
-  id: ID!
-  text: String!
-  sender: User!
+    id: ID!
+    text: String!
+    sender: User!
 }
 
 type NewMessagePayload {
-  message: Message!
-  group: Group!
+    message: Message!
+    group: Group!
 }
 
 input UserWhereInput {
-  name: String
-  username: String
+    name: String
+    username: String
 }
 
 input CreateUserInput {
-  name: String!
-  username: String!
-  email: String!
-  password: String!
+    name: String!
+    username: String!
+    email: String!
+    password: String!
 }
 
 input UpdateUserInput {
-  name: String
-  username: String
-  email: String
-  password: String
+    name: String
+    username: String
+    email: String
+    password: String
 }
 
 input CreateDiveInput {
-  timeIn: String
-  timeOut: String
-  bottomTime: Float
-  safetyStopTime: Float
-  maxDepth: Float
-  location: String
-  description: String
-  club: ID
-  buddies: [ID]
-  gear: [ID]
-  public: Boolean
+    timeIn: String
+    timeOut: String
+    bottomTime: Float
+    safetyStopTime: Float
+    maxDepth: Float
+    location: String
+    description: String
+    club: ID
+    buddies: [ID]
+    gear: [ID]
+    public: Boolean
 }
 
 input UpdateDiveInput {
-  timeIn: String
-  timeOut: String
-  bottomTime: Float
-  safetyStopTime: Float
-  maxDepth: Float
-  location: String
-  description: String
-  club: ID
-  public: Boolean
+    timeIn: String
+    timeOut: String
+    bottomTime: Float
+    safetyStopTime: Float
+    maxDepth: Float
+    location: String
+    description: String
+    club: ID
+    public: Boolean
 }
 
 input DiveWhereInput {
-  timeIn: String
-  timeOut: String
-  bottomTime: Float
-  safetyStopTime: Float
-  diveTime: Float
-  maxDepth: Float
-  location: String
-  description: String
-  club: ID
+    timeIn: String
+    timeOut: String
+    bottomTime: Float
+    safetyStopTime: Float
+    diveTime: Float
+    maxDepth: Float
+    location: String
+    description: String
+    club: ID
 }
 
 input ClubWhereInput {
-  name: String
-  location: String
+    name: String
+    location: String
 }
 
 input CreateClubInput {
-  name: String!
-  location: String!
-  website: String
+    name: String!
+    location: String!
+    website: String
 }
 
 input UpdateClubInput {
-  name: String
-  location: String
-  website: String
+    name: String
+    location: String
+    website: String
 }
 
 input GearInput {
-  name: String
-  brand: String
-  model: String
-  type: String
+    name: String
+    brand: String
+    model: String
+    type: String
 }
 
 input GroupWhereInput {
-  name: String
+    name: String
 }
 
 input CreateGroupInput {
-  name: String!
-  participants: [ID!]!
-  text: String!
+    name: String!
+    participants: [ID!]!
+    text: String!
 }
 
 enum SortOrderEnum {
-  ASC
-  DESC
+    ASC
+    DESC
 }
 
 enum UserSortEnum {
-  name
-  username
+    name
+    username
 }
 
 enum DiveSortEnum {
-  timeIn
-  timeOut
-  bottomTime
-  safetyStopTime
-  diveTime
-  location
+    timeIn
+    timeOut
+    bottomTime
+    safetyStopTime
+    diveTime
+    location
 }
 
 enum ClubSortEnum {
-  name
-  location
+    name
+    location
 }
 
 enum GearSortEnum {
-  name
-  brand
-  model
-  type
+    name
+    brand
+    model
+    type
 }
 
 enum GroupSortEnum {
-  name
+    name
 }

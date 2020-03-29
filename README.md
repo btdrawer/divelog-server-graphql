@@ -1,6 +1,6 @@
 # divelog-server-graphql
 
-A GraphQL implementation of my [divelog-server-rest](https://github.com/btdrawer/divelog-server-rest) project, which was a REST API built using NodeJS.
+A GraphQL version of my [divelog-server-rest](https://github.com/btdrawer/divelog-server-rest) project, which was a REST API built using NodeJS. The functionality is mostly the same, but I have made some improvements which I may port back to the REST project eventually.
 
 I learned about GraphQL and how to implement it into NodeJS from the Udemy course [The Modern GraphQL Bootcamp (with Node.js and Apollo)](https://www.udemy.com/course/graphql-bootcamp/).
 
@@ -8,24 +8,35 @@ This version of the project is still based on MongoDB; in the future I plan to c
 
 ## Requirements
 
-- NodeJS
-- NPM
-- MongoDB
-- Redis (for PubSub)
+-   NodeJS
+-   NPM
+-   MongoDB
+-   Redis (for PubSub; optional)
 
 ## How to run
 
 From the root folder, type `npm i` to install the necessary dependencies.
 
-Add a `.env` file to the root folder, with the following variables:
+Add a `.env` file to the `config` folder, with the following variables:
 
-- `MONGODB_URL`: The URL of your MongoDB database.
-- `JWT_KEY`: The secret key that your JSON Web Tokens will be signed with.
-- `REDIS_HOST`: The URL of your Redis data store.
-- `REDIS_PORT`: The port that your Redis store is listening on.
-- `SERVER_PORT`: The port that the server should listen on.
+-   `MONGODB_URL`: The URL of your MongoDB database.
+-   `JWT_KEY`: The secret key that your JSON Web Tokens will be signed with.
+-   `REDIS_HOST`: The URL of your Redis data store.
+-   `REDIS_PORT`: The port that your Redis store is listening on.
+-   `SERVER_PORT`: The port that the server should listen on.
 
 Then, you can run the program by typing:
 `npm start`
 
-Unit tests coming soon
+GraphQL playground will be available on localhost at `SERVER_PORT`. From there, you will have access to all possible mutations and queries.
+
+You can also launch the server without subscription functionality, and therefore no need to be running a Redis data store. This is available with the command:
+`npm start:noredis`
+
+## Unit tests
+
+To run unit tests, add a `.test.env` file to the `config` folder with the variables `MONGODB_URL`, `JWT_KEY`, and `SERVER_PORT`, and then run:
+`npm test`
+
+You can also watch the tests:
+`npm run test:watch`

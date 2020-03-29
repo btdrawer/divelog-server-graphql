@@ -59,26 +59,28 @@ module.exports = {
             },
             request
         });
-        const message = group.messages.pop();
-        pubsub.publish(newMessageSubscriptionKey(id), {
-            newMessage: {
-                message: {
-                    id: message._id,
-                    text: message.text,
-                    sender: message.sender
-                },
-                group: {
-                    id: group._id,
-                    name: group.name,
-                    participants: group.participants,
-                    messages: group.messages.map(message => ({
+        if (pubsub) {
+            const message = group.messages[group.messages.length - 1];
+            pubsub.publish(newMessageSubscriptionKey(id), {
+                newMessage: {
+                    message: {
                         id: message._id,
                         text: message.text,
                         sender: message.sender
-                    }))
+                    },
+                    group: {
+                        id: group._id,
+                        name: group.name,
+                        participants: group.participants,
+                        messages: group.messages.map(message => ({
+                            id: message._id,
+                            text: message.text,
+                            sender: message.sender
+                        }))
+                    }
                 }
-            }
-        });
+            });
+        }
         return group;
     },
     addGroupParticipant: (parent, { groupId, memberId }, { request }) =>

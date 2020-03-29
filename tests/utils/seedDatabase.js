@@ -2,6 +2,7 @@ const UserModel = require("../../src/models/UserModel");
 const DiveModel = require("../../src/models/DiveModel");
 const ClubModel = require("../../src/models/ClubModel");
 const GearModel = require("../../src/models/GearModel");
+const GroupModel = require("../../src/models/GroupModel");
 
 require("../../src/db");
 
@@ -121,6 +122,42 @@ const gear = [
     }
 ];
 
+const groups = [
+    {
+        input: {
+            name: "New Group",
+            messages: [
+                {
+                    text: "Hi"
+                }
+            ]
+        },
+        output: undefined
+    },
+    {
+        input: {
+            name: "New Group 2",
+            messages: [
+                {
+                    text: "Hi"
+                }
+            ]
+        },
+        output: undefined
+    },
+    {
+        input: {
+            name: "New Group 3",
+            messages: [
+                {
+                    text: "Hi"
+                }
+            ]
+        },
+        output: undefined
+    }
+];
+
 const saveUser = async index => {
     const user = new UserModel(users[index].input);
     await user.save();
@@ -156,6 +193,16 @@ const saveDive = async (index, userId, clubId, buddyIds, gearIds) => {
     await dive.save();
     dives[index].output = dive;
     return dive;
+};
+
+const saveGroup = async (index, myId, userIds) => {
+    groups[index].input.participants = userIds;
+    groups[index].input.messages[0].sender = myId;
+
+    const group = new GroupModel(groups[index].input);
+    await group.save();
+    groups[index].output = group;
+    return group;
 };
 
 const seedDatabase = async ({ resources = {} } = {}) => {
@@ -201,6 +248,22 @@ const seedDatabase = async ({ resources = {} } = {}) => {
         );
         await saveDive(2, users[0].output.id, null, [], []);
     }
+
+    // Example groups
+    if (resources.groups) {
+        await saveGroup(0, users[0].output.id, [
+            users[0].output.id,
+            users[1].output.id
+        ]);
+        await saveGroup(1, users[0].output.id, [
+            users[0].output.id,
+            users[1].output.id
+        ]);
+        await saveGroup(2, users[0].output.id, [
+            users[0].output.id,
+            users[1].output.id
+        ]);
+    }
 };
 
 module.exports = {
@@ -208,5 +271,6 @@ module.exports = {
     users,
     dives,
     clubs,
-    gear
+    gear,
+    groups
 };

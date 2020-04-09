@@ -96,6 +96,7 @@ type User {
     gear: [Gear]
     friends: [User]
     friendRequests: FriendRequests
+    groups: [Group]
 }
 
 type AuthPayload {

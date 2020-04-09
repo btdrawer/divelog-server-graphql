@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { USER, CLUB } = require("../constants/resources");
 
 const ClubSchema = new Schema({
     name: {
@@ -18,14 +19,14 @@ const ClubSchema = new Schema({
     managers: [
         {
             type: Schema.Types.ObjectId,
-            ref: "User",
+            ref: USER,
             required: true
         }
     ],
     members: [
         {
             type: Schema.Types.ObjectId,
-            ref: "User",
+            ref: USER,
             required: true
         }
     ],
@@ -35,4 +36,4 @@ const ClubSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model("Club", ClubSchema);
+module.exports = mongoose.model(CLUB, ClubSchema);

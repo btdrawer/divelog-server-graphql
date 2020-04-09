@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const { USER_ALREADY_IN_GROUP, NOT_FOUND } = require("../constants/errorCodes");
+const { USER, GROUP } = require("../constants/resources");
 
 const GroupSchema = new Schema({
     name: {
@@ -10,7 +11,7 @@ const GroupSchema = new Schema({
     participants: [
         {
             type: Schema.Types.ObjectId,
-            ref: "User"
+            ref: USER
         }
     ],
     messages: [
@@ -21,7 +22,7 @@ const GroupSchema = new Schema({
             },
             sender: {
                 type: Schema.Types.ObjectId,
-                ref: "User"
+                ref: USER
             }
         }
     ]
@@ -31,7 +32,9 @@ GroupSchema.methods.addUser = async function(user_id) {
     if (!this.participants.includes(user_id)) {
         this.participants.push(user_id);
         await this.save();
-    } else throw new Error(USER_ALREADY_IN_GROUP);
+    } else {
+        throw new Error(USER_ALREADY_IN_GROUP);
+    }
 };
 
 GroupSchema.methods.leave = async function(user_id) {
@@ -41,12 +44,14 @@ GroupSchema.methods.leave = async function(user_id) {
         if (this.participants[i].toString() === user_id) index = i;
     }
 
-    if (!index) throw new Error(NOT_FOUND);
+    if (!index) {
+        throw new Error(NOT_FOUND);
+    }
 
     this.participants[index] = undefined;
     await this.save();
 };
 
-const GroupModel = mongoose.model("Group", GroupSchema);
+const GroupModel = mongoose.model(GROUP, GroupSchema);
 
 module.exports = GroupModel;

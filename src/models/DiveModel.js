@@ -4,6 +4,7 @@ const {
     INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT,
     INVALID_ARGUMENT_DIVE_TIME_EXCEEDED
 } = require("../constants/errorCodes");
+const { USER, DIVE, CLUB, GEAR } = require("../constants/resources");
 const moment = require("moment");
 
 const DiveSchema = new Schema({
@@ -17,7 +18,7 @@ const DiveSchema = new Schema({
     description: String,
     club: {
         type: Schema.Types.ObjectId,
-        ref: "Club"
+        ref: CLUB
     },
     user: {
         type: Schema.Types.ObjectId,
@@ -27,13 +28,13 @@ const DiveSchema = new Schema({
     buddies: [
         {
             type: Schema.Types.ObjectId,
-            ref: "User"
+            ref: USER
         }
     ],
     gear: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Gear"
+            ref: GEAR
         }
     ],
     public: {
@@ -86,6 +87,6 @@ DiveSchema.pre("findOneAndUpdate", async function(next) {
     next();
 });
 
-const DiveModel = mongoose.model("Dive", DiveSchema);
+const DiveModel = mongoose.model(DIVE, DiveSchema);
 
 module.exports = DiveModel;

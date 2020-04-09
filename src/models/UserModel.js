@@ -4,6 +4,7 @@ const {
     EMAIL_EXISTS,
     INVALID_AUTH
 } = require("../constants/errorCodes");
+const { USER, DIVE, CLUB, GEAR } = require("../constants/resources");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 const { signJwt } = require("../authentication/authUtils");
@@ -32,46 +33,46 @@ const UserSchema = new Schema({
     dives: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Dive"
+            ref: DIVE
         }
     ],
     clubs: {
         manager: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "Club"
+                ref: CLUB
             }
         ],
         member: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "Club"
+                ref: CLUB
             }
         ]
     },
     gear: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Gear"
+            ref: GEAR
         }
     ],
     friends: [
         {
             type: Schema.Types.ObjectId,
-            ref: "User"
+            ref: USER
         }
     ],
     friendRequests: {
         inbox: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "User"
+                ref: USER
             }
         ],
         sent: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "User"
+                ref: USER
             }
         ]
     }
@@ -222,6 +223,6 @@ UserSchema.statics.unfriend = async (myId, friendId) => {
     return user;
 };
 
-const UserModel = mongoose.model("User", UserSchema);
+const UserModel = mongoose.model(USER, UserSchema);
 
 module.exports = UserModel;

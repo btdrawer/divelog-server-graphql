@@ -83,8 +83,8 @@ module.exports = {
         }
         return group;
     },
-    addGroupParticipant: (parent, { groupId, memberId }, { request }) =>
-        updateOperationTemplate({
+    addGroupParticipant: (parent, { groupId, memberId }, { request }) => {
+        return updateOperationTemplate({
             groupId,
             data: {
                 $push: {
@@ -92,7 +92,8 @@ module.exports = {
                 }
             },
             request
-        }),
+        });
+    },
     leaveGroup: (parent, { id }, { request }) => {
         const userId = getUserId(request);
         return updateOperationTemplate({

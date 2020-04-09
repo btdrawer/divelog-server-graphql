@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { USER, GEAR } = require("../constants/resources");
 
 const GearSchema = new Schema({
     name: {
@@ -20,8 +21,8 @@ const GearSchema = new Schema({
     },
     owner: {
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: USER
     }
 });
 
-module.exports = mongoose.model("Gear", GearSchema);
+module.exports = mongoose.model(GEAR, GearSchema);

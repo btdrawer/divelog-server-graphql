@@ -1,14 +1,16 @@
+const { combineResolvers } = require("graphql-resolvers");
+
 const DiveModel = require("../../models/DiveModel");
-const { getUserId } = require("../../authentication/authUtils");
-const removeFalseyProps = require("../../utils/removeFalseyProps");
-const formatQueryOptions = require("../../utils/formatQueryOptions");
+
+const { isAuthenticated } = require("../middleware");
+const { formatQueryOptions, removeFalseyProps } = require("../../utils");
 
 module.exports = {
-    dives: (parent, { userId, where, ...args }) => {
+    dives: async (parent, { userId, where, ...args }) => {
         if (where) {
             if (where.public) delete where.public;
         }
-        return DiveModel.find(
+        return await DiveModel.find(
             {
                 user: userId,
                 public: true,
@@ -20,17 +22,18 @@ module.exports = {
             formatQueryOptions(args)
         );
     },
-    myDives: (parent, { where, ...args }, { request }) => {
-        const userId = getUserId(request);
-        return DiveModel.find(
-            {
-                user: userId,
-                ...removeFalseyProps({
-                    ...where
-                })
-            },
-            null,
-            formatQueryOptions(args)
-        );
-    }
+    myDives: combineResolvers(
+        isAuthenticated,
+        async (parent, { where, ...args }, { authUserId }) =>
+            await DiveModel.find(
+                {
+                    user: authUserId,
+                    ...removeFalseyProps({
+                        ...where
+                    })
+                },
+                null,
+                formatQueryOptions(args)
+            )
+    )
 };

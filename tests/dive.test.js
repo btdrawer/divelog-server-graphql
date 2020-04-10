@@ -172,7 +172,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            userId: users[0].output.id,
+            id: users[0].output.id,
             limit: 2
         };
 
@@ -189,7 +189,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            userId: users[0].output.id,
+            id: users[0].output.id,
             skip: 2
         };
 
@@ -267,7 +267,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            diveId: dives[2].output.id,
+            id: dives[2].output.id,
             gearId: gear[0].output.id
         };
 
@@ -284,7 +284,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[1].token);
 
         const variables = {
-            diveId: dives[2].output.id,
+            id: dives[2].output.id,
             gearId: gear[0].output.id
         };
 
@@ -298,7 +298,7 @@ describe("Dives", () => {
 
     test("Should fail to add gear to another users dive if not logged in", async () => {
         const variables = {
-            diveId: dives[2].output.id,
+            id: dives[2].output.id,
             gearId: gear[0].output.id
         };
 
@@ -314,7 +314,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            diveId: dives[0].output.id,
+            id: dives[0].output.id,
             gearId: gear[0].output.id
         };
 
@@ -330,7 +330,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[1].token);
 
         const variables = {
-            diveId: dives[0].output.id,
+            id: dives[0].output.id,
             gearId: gear[0].output.id
         };
 
@@ -344,7 +344,7 @@ describe("Dives", () => {
 
     test("Should fail to remove gear from another users dive if not logged in", async () => {
         const variables = {
-            diveId: dives[0].output.id,
+            id: dives[0].output.id,
             gearId: gear[0].output.id
         };
 
@@ -360,7 +360,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            diveId: dives[2].output.id,
+            id: dives[2].output.id,
             buddyId: users[2].output.id
         };
 
@@ -377,7 +377,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[1].token);
 
         const variables = {
-            diveId: dives[2].output.id,
+            id: dives[2].output.id,
             buddyId: users[2].output.id
         };
 
@@ -391,7 +391,7 @@ describe("Dives", () => {
 
     test("Should fail to add buddy to another users dive if not logged in", async () => {
         const variables = {
-            diveId: dives[2].output.id,
+            id: dives[2].output.id,
             buddyId: users[2].output.id
         };
 
@@ -407,7 +407,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            diveId: dives[0].output.id,
+            id: dives[0].output.id,
             buddyId: users[1].output.id
         };
 
@@ -423,7 +423,7 @@ describe("Dives", () => {
         const authenticatedClient = getClient(users[2].token);
 
         const variables = {
-            diveId: dives[0].output.id,
+            id: dives[0].output.id,
             buddyId: users[1].output.id
         };
 
@@ -437,7 +437,7 @@ describe("Dives", () => {
 
     test("Should fail to add buddy to another users dive if not logged in", async () => {
         const variables = {
-            diveId: dives[0].output.id,
+            id: dives[0].output.id,
             buddyId: users[1].output.id
         };
 

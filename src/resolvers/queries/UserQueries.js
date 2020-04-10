@@ -1,11 +1,13 @@
+const { combineResolvers } = require("graphql-resolvers");
+
 const UserModel = require("../../models/UserModel");
-const { getUserId } = require("../../authentication/authUtils");
-const removeFalseyProps = require("../../utils/removeFalseyProps");
-const formatQueryOptions = require("../../utils/formatQueryOptions");
+
+const { isAuthenticated } = require("../middleware");
+const { formatQueryOptions, removeFalseyProps } = require("../../utils");
 
 module.exports = {
-    users: (parent, { where, ...args }) =>
-        UserModel.find(
+    users: async (parent, { where, ...args }) =>
+        await UserModel.find(
             {
                 ...removeFalseyProps({
                     ...where
@@ -14,10 +16,9 @@ module.exports = {
             null,
             formatQueryOptions(args)
         ),
-    me: (parent, args, { request }) => {
-        const userId = getUserId(request);
-        return UserModel.findOne({
-            _id: userId
-        });
-    }
+    me: combineResolvers(
+        isAuthenticated,
+        async (parent, args, { authUserId }) =>
+            await UserModel.findById(authUserId)
+    )
 };

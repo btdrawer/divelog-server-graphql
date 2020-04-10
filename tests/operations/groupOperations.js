@@ -83,8 +83,8 @@ exports.sendMessage = gql`
 `;
 
 exports.addGroupParticipant = gql`
-    mutation($groupId: ID!, $memberId: ID!) {
-        addGroupParticipant(groupId: $groupId, memberId: $memberId) {
+    mutation($id: ID!, $userId: ID!) {
+        addGroupParticipant(id: $id, userId: $userId) {
             id
             name
             participants {

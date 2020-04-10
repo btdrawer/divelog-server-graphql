@@ -266,8 +266,8 @@ describe("Groups", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            groupId: groups[0].output.id,
-            memberId: users[2].output.id
+            id: groups[0].output.id,
+            userId: users[2].output.id
         };
 
         const { data } = await authenticatedClient.mutate({
@@ -285,8 +285,8 @@ describe("Groups", () => {
         const authenticatedClient = getClient(users[2].token);
 
         const variables = {
-            groupId: groups[0].output.id,
-            memberId: users[2].output.id
+            id: groups[0].output.id,
+            userId: users[2].output.id
         };
 
         await expect(
@@ -299,8 +299,8 @@ describe("Groups", () => {
 
     test("Should fail to add group participant if not logged in", async () => {
         const variables = {
-            groupId: groups[0].output.id,
-            memberId: users[2].output.id
+            id: groups[0].output.id,
+            userId: users[2].output.id
         };
 
         await expect(

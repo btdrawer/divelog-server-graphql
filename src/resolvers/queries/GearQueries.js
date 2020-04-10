@@ -1,20 +1,24 @@
+const { combineResolvers } = require("graphql-resolvers");
+
 const GearModel = require("../../models/GearModel");
-const { getUserId } = require("../../authentication/authUtils");
-const removeFalseyProps = require("../../utils/removeFalseyProps");
-const formatQueryOptions = require("../../utils/formatQueryOptions");
+
+const { isAuthenticated } = require("../middleware");
+const { formatQueryOptions, removeFalseyProps } = require("../../utils");
 
 module.exports = {
-    gear: async (parent, { where, ...args }, { request }) => {
-        const userId = getUserId(request);
-        return GearModel.find(
-            {
-                owner: userId,
-                ...removeFalseyProps({
-                    ...where
-                })
-            },
-            null,
-            formatQueryOptions(args)
-        );
-    }
+    gear: combineResolvers(
+        isAuthenticated,
+        async (parent, { where, ...args }, { authUserId }) => {
+            return GearModel.find(
+                {
+                    owner: authUserId,
+                    ...removeFalseyProps({
+                        ...where
+                    })
+                },
+                null,
+                formatQueryOptions(args)
+            );
+        }
+    )
 };

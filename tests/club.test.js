@@ -222,7 +222,7 @@ describe("Clubs", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            clubId: clubs[0].output.id,
+            id: clubs[0].output.id,
             userId: users[1].output.id
         };
 
@@ -237,7 +237,7 @@ describe("Clubs", () => {
 
     test("Should fail to add club manager if not logged in", async () => {
         const variables = {
-            clubId: clubs[0].output.id,
+            id: clubs[0].output.id,
             userId: users[1].output.id
         };
 
@@ -253,7 +253,7 @@ describe("Clubs", () => {
         const authenticatedClient = getClient(users[1].token);
 
         const variables = {
-            clubId: clubs[0].output.id,
+            id: clubs[0].output.id,
             userId: users[2].output.id
         };
 
@@ -269,7 +269,7 @@ describe("Clubs", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            clubId: clubs[0].output.id,
+            id: clubs[0].output.id,
             userId: users[0].output.id
         };
 
@@ -285,8 +285,8 @@ describe("Clubs", () => {
         const authenticatedClient = getClient(users[1].token);
 
         const variables = {
-            clubId: clubs[1].output.id,
-            managerId: users[2].output.id
+            id: clubs[1].output.id,
+            userId: users[2].output.id
         };
 
         const { data } = await authenticatedClient.mutate({
@@ -302,8 +302,8 @@ describe("Clubs", () => {
 
     test("Should fail to remove club manager if not logged in", async () => {
         const variables = {
-            clubId: clubs[0].output.id,
-            managerId: users[1].output.id
+            id: clubs[0].output.id,
+            userId: users[1].output.id
         };
 
         await expect(
@@ -318,8 +318,8 @@ describe("Clubs", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            clubId: clubs[0].output.id,
-            managerId: users[1].output.id
+            id: clubs[0].output.id,
+            userId: users[1].output.id
         };
 
         await expect(
@@ -334,8 +334,8 @@ describe("Clubs", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            clubId: clubs[0].output.id,
-            managerId: users[1].output.id
+            id: clubs[0].output.id,
+            userId: users[1].output.id
         };
 
         await expect(
@@ -437,8 +437,8 @@ describe("Clubs", () => {
         const authenticatedClient = getClient(users[1].token);
 
         const variables = {
-            clubId: clubs[1].output.id,
-            memberId: users[0].output.id
+            id: clubs[1].output.id,
+            userId: users[0].output.id
         };
 
         const { data } = await authenticatedClient.mutate({
@@ -451,8 +451,8 @@ describe("Clubs", () => {
 
     test("Should fail to remove club member if not logged in", async () => {
         const variables = {
-            clubId: clubs[1].output.id,
-            memberId: users[0].output.id
+            id: clubs[1].output.id,
+            userId: users[0].output.id
         };
 
         await expect(
@@ -467,8 +467,8 @@ describe("Clubs", () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            clubId: clubs[1].output.id,
-            memberId: users[0].output.id
+            id: clubs[1].output.id,
+            userId: users[0].output.id
         };
 
         await expect(
@@ -483,8 +483,8 @@ describe("Clubs", () => {
         const authenticatedClient = getClient(users[2].token);
 
         const variables = {
-            clubId: clubs[0].output.id,
-            memberId: users[1].output.id
+            id: clubs[0].output.id,
+            userId: users[1].output.id
         };
 
         await expect(

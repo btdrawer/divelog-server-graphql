@@ -1,62 +1,45 @@
+const { combineResolvers } = require("graphql-resolvers");
+
 const GearModel = require("../../models/GearModel");
 const UserModel = require("../../models/UserModel");
-const { getUserId } = require("../../authentication/authUtils");
-const gearMiddleware = require("../../authentication/middleware/gearMiddleware");
-const { UPDATE, DELETE } = require("../../constants/methods");
+
+const { isAuthenticated, isGearOwner } = require("../middleware");
 
 module.exports = {
-    createGear: async (parent, { data }, { request }) => {
-        const userId = getUserId(request);
-        const gear = new GearModel({
-            ...data,
-            owner: userId
-        });
-        await gear.save();
-        await UserModel.findOneAndUpdate(
-            {
-                _id: userId
-            },
-            {
+    createGear: combineResolvers(
+        isAuthenticated,
+        async (parent, { data }, { authUserId }) => {
+            const gear = new GearModel({
+                ...data,
+                owner: authUserId
+            });
+            await gear.save();
+            await UserModel.findByIdAndUpdate(authUserId, {
                 $push: {
                     gear: gear.id
                 }
-            }
-        );
-        return gear;
-    },
-    updateGear: async (parent, { id, data }, { request }) => {
-        await gearMiddleware({
-            method: UPDATE,
-            gearId: id,
-            request
-        });
-        return GearModel.findOneAndUpdate(
-            {
-                _id: id
-            },
-            data,
-            { new: true }
-        );
-    },
-    deleteGear: async (parent, { id }, { request }) => {
-        const userId = getUserId(request);
-        await gearMiddleware({
-            method: DELETE,
-            gearId: id,
-            request
-        });
-        await UserModel.findOneAndUpdate(
-            {
-                _id: userId
-            },
-            {
+            });
+            return gear;
+        }
+    ),
+    updateGear: combineResolvers(
+        isAuthenticated,
+        isGearOwner,
+        async (parent, { id, data }) =>
+            await GearModel.findByIdAndUpdate(id, data, { new: true })
+    ),
+    deleteGear: combineResolvers(
+        isAuthenticated,
+        isGearOwner,
+        async (parent, { id }, { authUserId }) => {
+            await UserModel.findByIdAndUpdate(authUserId, {
                 $pull: {
                     gear: id
                 }
-            }
-        );
-        return GearModel.findOneAndDelete({
-            _id: id
-        });
-    }
+            });
+            return GearModel.findOneAndDelete({
+                _id: id
+            });
+        }
+    )
 };

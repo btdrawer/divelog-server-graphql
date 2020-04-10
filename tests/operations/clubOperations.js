@@ -64,8 +64,8 @@ exports.updateClub = gql`
 `;
 
 exports.addClubManager = gql`
-    mutation($clubId: ID!, $userId: ID!) {
-        addClubManager(clubId: $clubId, userId: $userId) {
+    mutation($id: ID!, $userId: ID!) {
+        addClubManager(id: $id, userId: $userId) {
             id
             name
             location
@@ -81,8 +81,8 @@ exports.addClubManager = gql`
 `;
 
 exports.removeClubManager = gql`
-    mutation($clubId: ID!, $managerId: ID!) {
-        removeClubManager(clubId: $clubId, managerId: $managerId) {
+    mutation($id: ID!, $userId: ID!) {
+        removeClubManager(id: $id, userId: $userId) {
             id
             name
             location
@@ -132,8 +132,8 @@ exports.leaveClub = gql`
 `;
 
 exports.removeClubMember = gql`
-    mutation($clubId: ID!, $memberId: ID!) {
-        removeClubMember(clubId: $clubId, memberId: $memberId) {
+    mutation($id: ID!, $userId: ID!) {
+        removeClubMember(id: $id, userId: $userId) {
             id
             name
             location

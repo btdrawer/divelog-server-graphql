@@ -56,19 +56,19 @@ type Mutation {
     # Dive
     createDive(data: CreateDiveInput!): Dive!
     updateDive(id: ID!, data: UpdateDiveInput!): Dive!
-    addGearToDive(diveId: ID!, gearId: ID!): Dive!
-    removeGearFromDive(diveId: ID!, gearId: ID!): Dive!
-    addBuddyToDive(diveId: ID!, buddyId: ID!): Dive!
-    removeBuddyFromDive(diveId: ID!, buddyId: ID!): Dive!
+    addGearToDive(id: ID!, gearId: ID!): Dive!
+    removeGearFromDive(id: ID!, gearId: ID!): Dive!
+    addBuddyToDive(id: ID!, buddyId: ID!): Dive!
+    removeBuddyFromDive(id: ID!, buddyId: ID!): Dive!
     deleteDive(id: ID!): Dive!
     # Club
     createClub(data: CreateClubInput!): Club!
     updateClub(id: ID!, data: UpdateClubInput): Club!
-    addClubManager(clubId: ID!, userId: ID!): Club!
-    removeClubManager(clubId: ID!, managerId: ID!): Club!
+    addClubManager(id: ID!, userId: ID!): Club!
+    removeClubManager(id: ID!, userId: ID!): Club!
     joinClub(id: ID!): Club!
     leaveClub(id: ID!): Club!
-    removeClubMember(clubId: ID!, memberId: ID!): Club!
+    removeClubMember(id: ID!, userId: ID!): Club!
     deleteClub(id: ID!): Club!
     # Gear
     createGear(data: GearInput!): Gear!
@@ -78,7 +78,7 @@ type Mutation {
     createGroup(data: CreateGroupInput!): Group!
     renameGroup(id: ID!, name: String!): Group!
     sendMessage(id: ID!, text: String!): Group!
-    addGroupParticipant(groupId: ID!, memberId: ID!): Group!
+    addGroupParticipant(id: ID!, userId: ID!): Group!
     leaveGroup(id: ID!): Group!
 }
 

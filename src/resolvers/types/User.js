@@ -1,13 +1,11 @@
-const { getUserId } = require("../../authentication/authUtils");
 const UserModel = require("../../models/UserModel");
 const DiveModel = require("../../models/DiveModel");
 const ClubModel = require("../../models/ClubModel");
 const GearModel = require("../../models/GearModel");
 
 module.exports = {
-    email: ({ id, email }, args, { request }) => {
-        const userId = getUserId(request, false, false);
-        if (userId && userId === id) {
+    email: ({ id, email }, args, { authUserId }) => {
+        if (authUserId && authUserId === id) {
             return email;
         }
         return undefined;
@@ -36,9 +34,8 @@ module.exports = {
             member
         };
     },
-    gear: ({ id, gear }, args, { request }) => {
-        const userId = getUserId(request, false, false);
-        if (userId && userId === id) {
+    gear: ({ id, gear }, args, { authUserId }) => {
+        if (authUserId && authUserId === id) {
             return GearModel.find({
                 _id: {
                     $in: gear
@@ -47,9 +44,8 @@ module.exports = {
         }
         return undefined;
     },
-    friends: ({ id, friends }, args, { request }) => {
-        const userId = getUserId(request, false, false);
-        if (userId && userId === id) {
+    friends: ({ id, friends }, args, { authUserId }) => {
+        if (authUserId && authUserId === id) {
             return UserModel.find({
                 _id: {
                     $in: friends
@@ -58,9 +54,8 @@ module.exports = {
         }
         return undefined;
     },
-    friendRequests: async ({ id, friendRequests }, args, { request }) => {
-        const userId = getUserId(request, false, false);
-        if (userId && userId === id) {
+    friendRequests: async ({ id, friendRequests }, args, { authUserId }) => {
+        if (authUserId && authUserId === id) {
             const [inbox, sent] = await Promise.all([
                 UserModel.find({
                     _id: {

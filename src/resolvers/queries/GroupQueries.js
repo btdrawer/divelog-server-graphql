@@ -1,18 +1,21 @@
+const { combineResolvers } = require("graphql-resolvers");
+
 const GroupModel = require("../../models/GroupModel");
-const { getUserId } = require("../../authentication/authUtils");
-const formatQueryOptions = require("../../utils/formatQueryOptions");
-const removeFalseyProps = require("../../utils/removeFalseyProps");
+
+const { isAuthenticated } = require("../middleware");
+const { formatQueryOptions, removeFalseyProps } = require("../../utils");
 
 module.exports = {
-    myGroups: (parent, args, { request }) => {
-        const userId = getUserId(request);
-        return GroupModel.find(
-            {
-                participants: userId,
-                ...removeFalseyProps(args.where)
-            },
-            null,
-            formatQueryOptions(args)
-        );
-    }
+    myGroups: combineResolvers(
+        isAuthenticated,
+        async (parent, args, { authUserId }) =>
+            await GroupModel.find(
+                {
+                    participants: authUserId,
+                    ...removeFalseyProps(args.where)
+                },
+                null,
+                formatQueryOptions(args)
+            )
+    )
 };

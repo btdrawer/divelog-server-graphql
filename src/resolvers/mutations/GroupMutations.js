@@ -1,109 +1,110 @@
+const { combineResolvers } = require("graphql-resolvers");
+
 const GroupModel = require("../../models/GroupModel");
-const { getUserId } = require("../../authentication/authUtils");
-const groupMiddleware = require("../../authentication/middleware/groupMiddleware");
 const {
     newMessageSubscriptionKey
 } = require("../../constants/subscriptionKeys");
-
-const updateOperationTemplate = async ({ groupId, data, request }) => {
-    await groupMiddleware({
-        groupId,
-        request
-    });
-    return GroupModel.findOneAndUpdate(
-        {
-            _id: groupId
-        },
-        data,
-        { new: true }
-    );
-};
+const { isAuthenticated, isGroupParticipant } = require("../middleware");
 
 module.exports = {
-    createGroup: async (parent, { data }, { request }) => {
-        const myId = getUserId(request);
-        const { name, participants, text } = data;
-        participants.push(myId);
-        const group = new GroupModel({
-            name,
-            participants,
-            messages: [
-                {
-                    text,
-                    sender: myId
-                }
-            ]
-        });
-        await group.save();
-        return group;
-    },
-    renameGroup: (parent, { id, name }, { request }) =>
-        updateOperationTemplate({
-            groupId: id,
-            data: {
-                name
-            },
-            request
-        }),
-    sendMessage: async (parent, { id, text }, { request, pubsub }) => {
-        const userId = getUserId(request);
-        const group = await updateOperationTemplate({
-            groupId: id,
-            data: {
-                $push: {
-                    messages: {
+    createGroup: combineResolvers(
+        isAuthenticated,
+        async (parent, { data }, { authUserId }) => {
+            const { name, participants, text } = data;
+            participants.push(authUserId);
+            const group = new GroupModel({
+                name,
+                participants,
+                messages: [
+                    {
                         text,
-                        sender: userId
+                        sender: authUserId
                     }
-                }
-            },
-            request
-        });
-        if (pubsub) {
-            const message = group.messages[group.messages.length - 1];
-            pubsub.publish(newMessageSubscriptionKey(id), {
-                newMessage: {
-                    message: {
-                        id: message._id,
-                        text: message.text,
-                        sender: message.sender
-                    },
-                    group: {
-                        id: group._id,
-                        name: group.name,
-                        participants: group.participants,
-                        messages: group.messages.map(message => ({
+                ]
+            });
+            await group.save();
+            return group;
+        }
+    ),
+    renameGroup: combineResolvers(
+        isAuthenticated,
+        isGroupParticipant,
+        (parent, { id, name }) =>
+            GroupModel.findByIdAndUpdate(
+                id,
+                {
+                    name
+                },
+                { new: true }
+            )
+    ),
+    sendMessage: combineResolvers(
+        isAuthenticated,
+        isGroupParticipant,
+        async (parent, { id, text }, { authUserId, pubsub }) => {
+            const group = await GroupModel.findByIdAndUpdate(
+                id,
+                {
+                    $push: {
+                        messages: {
+                            text,
+                            sender: authUserId
+                        }
+                    }
+                },
+                { new: true }
+            );
+            if (pubsub) {
+                const message = group.messages[group.messages.length - 1];
+                pubsub.publish(newMessageSubscriptionKey(id), {
+                    newMessage: {
+                        message: {
                             id: message._id,
                             text: message.text,
                             sender: message.sender
-                        }))
+                        },
+                        group: {
+                            id: group._id,
+                            name: group.name,
+                            participants: group.participants,
+                            messages: group.messages.map(message => ({
+                                id: message._id,
+                                text: message.text,
+                                sender: message.sender
+                            }))
+                        }
                     }
-                }
-            });
+                });
+            }
+            return group;
         }
-        return group;
-    },
-    addGroupParticipant: (parent, { groupId, memberId }, { request }) => {
-        return updateOperationTemplate({
-            groupId,
-            data: {
-                $push: {
-                    participants: memberId
-                }
-            },
-            request
-        });
-    },
-    leaveGroup: (parent, { id }, { request }) => {
-        const userId = getUserId(request);
-        return updateOperationTemplate({
-            groupId: id,
-            data: {
-                $pull: {
-                    participants: userId
-                }
-            },
-            request
-        });
-    }
+    ),
+    addGroupParticipant: combineResolvers(
+        isAuthenticated,
+        isGroupParticipant,
+        async (parent, { id, userId }) =>
+            await GroupModel.findByIdAndUpdate(
+                id,
+                {
+                    $push: {
+                        participants: userId
+                    }
+                },
+                { new: true }
+            )
+    ),
+    leaveGroup: combineResolvers(
+        isAuthenticated,
+        isGroupParticipant,
+        async (parent, { id }, { authUserId }) =>
+            await GroupModel.findByIdAndUpdate(
+                id,
+                {
+                    $pull: {
+                        participants: authUserId
+                    }
+                },
+                { new: true }
+            )
+    )
 };

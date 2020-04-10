@@ -1,110 +1,100 @@
+const { combineResolvers } = require("graphql-resolvers");
+
 const DiveModel = require("../../models/DiveModel");
 const UserModel = require("../../models/UserModel");
-const { getUserId } = require("../../authentication/authUtils");
-const diveMiddleware = require("../../authentication/middleware/diveMiddleware");
-const { UPDATE, DELETE } = require("../../constants/methods");
 
-const updateOperationTemplate = async ({ diveId, data, request }) => {
-    await diveMiddleware({
-        method: UPDATE,
-        diveId,
-        request
-    });
-    return DiveModel.findOneAndUpdate(
-        {
-            _id: diveId
-        },
-        data,
-        { new: true }
-    );
-};
+const { isAuthenticated, isDiveUser } = require("../middleware");
 
 module.exports = {
-    createDive: async (parent, { data }, { request }) => {
-        const userId = getUserId(request);
-        const dive = new DiveModel({
-            ...data,
-            user: userId
-        });
-        await dive.save();
-        await UserModel.findOneAndUpdate(
-            {
-                _id: userId
-            },
-            {
+    createDive: combineResolvers(
+        isAuthenticated,
+        async (parent, { data }, { authUserId }) => {
+            const dive = new DiveModel({
+                ...data,
+                user: authUserId
+            });
+            await dive.save();
+            await UserModel.findByIdAndUpdate(authUserId, {
                 $push: {
                     dives: dive.id
                 }
-            }
-        );
-        return dive;
-    },
-    updateDive: (parent, { id, data }, { request }) =>
-        updateOperationTemplate({
-            diveId: id,
-            data,
-            request
-        }),
-    addGearToDive: (parent, { diveId, gearId }, { request }) =>
-        updateOperationTemplate({
-            diveId,
-            data: {
-                $push: {
-                    gear: gearId
-                }
-            },
-            request
-        }),
-    removeGearFromDive: (parent, { diveId, gearId }, { request }) =>
-        updateOperationTemplate({
-            diveId,
-            data: {
-                $pull: {
-                    gear: gearId
-                }
-            },
-            request
-        }),
-    addBuddyToDive: (parent, { diveId, buddyId }, { request }) =>
-        updateOperationTemplate({
-            diveId,
-            data: {
-                $push: {
-                    buddies: buddyId
-                }
-            },
-            request
-        }),
-    removeBuddyFromDive: (parent, { diveId, buddyId }, { request }) =>
-        updateOperationTemplate({
-            diveId,
-            data: {
-                $pull: {
-                    buddies: buddyId
-                }
-            },
-            request
-        }),
-    deleteDive: async (parent, { id }, { request }) => {
-        const userId = getUserId(request);
-        await diveMiddleware({
-            method: DELETE,
-            diveId: id,
-            request
-        });
-        const dive = await DiveModel.findOneAndDelete({
-            _id: id
-        });
-        await UserModel.findOneAndUpdate(
-            {
-                _id: userId
-            },
-            {
+            });
+            return dive;
+        }
+    ),
+    updateDive: combineResolvers(
+        isAuthenticated,
+        isDiveUser,
+        async (parent, { id, data }) =>
+            await DiveModel.findByIdAndUpdate(id, data, { new: true })
+    ),
+    addGearToDive: combineResolvers(
+        isAuthenticated,
+        isDiveUser,
+        async (parent, { id, gearId }) =>
+            await DiveModel.findByIdAndUpdate(
+                id,
+                {
+                    $push: {
+                        gear: gearId
+                    }
+                },
+                { new: true }
+            )
+    ),
+    removeGearFromDive: combineResolvers(
+        isAuthenticated,
+        isDiveUser,
+        async (parent, { id, gearId }) =>
+            await DiveModel.findByIdAndUpdate(
+                id,
+                {
+                    $pull: {
+                        gear: gearId
+                    }
+                },
+                { new: true }
+            )
+    ),
+    addBuddyToDive: combineResolvers(
+        isAuthenticated,
+        isDiveUser,
+        async (parent, { id, buddyId }) =>
+            await DiveModel.findByIdAndUpdate(
+                id,
+                {
+                    $push: {
+                        buddies: buddyId
+                    }
+                },
+                { new: true }
+            )
+    ),
+    removeBuddyFromDive: combineResolvers(
+        isAuthenticated,
+        isDiveUser,
+        async (parent, { id, buddyId }) =>
+            await DiveModel.findByIdAndUpdate(
+                id,
+                {
+                    $pull: {
+                        buddies: buddyId
+                    }
+                },
+                { new: true }
+            )
+    ),
+    deleteDive: combineResolvers(
+        isAuthenticated,
+        isDiveUser,
+        async (parent, { id }, { authUserId }) => {
+            const dive = await DiveModel.findByIdAndDelete(id);
+            await UserModel.findByIdAndUpdate(authUserId, {
                 $pull: {
                     dives: dive.id
                 }
-            }
-        );
-        return dive;
-    }
+            });
+            return dive;
+        }
+    )
 };

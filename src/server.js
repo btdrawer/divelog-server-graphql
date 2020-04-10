@@ -2,6 +2,8 @@ const { ApolloServer } = require("apollo-server");
 const { importSchema } = require("graphql-import");
 const { makeExecutableSchema } = require("graphql-tools");
 
+const { getUserId } = require("./utils/authUtils");
+
 const Query = require("./resolvers/Query");
 const Mutation = require("./resolvers/Mutation");
 const Subscription = require("./resolvers/Subscription");
@@ -28,7 +30,7 @@ module.exports = ({ context = {} } = {}) =>
     new ApolloServer({
         schema: executableSchema,
         context: request => ({
-            request,
+            authUserId: getUserId(request),
             ...context
         })
     });

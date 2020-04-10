@@ -7,7 +7,7 @@ const {
 const { USER, DIVE, CLUB, GEAR } = require("../constants/resources");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
-const { signJwt } = require("../authentication/authUtils");
+const { signJwt } = require("../utils/authUtils");
 
 const UserSchema = new Schema({
     name: {

@@ -1,6 +1,5 @@
 const ClubModel = require("../../models/ClubModel");
-const removeFalseyProps = require("../../utils/removeFalseyProps");
-const formatQueryOptions = require("../../utils/formatQueryOptions");
+const { formatQueryOptions, removeFalseyProps } = require("../../utils");
 
 module.exports = {
     clubs: (parent, { where, ...args }) =>

@@ -125,6 +125,35 @@ exports.getMyDives = gql`
     }
 `;
 
+exports.getDive = gql`
+    query($id: ID!) {
+        dive(id: $id) {
+            id
+            timeIn
+            timeOut
+            bottomTime
+            safetyStopTime
+            diveTime
+            maxDepth
+            location
+            description
+            club {
+                id
+            }
+            user {
+                id
+            }
+            buddies {
+                id
+            }
+            gear {
+                id
+            }
+            public
+        }
+    }
+`;
+
 exports.updateDive = gql`
     mutation($id: ID!, $data: UpdateDiveInput!) {
         updateDive(id: $id, data: $data) {

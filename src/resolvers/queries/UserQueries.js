@@ -11,6 +11,7 @@ module.exports = {
             model: UserModel,
             args
         }),
+    user: async (parent, { id }) => await UserModel.findById(id),
     me: combineResolvers(
         isAuthenticated,
         async (parent, args, { authUserId }) =>

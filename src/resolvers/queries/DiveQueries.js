@@ -2,7 +2,7 @@ const { combineResolvers } = require("graphql-resolvers");
 
 const DiveModel = require("../../models/DiveModel");
 
-const { isAuthenticated } = require("../middleware");
+const { isAuthenticated, isUserOrDiveIsPublic } = require("../middleware");
 const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
@@ -29,5 +29,9 @@ module.exports = {
                     user: authUserId
                 }
             })
+    ),
+    dive: combineResolvers(
+        isUserOrDiveIsPublic,
+        async (parent, { id }) => await DiveModel.findById(id)
     )
 };

@@ -2,7 +2,7 @@ const { combineResolvers } = require("graphql-resolvers");
 
 const GearModel = require("../../models/GearModel");
 
-const { isAuthenticated } = require("../middleware");
+const { isAuthenticated, isGearOwner } = require("../middleware");
 const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
@@ -16,5 +16,10 @@ module.exports = {
                     owner: authUserId
                 }
             })
+    ),
+    gearById: combineResolvers(
+        isAuthenticated,
+        isGearOwner,
+        async (parent, { id }) => await GearModel.findById(id)
     )
 };

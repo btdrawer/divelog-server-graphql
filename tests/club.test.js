@@ -2,6 +2,7 @@ const { seedDatabase, users, clubs } = require("./utils/seedDatabase");
 const {
     createClub,
     getClubs,
+    getClub,
     updateClub,
     addClubManager,
     removeClubManager,
@@ -83,24 +84,20 @@ describe("Clubs", () => {
         expect(data.clubs.data[0].managers[0].id).toEqual(users[0].output.id);
     });
 
-    test("Should return one club by ID", async () => {
+    test("Should return club by ID", async () => {
         const variables = {
-            where: {
-                id: clubs[0].output.id
-            }
+            id: clubs[0].output.id
         };
 
         const { data } = await client.query({
-            query: getClubs,
+            query: getClub,
             variables
         });
 
-        expect(data.clubs.data.length).toEqual(1);
-
-        expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
-        expect(data.clubs.data[0].location).toEqual(clubs[0].input.location);
-        expect(data.clubs.data[0].website).toEqual(clubs[0].input.website);
-        expect(data.clubs.data[0].managers[0].id).toEqual(users[0].output.id);
+        expect(data.club.name).toEqual(clubs[0].input.name);
+        expect(data.club.location).toEqual(clubs[0].input.location);
+        expect(data.club.website).toEqual(clubs[0].input.website);
+        expect(data.club.managers[0].id).toEqual(users[0].output.id);
     });
 
     test("Should return one club by other property", async () => {

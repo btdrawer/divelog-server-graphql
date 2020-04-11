@@ -2,6 +2,7 @@ const { seedDatabase, users, groups } = require("./utils/seedDatabase");
 const {
     createGroup,
     getMyGroups,
+    getGroup,
     renameGroup,
     sendMessage,
     addGroupParticipant,
@@ -80,22 +81,19 @@ describe("Groups", () => {
         expect(data.myGroups.data[0].id).toEqual(groups[0].output.id);
     });
 
-    test("Should filter groups by ID", async () => {
+    test("Should get group by ID", async () => {
         const authenticatedClient = getClient(users[0].token);
 
         const variables = {
-            where: {
-                id: groups[0].output.id
-            }
+            id: groups[0].output.id
         };
 
         const { data } = await authenticatedClient.query({
-            query: getMyGroups,
+            query: getGroup,
             variables
         });
 
-        expect(data.myGroups.data.length).toEqual(1);
-        expect(data.myGroups.data[0].id).toEqual(groups[0].output.id);
+        expect(data.group.id).toEqual(groups[0].output.id);
     });
 
     test("Should filter groups by name", async () => {

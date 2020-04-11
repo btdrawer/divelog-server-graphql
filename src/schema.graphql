@@ -6,6 +6,8 @@ type Query {
         limit: Int
         cursor: String
     ): UserList!
+    user(id: ID!): User!
+    me: User!
     dives(
         userId: ID!
         where: DiveWhereInput
@@ -21,6 +23,7 @@ type Query {
         limit: Int
         cursor: String
     ): DiveList!
+    dive(id: ID!): Dive!
     clubs(
         where: ClubWhereInput
         sortBy: ClubSortEnum
@@ -28,6 +31,7 @@ type Query {
         limit: Int
         cursor: String
     ): ClubList!
+    club(id: ID!): Club!
     gear(
         where: GearWhereInput
         sortBy: GearSortEnum
@@ -35,6 +39,7 @@ type Query {
         limit: Int
         cursor: String
     ): GearList!
+    gearById(id: ID!): Gear!
     myGroups(
         where: GroupWhereInput
         sortBy: GroupSortEnum
@@ -42,7 +47,7 @@ type Query {
         limit: Int
         cursor: String
     ): GroupList!
-    me: User!
+    group(id: ID!): Group!
 }
 
 type Mutation {

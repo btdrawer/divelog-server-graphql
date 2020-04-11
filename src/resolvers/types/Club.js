@@ -1,16 +1,10 @@
-const UserModel = require("../../models/UserModel");
-
 module.exports = {
-    managers: ({ managers }) =>
-        UserModel.find({
-            _id: {
-                $in: managers
-            }
-        }),
-    members: ({ members }) =>
-        UserModel.find({
-            _id: {
-                $in: members
-            }
-        })
+    managers: async ({ managers }, args, { loaders }) =>
+        managers.map(
+            async manager => await loaders.userLoader.load(manager.toString())
+        ),
+    members: ({ members }, args, { loaders }) =>
+        members.map(
+            async member => await loaders.userLoader.load(member.toString())
+        )
 };

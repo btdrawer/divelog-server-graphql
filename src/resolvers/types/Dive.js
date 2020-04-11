@@ -1,26 +1,14 @@
-const UserModel = require("../../models/UserModel");
-const ClubModel = require("../../models/ClubModel");
-const GearModel = require("../../models/GearModel");
-
 module.exports = {
-    club: ({ club }) =>
-        ClubModel.findOne({
-            _id: club
-        }),
-    user: ({ user }) =>
-        UserModel.findOne({
-            _id: user
-        }),
-    buddies: ({ buddies }) =>
-        UserModel.find({
-            _id: {
-                $in: buddies
-            }
-        }),
-    gear: ({ gear }) =>
-        GearModel.find({
-            _id: {
-                $in: gear
-            }
-        })
+    club: async ({ club }, args, { loaders }) =>
+        club ? await loaders.clubLoader.load(club.toString()) : null,
+    user: async ({ user }, args, { loaders }) =>
+        await loaders.userLoader.load(user.toString()),
+    buddies: async ({ buddies }, args, { loaders }) =>
+        buddies.map(
+            async buddy => await loaders.userLoader.load(buddy.toString())
+        ),
+    gear: async ({ gear }, args, { loaders }) =>
+        gear.map(
+            async gearId => await loaders.gearLoader.load(gearId.toString())
+        )
 };

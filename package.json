@@ -17,6 +17,7 @@
     "dependencies": {
         "apollo-server": "^2.11.0",
         "bcrypt": "^4.0.1",
+        "dataloader": "^2.0.0",
         "env-cmd": "^10.0.1",
         "graphql-import": "^1.0.1",
         "graphql-redis-subscriptions": "^2.2.1",

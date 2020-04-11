@@ -23,24 +23,30 @@ exports.getClubs = gql`
         $sortBy: ClubSortEnum
         $sortOrder: SortOrderEnum
         $limit: Int
-        $skip: Int
+        $cursor: String
     ) {
         clubs(
             where: $where
             sortBy: $sortBy
             sortOrder: $sortOrder
             limit: $limit
-            skip: $skip
+            cursor: $cursor
         ) {
-            id
-            name
-            location
-            website
-            managers {
+            data {
                 id
+                name
+                location
+                website
+                managers {
+                    id
+                }
+                members {
+                    id
+                }
             }
-            members {
-                id
+            pageInfo {
+                hasNextPage
+                cursor
             }
         }
     }

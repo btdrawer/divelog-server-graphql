@@ -85,7 +85,6 @@ const clubs = [
         input: {
             name: "A",
             location: "B",
-            description: "C",
             website: "example.com"
         },
         output: undefined
@@ -94,7 +93,6 @@ const clubs = [
         input: {
             name: "X",
             location: "Y",
-            description: "Z",
             website: "example.co.uk"
         },
         output: undefined

@@ -1,13 +1,10 @@
 const ClubModel = require("../../models/ClubModel");
-const { formatQueryOptions, removeFalseyProps } = require("../../utils");
+const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
-    clubs: (parent, { where, ...args }) =>
-        ClubModel.find(
-            removeFalseyProps({
-                ...where
-            }),
-            null,
-            formatQueryOptions(args)
-        )
+    clubs: async (parent, args) =>
+        runListQuery({
+            model: ClubModel,
+            args
+        })
 };

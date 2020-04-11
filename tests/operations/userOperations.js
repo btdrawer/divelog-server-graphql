@@ -34,19 +34,25 @@ exports.getUsers = gql`
         $sortBy: UserSortEnum
         $sortOrder: SortOrderEnum
         $limit: Int
-        $skip: Int
+        $cursor: String
     ) {
         users(
             where: $where
             sortBy: $sortBy
             sortOrder: $sortOrder
             limit: $limit
-            skip: $skip
+            cursor: $cursor
         ) {
-            id
-            name
-            username
-            email
+            data {
+                id
+                name
+                username
+                email
+            }
+            pageInfo {
+                hasNextPage
+                cursor
+            }
         }
     }
 `;

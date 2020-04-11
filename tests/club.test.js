@@ -75,12 +75,12 @@ describe("Clubs", () => {
             query: getClubs
         });
 
-        expect(data.clubs.length).toEqual(2);
+        expect(data.clubs.data.length).toEqual(2);
 
-        expect(data.clubs[0].name).toEqual(clubs[0].input.name);
-        expect(data.clubs[0].location).toEqual(clubs[0].input.location);
-        expect(data.clubs[0].website).toEqual(clubs[0].input.website);
-        expect(data.clubs[0].managers[0].id).toEqual(users[0].output.id);
+        expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
+        expect(data.clubs.data[0].location).toEqual(clubs[0].input.location);
+        expect(data.clubs.data[0].website).toEqual(clubs[0].input.website);
+        expect(data.clubs.data[0].managers[0].id).toEqual(users[0].output.id);
     });
 
     test("Should return one club by ID", async () => {
@@ -95,12 +95,12 @@ describe("Clubs", () => {
             variables
         });
 
-        expect(data.clubs.length).toEqual(1);
+        expect(data.clubs.data.length).toEqual(1);
 
-        expect(data.clubs[0].name).toEqual(clubs[0].input.name);
-        expect(data.clubs[0].location).toEqual(clubs[0].input.location);
-        expect(data.clubs[0].website).toEqual(clubs[0].input.website);
-        expect(data.clubs[0].managers[0].id).toEqual(users[0].output.id);
+        expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
+        expect(data.clubs.data[0].location).toEqual(clubs[0].input.location);
+        expect(data.clubs.data[0].website).toEqual(clubs[0].input.website);
+        expect(data.clubs.data[0].managers[0].id).toEqual(users[0].output.id);
     });
 
     test("Should return one club by other property", async () => {
@@ -115,12 +115,12 @@ describe("Clubs", () => {
             variables
         });
 
-        expect(data.clubs.length).toEqual(1);
+        expect(data.clubs.data.length).toEqual(1);
 
-        expect(data.clubs[0].name).toEqual(clubs[0].input.name);
-        expect(data.clubs[0].location).toEqual(clubs[0].input.location);
-        expect(data.clubs[0].website).toEqual(clubs[0].input.website);
-        expect(data.clubs[0].managers[0].id).toEqual(users[0].output.id);
+        expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
+        expect(data.clubs.data[0].location).toEqual(clubs[0].input.location);
+        expect(data.clubs.data[0].website).toEqual(clubs[0].input.website);
+        expect(data.clubs.data[0].managers[0].id).toEqual(users[0].output.id);
     });
 
     test("Should sort results", async () => {
@@ -134,8 +134,8 @@ describe("Clubs", () => {
             variables
         });
 
-        expect(data.clubs.length).toEqual(2);
-        expect(data.clubs[0].name).toEqual(clubs[1].input.name);
+        expect(data.clubs.data.length).toEqual(2);
+        expect(data.clubs.data[0].name).toEqual(clubs[1].input.name);
     });
 
     test("Should limit results", async () => {
@@ -148,22 +148,8 @@ describe("Clubs", () => {
             variables
         });
 
-        expect(data.clubs.length).toEqual(1);
-        expect(data.clubs[0].name).toEqual(clubs[0].input.name);
-    });
-
-    test("Should skip results", async () => {
-        const variables = {
-            skip: 1
-        };
-
-        const { data } = await client.query({
-            query: getClubs,
-            variables
-        });
-
-        expect(data.clubs.length).toEqual(1);
-        expect(data.clubs[0].name).toEqual(clubs[1].input.name);
+        expect(data.clubs.data.length).toEqual(1);
+        expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
     });
 
     test("Should update club", async () => {

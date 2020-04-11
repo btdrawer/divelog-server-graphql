@@ -3,37 +3,31 @@ const { combineResolvers } = require("graphql-resolvers");
 const DiveModel = require("../../models/DiveModel");
 
 const { isAuthenticated } = require("../middleware");
-const { formatQueryOptions, removeFalseyProps } = require("../../utils");
+const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
-    dives: async (parent, { userId, where, ...args }) => {
-        if (where) {
-            if (where.public) delete where.public;
+    dives: async (parent, { userId, ...args }) => {
+        if (args.where) {
+            if (args.where.public) delete args.where.public;
         }
-        return await DiveModel.find(
-            {
+        return await runListQuery({
+            model: DiveModel,
+            args,
+            requiredArgs: {
                 user: userId,
-                public: true,
-                ...removeFalseyProps({
-                    ...where
-                })
-            },
-            null,
-            formatQueryOptions(args)
-        );
+                public: true
+            }
+        });
     },
     myDives: combineResolvers(
         isAuthenticated,
-        async (parent, { where, ...args }, { authUserId }) =>
-            await DiveModel.find(
-                {
-                    user: authUserId,
-                    ...removeFalseyProps({
-                        ...where
-                    })
-                },
-                null,
-                formatQueryOptions(args)
-            )
+        async (parent, args, { authUserId }) =>
+            await runListQuery({
+                model: DiveModel,
+                args,
+                requiredArgs: {
+                    user: authUserId
+                }
+            })
     )
 };

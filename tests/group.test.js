@@ -76,8 +76,8 @@ describe("Groups", () => {
             query: getMyGroups
         });
 
-        expect(data.myGroups.length).toEqual(3);
-        expect(data.myGroups[0].id).toEqual(groups[0].output.id);
+        expect(data.myGroups.data.length).toEqual(3);
+        expect(data.myGroups.data[0].id).toEqual(groups[0].output.id);
     });
 
     test("Should filter groups by ID", async () => {
@@ -94,8 +94,8 @@ describe("Groups", () => {
             variables
         });
 
-        expect(data.myGroups.length).toEqual(1);
-        expect(data.myGroups[0].id).toEqual(groups[0].output.id);
+        expect(data.myGroups.data.length).toEqual(1);
+        expect(data.myGroups.data[0].id).toEqual(groups[0].output.id);
     });
 
     test("Should filter groups by name", async () => {
@@ -112,9 +112,9 @@ describe("Groups", () => {
             variables
         });
 
-        expect(data.myGroups.length).toEqual(1);
-        expect(data.myGroups[0].id).toEqual(groups[2].output.id);
-        expect(data.myGroups[0].name).toEqual(groups[2].output.name);
+        expect(data.myGroups.data.length).toEqual(1);
+        expect(data.myGroups.data[0].id).toEqual(groups[2].output.id);
+        expect(data.myGroups.data[0].name).toEqual(groups[2].output.name);
     });
 
     test("Should sort results", async () => {
@@ -130,8 +130,8 @@ describe("Groups", () => {
             variables
         });
 
-        expect(data.myGroups.length).toEqual(3);
-        expect(data.myGroups[0].id).toEqual(groups[2].output.id);
+        expect(data.myGroups.data.length).toEqual(3);
+        expect(data.myGroups.data[0].id).toEqual(groups[2].output.id);
     });
 
     test("Should limit results", async () => {
@@ -146,24 +146,8 @@ describe("Groups", () => {
             variables
         });
 
-        expect(data.myGroups.length).toEqual(2);
-        expect(data.myGroups[0].id).toEqual(groups[0].output.id);
-    });
-
-    test("Should skip results", async () => {
-        const authenticatedClient = getClient(users[0].token);
-
-        const variables = {
-            skip: 2
-        };
-
-        const { data } = await authenticatedClient.query({
-            query: getMyGroups,
-            variables
-        });
-
-        expect(data.myGroups.length).toEqual(1);
-        expect(data.myGroups[0].id).toEqual(groups[2].output.id);
+        expect(data.myGroups.data.length).toEqual(2);
+        expect(data.myGroups.data[0].id).toEqual(groups[0].output.id);
     });
 
     test("Should rename group", async () => {

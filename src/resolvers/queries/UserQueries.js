@@ -6,15 +6,13 @@ const { isAuthenticated } = require("../middleware");
 const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
-    users: async (parent, args) =>
-        await runListQuery({
+    users: (parent, args) =>
+        runListQuery({
             model: UserModel,
             args
         }),
-    user: async (parent, { id }) => await UserModel.findById(id),
-    me: combineResolvers(
-        isAuthenticated,
-        async (parent, args, { authUserId }) =>
-            await UserModel.findById(authUserId)
+    user: (parent, { id }) => UserModel.findById(id),
+    me: combineResolvers(isAuthenticated, (parent, args, { authUserId }) =>
+        UserModel.findById(authUserId)
     )
 };

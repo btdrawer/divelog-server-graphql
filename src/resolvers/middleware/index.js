@@ -8,7 +8,7 @@ const groupMiddleware = require("./groupMiddleware");
 const { INVALID_AUTH } = require("../../constants/errorCodes");
 
 module.exports = {
-    isAuthenticated: async (parent, args, { authUserId }) => {
+    isAuthenticated: (parent, args, { authUserId }) => {
         if (!authUserId) {
             throw new Error(INVALID_AUTH);
         }

@@ -1,5 +1,5 @@
 module.exports = {
-    managers: async ({ managers }, args, { loaders }) =>
+    managers: ({ managers }, args, { loaders }) =>
         managers.map(
             async manager => await loaders.userLoader.load(manager.toString())
         ),

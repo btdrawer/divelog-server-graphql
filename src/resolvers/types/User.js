@@ -3,7 +3,7 @@ const ClubModel = require("../../models/ClubModel");
 module.exports = {
     email: ({ id, email }, args, { authUserId }) =>
         authUserId && authUserId === id ? email : null,
-    dives: async ({ dives }, args, { loaders }) =>
+    dives: ({ dives }, args, { loaders }) =>
         dives.map(async dive => await loaders.diveLoader.load(dive.toString())),
     clubs: async ({ clubs }) => {
         const [manager, member] = await Promise.all([
@@ -23,7 +23,7 @@ module.exports = {
             member
         };
     },
-    gear: async ({ id, gear }, args, { authUserId, loaders }) => {
+    gear: ({ id, gear }, args, { authUserId, loaders }) => {
         if (authUserId && authUserId === id) {
             return gear.map(async gearId =>
                 loaders.gearLoader.load(gearId.toString())

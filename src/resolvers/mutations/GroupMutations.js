@@ -82,8 +82,8 @@ module.exports = {
     addGroupParticipant: combineResolvers(
         isAuthenticated,
         isGroupParticipant,
-        async (parent, { id, userId }) =>
-            await GroupModel.findByIdAndUpdate(
+        (parent, { id, userId }) =>
+            GroupModel.findByIdAndUpdate(
                 id,
                 {
                     $push: {
@@ -96,8 +96,8 @@ module.exports = {
     leaveGroup: combineResolvers(
         isAuthenticated,
         isGroupParticipant,
-        async (parent, { id }, { authUserId }) =>
-            await GroupModel.findByIdAndUpdate(
+        (parent, { id }, { authUserId }) =>
+            GroupModel.findByIdAndUpdate(
                 id,
                 {
                     $pull: {

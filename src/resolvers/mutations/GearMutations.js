@@ -25,8 +25,8 @@ module.exports = {
     updateGear: combineResolvers(
         isAuthenticated,
         isGearOwner,
-        async (parent, { id, data }) =>
-            await GearModel.findByIdAndUpdate(id, data, { new: true })
+        (parent, { id, data }) =>
+            GearModel.findByIdAndUpdate(id, data, { new: true })
     ),
     deleteGear: combineResolvers(
         isAuthenticated,

@@ -8,7 +8,7 @@ const runListQuery = require("../../utils/runListQuery");
 module.exports = {
     myGroups: combineResolvers(
         isAuthenticated,
-        async (parent, args, { authUserId }) =>
+        (parent, args, { authUserId }) =>
             runListQuery({
                 model: GroupModel,
                 args,
@@ -17,8 +17,7 @@ module.exports = {
                 }
             })
     ),
-    group: combineResolvers(
-        isAuthenticated,
-        async (parent, { id }) => await GroupModel.findById(id)
+    group: combineResolvers(isAuthenticated, (parent, { id }) =>
+        GroupModel.findById(id)
     )
 };

@@ -52,6 +52,23 @@ exports.getClubs = gql`
     }
 `;
 
+exports.getClub = gql`
+    query($id: ID!) {
+        club(id: $id) {
+            id
+            name
+            location
+            website
+            managers {
+                id
+            }
+            members {
+                id
+            }
+        }
+    }
+`;
+
 exports.updateClub = gql`
     mutation($id: ID!, $data: UpdateClubInput!) {
         updateClub(id: $id, data: $data) {

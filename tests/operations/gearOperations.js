@@ -42,6 +42,18 @@ exports.getGear = gql`
     }
 `;
 
+exports.getGearById = gql`
+    query($id: ID!) {
+        gearById(id: $id) {
+            id
+            name
+            brand
+            model
+            type
+        }
+    }
+`;
+
 exports.updateGear = gql`
     mutation($id: ID!, $data: GearInput!) {
         updateGear(id: $id, data: $data) {

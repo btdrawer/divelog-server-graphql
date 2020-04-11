@@ -16,5 +16,9 @@ module.exports = {
                     participants: authUserId
                 }
             })
+    ),
+    group: combineResolvers(
+        isAuthenticated,
+        async (parent, { id }) => await GroupModel.findById(id)
     )
 };

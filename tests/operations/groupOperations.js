@@ -53,6 +53,22 @@ exports.getMyGroups = gql`
     }
 `;
 
+exports.getGroup = gql`
+    query($id: ID!) {
+        group(id: $id) {
+            id
+            name
+            participants {
+                id
+            }
+            messages {
+                id
+                text
+            }
+        }
+    }
+`;
+
 exports.renameGroup = gql`
     mutation($id: ID!, $name: String!) {
         renameGroup(id: $id, name: $name) {

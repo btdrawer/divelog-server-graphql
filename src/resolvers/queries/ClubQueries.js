@@ -6,5 +6,6 @@ module.exports = {
         runListQuery({
             model: ClubModel,
             args
-        })
+        }),
+    club: async (parent, { id }) => await ClubModel.findById(id)
 };

@@ -4,6 +4,7 @@ const {
     login,
     getUsers,
     getMe,
+    getUser,
     updateUser,
     deleteUser
 } = require("./operations/userOperations");
@@ -134,20 +135,17 @@ describe("Users", () => {
         expect(data.users.data[1].email).toEqual(null);
     });
 
-    test("Should return one user by ID", async () => {
+    test("Should return user by ID", async () => {
         const variables = {
-            where: {
-                id: users[1].output.id
-            }
+            id: users[1].output.id
         };
 
         const { data } = await client.query({
-            query: getUsers,
+            query: getUser,
             variables
         });
 
-        expect(data.users.data.length).toEqual(1);
-        expect(data.users.data[0].name).toEqual(users[1].input.name);
+        expect(data.user.name).toEqual(users[1].input.name);
     });
 
     test("Should return one user by other property", async () => {

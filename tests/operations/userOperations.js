@@ -68,6 +68,17 @@ exports.getMe = gql`
     }
 `;
 
+exports.getUser = gql`
+    query($id: ID!) {
+        user(id: $id) {
+            id
+            name
+            username
+            email
+        }
+    }
+`;
+
 exports.updateUser = gql`
     mutation($data: UpdateUserInput!) {
         updateUser(data: $data) {

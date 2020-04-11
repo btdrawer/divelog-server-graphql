@@ -1,21 +1,10 @@
-const UserModel = require("../../models/UserModel");
-const DiveModel = require("../../models/DiveModel");
 const ClubModel = require("../../models/ClubModel");
-const GearModel = require("../../models/GearModel");
 
 module.exports = {
-    email: ({ id, email }, args, { authUserId }) => {
-        if (authUserId && authUserId === id) {
-            return email;
-        }
-        return undefined;
-    },
-    dives: ({ dives }) =>
-        DiveModel.find({
-            _id: {
-                $in: dives
-            }
-        }),
+    email: ({ id, email }, args, { authUserId }) =>
+        authUserId && authUserId === id ? email : null,
+    dives: async ({ dives }, args, { loaders }) =>
+        dives.map(async dive => await loaders.diveLoader.load(dive.toString())),
     clubs: async ({ clubs }) => {
         const [manager, member] = await Promise.all([
             ClubModel.find({
@@ -34,45 +23,41 @@ module.exports = {
             member
         };
     },
-    gear: ({ id, gear }, args, { authUserId }) => {
+    gear: async ({ id, gear }, args, { authUserId, loaders }) => {
         if (authUserId && authUserId === id) {
-            return GearModel.find({
-                _id: {
-                    $in: gear
-                }
-            });
+            return gear.map(async gearId =>
+                loaders.gearLoader.load(gearId.toString())
+            );
         }
-        return undefined;
+        return null;
     },
-    friends: ({ id, friends }, args, { authUserId }) => {
+    friends: ({ id, friends }, args, { authUserId, loaders }) => {
         if (authUserId && authUserId === id) {
-            return UserModel.find({
-                _id: {
-                    $in: friends
-                }
-            });
+            return friends.map(async friend =>
+                loaders.userLoader.load(friend.toString())
+            );
         }
-        return undefined;
+        return null;
     },
-    friendRequests: async ({ id, friendRequests }, args, { authUserId }) => {
+    friendRequests: async (
+        { id, friendRequests },
+        args,
+        { authUserId, loaders }
+    ) => {
         if (authUserId && authUserId === id) {
             const [inbox, sent] = await Promise.all([
-                UserModel.find({
-                    _id: {
-                        $in: friendRequests.inbox
-                    }
-                }),
-                UserModel.find({
-                    _id: {
-                        $in: friendRequests.sent
-                    }
-                })
+                friendRequests.inbox.map(async request =>
+                    loaders.userLoader.load(request.toString())
+                ),
+                friendRequests.sent.map(async request =>
+                    loaders.userLoader.load(request.toString())
+                )
             ]);
             return {
                 inbox,
                 sent
             };
         }
-        return undefined;
+        return null;
     }
 };

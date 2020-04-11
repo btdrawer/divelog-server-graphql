@@ -18,20 +18,26 @@ exports.getGear = gql`
         $sortBy: GearSortEnum
         $sortOrder: SortOrderEnum
         $limit: Int
-        $skip: Int
+        $cursor: String
     ) {
         gear(
             where: $where
             sortBy: $sortBy
             sortOrder: $sortOrder
             limit: $limit
-            skip: $skip
+            cursor: $cursor
         ) {
-            id
-            name
-            brand
-            model
-            type
+            data {
+                id
+                name
+                brand
+                model
+                type
+            }
+            pageInfo {
+                hasNextPage
+                cursor
+            }
         }
     }
 `;

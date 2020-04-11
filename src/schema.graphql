@@ -4,44 +4,44 @@ type Query {
         sortBy: UserSortEnum
         sortOrder: SortOrderEnum
         limit: Int
-        skip: Int
-    ): [User!]!
+        cursor: String
+    ): UserList!
     dives(
         userId: ID!
         where: DiveWhereInput
         sortBy: DiveSortEnum
         sortOrder: SortOrderEnum
         limit: Int
-        skip: Int
-    ): [Dive!]!
+        cursor: String
+    ): DiveList!
     myDives(
         where: MyDiveWhereInput
         sortBy: DiveSortEnum
         sortOrder: SortOrderEnum
         limit: Int
-        skip: Int
-    ): [Dive!]!
+        cursor: String
+    ): DiveList!
     clubs(
         where: ClubWhereInput
         sortBy: ClubSortEnum
         sortOrder: SortOrderEnum
         limit: Int
-        skip: Int
-    ): [Club!]!
+        cursor: String
+    ): ClubList!
     gear(
         where: GearWhereInput
         sortBy: GearSortEnum
         sortOrder: SortOrderEnum
         limit: Int
-        skip: Int
-    ): [Gear!]!
+        cursor: String
+    ): GearList!
     myGroups(
         where: GroupWhereInput
         sortBy: GroupSortEnum
         sortOrder: SortOrderEnum
         limit: Int
-        skip: Int
-    ): [Group!]!
+        cursor: String
+    ): GroupList!
     me: User!
 }
 
@@ -114,6 +114,11 @@ type UserClub {
     member: [Club]
 }
 
+type UserList {
+    data: [User!]!
+    pageInfo: PageInfo
+}
+
 type Dive {
     id: ID!
     timeIn: String
@@ -131,6 +136,11 @@ type Dive {
     public: Boolean
 }
 
+type DiveList {
+    data: [Dive!]!
+    pageInfo: PageInfo
+}
+
 type Club {
     id: ID!
     name: String!
@@ -138,6 +148,11 @@ type Club {
     managers: [User!]!
     members: [User]
     website: String
+}
+
+type ClubList {
+    data: [Club!]!
+    pageInfo: PageInfo
 }
 
 type Gear {
@@ -148,11 +163,21 @@ type Gear {
     type: String
 }
 
+type GearList {
+    data: [Gear!]!
+    pageInfo: PageInfo
+}
+
 type Group {
     id: ID!
     name: String!
     participants: [User!]!
     messages: [Message!]!
+}
+
+type GroupList {
+    data: [Group!]!
+    pageInfo: PageInfo
 }
 
 type Message {
@@ -164,6 +189,11 @@ type Message {
 type NewMessagePayload {
     message: Message!
     group: Group!
+}
+
+type PageInfo {
+    hasNextPage: String
+    cursor: String
 }
 
 input UserWhereInput {

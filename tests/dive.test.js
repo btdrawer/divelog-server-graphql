@@ -90,7 +90,7 @@ describe("Dives", () => {
             variables
         });
 
-        expect(data.dives.length).toEqual(2);
+        expect(data.dives.data.length).toEqual(2);
     });
 
     test("Should return a dive by its ID", async () => {
@@ -106,8 +106,10 @@ describe("Dives", () => {
             variables
         });
 
-        expect(data.dives.length).toEqual(1);
-        expect(data.dives[0].description).toEqual(dives[0].input.description);
+        expect(data.dives.data.length).toEqual(1);
+        expect(data.dives.data[0].description).toEqual(
+            dives[0].input.description
+        );
     });
 
     test("Should limit results", async () => {
@@ -121,23 +123,8 @@ describe("Dives", () => {
             variables
         });
 
-        expect(data.dives.length).toEqual(1);
-        expect(data.dives[0].id).toEqual(dives[0].output.id);
-    });
-
-    test("Should skip results", async () => {
-        const variables = {
-            userId: users[0].output.id,
-            skip: 1
-        };
-
-        const { data } = await client.query({
-            query: getDives,
-            variables
-        });
-
-        expect(data.dives.length).toEqual(1);
-        expect(data.dives[0].id).toEqual(dives[2].output.id);
+        expect(data.dives.data.length).toEqual(1);
+        expect(data.dives.data[0].id).toEqual(dives[0].output.id);
     });
 
     test("Should return all dives for the authenticated user", async () => {
@@ -147,7 +134,7 @@ describe("Dives", () => {
             query: getMyDives
         });
 
-        expect(data.myDives.length).toEqual(3);
+        expect(data.myDives.data.length).toEqual(3);
     });
 
     test("Should return a private dive by its ID", async () => {
@@ -164,8 +151,10 @@ describe("Dives", () => {
             variables
         });
 
-        expect(data.myDives.length).toEqual(1);
-        expect(data.myDives[0].description).toEqual(dives[1].input.description);
+        expect(data.myDives.data.length).toEqual(1);
+        expect(data.myDives.data[0].description).toEqual(
+            dives[1].input.description
+        );
     });
 
     test("Should limit results", async () => {
@@ -181,25 +170,8 @@ describe("Dives", () => {
             variables
         });
 
-        expect(data.myDives.length).toEqual(2);
-        expect(data.myDives[0].id).toEqual(dives[0].output.id);
-    });
-
-    test("Should skip results", async () => {
-        const authenticatedClient = getClient(users[0].token);
-
-        const variables = {
-            id: users[0].output.id,
-            skip: 2
-        };
-
-        const { data } = await authenticatedClient.query({
-            query: getMyDives,
-            variables
-        });
-
-        expect(data.myDives.length).toEqual(1);
-        expect(data.myDives[0].id).toEqual(dives[2].output.id);
+        expect(data.myDives.data.length).toEqual(2);
+        expect(data.myDives.data[0].id).toEqual(dives[0].output.id);
     });
 
     test("Should update dive", async () => {

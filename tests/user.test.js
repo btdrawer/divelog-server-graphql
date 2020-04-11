@@ -120,7 +120,7 @@ describe("Users", () => {
             query: getUsers
         });
 
-        expect(data.users.length).toEqual(3);
+        expect(data.users.data.length).toEqual(3);
     });
 
     test("Should only return emails for logged in users", async () => {
@@ -130,8 +130,8 @@ describe("Users", () => {
             query: getUsers
         });
 
-        expect(data.users[0].email).toEqual(users[0].input.email);
-        expect(data.users[1].email).toEqual(null);
+        expect(data.users.data[0].email).toEqual(users[0].input.email);
+        expect(data.users.data[1].email).toEqual(null);
     });
 
     test("Should return one user by ID", async () => {
@@ -146,8 +146,8 @@ describe("Users", () => {
             variables
         });
 
-        expect(data.users.length).toEqual(1);
-        expect(data.users[0].name).toEqual(users[1].input.name);
+        expect(data.users.data.length).toEqual(1);
+        expect(data.users.data[0].name).toEqual(users[1].input.name);
     });
 
     test("Should return one user by other property", async () => {
@@ -162,8 +162,8 @@ describe("Users", () => {
             variables
         });
 
-        expect(data.users.length).toEqual(1);
-        expect(data.users[0].name).toEqual(users[1].input.name);
+        expect(data.users.data.length).toEqual(1);
+        expect(data.users.data[0].name).toEqual(users[1].input.name);
     });
 
     test("Should sort results", async () => {
@@ -177,8 +177,8 @@ describe("Users", () => {
             variables
         });
 
-        expect(data.users.length).toEqual(3);
-        expect(data.users[0].name).toEqual(users[2].input.name);
+        expect(data.users.data.length).toEqual(3);
+        expect(data.users.data[0].name).toEqual(users[2].input.name);
     });
 
     test("Should limit results", async () => {
@@ -191,22 +191,8 @@ describe("Users", () => {
             variables
         });
 
-        expect(data.users.length).toEqual(2);
-        expect(data.users[0].name).toEqual(users[0].input.name);
-    });
-
-    test("Should skip results", async () => {
-        const variables = {
-            skip: 1
-        };
-
-        const { data } = await client.query({
-            query: getUsers,
-            variables
-        });
-
-        expect(data.users.length).toEqual(2);
-        expect(data.users[0].name).toEqual(users[1].input.name);
+        expect(data.users.data.length).toEqual(2);
+        expect(data.users.data[0].name).toEqual(users[0].input.name);
     });
 
     test("Should update user", async () => {

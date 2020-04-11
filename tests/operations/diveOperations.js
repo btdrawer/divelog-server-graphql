@@ -36,7 +36,7 @@ exports.getDives = gql`
         $sortBy: DiveSortEnum
         $sortOrder: SortOrderEnum
         $limit: Int
-        $skip: Int
+        $cursor: String
     ) {
         dives(
             userId: $userId
@@ -44,30 +44,36 @@ exports.getDives = gql`
             sortBy: $sortBy
             sortOrder: $sortOrder
             limit: $limit
-            skip: $skip
+            cursor: $cursor
         ) {
-            id
-            timeIn
-            timeOut
-            bottomTime
-            safetyStopTime
-            diveTime
-            maxDepth
-            location
-            description
-            club {
+            data {
                 id
+                timeIn
+                timeOut
+                bottomTime
+                safetyStopTime
+                diveTime
+                maxDepth
+                location
+                description
+                club {
+                    id
+                }
+                user {
+                    id
+                }
+                buddies {
+                    id
+                }
+                gear {
+                    id
+                }
+                public
             }
-            user {
-                id
+            pageInfo {
+                hasNextPage
+                cursor
             }
-            buddies {
-                id
-            }
-            gear {
-                id
-            }
-            public
         }
     }
 `;
@@ -78,37 +84,43 @@ exports.getMyDives = gql`
         $sortBy: DiveSortEnum
         $sortOrder: SortOrderEnum
         $limit: Int
-        $skip: Int
+        $cursor: String
     ) {
         myDives(
             where: $where
             sortBy: $sortBy
             sortOrder: $sortOrder
             limit: $limit
-            skip: $skip
+            cursor: $cursor
         ) {
-            id
-            timeIn
-            timeOut
-            bottomTime
-            safetyStopTime
-            diveTime
-            maxDepth
-            location
-            description
-            club {
+            data {
                 id
+                timeIn
+                timeOut
+                bottomTime
+                safetyStopTime
+                diveTime
+                maxDepth
+                location
+                description
+                club {
+                    id
+                }
+                user {
+                    id
+                }
+                buddies {
+                    id
+                }
+                gear {
+                    id
+                }
+                public
             }
-            user {
-                id
+            pageInfo {
+                hasNextPage
+                cursor
             }
-            buddies {
-                id
-            }
-            gear {
-                id
-            }
-            public
         }
     }
 `;

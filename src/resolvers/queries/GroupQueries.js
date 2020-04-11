@@ -3,19 +3,18 @@ const { combineResolvers } = require("graphql-resolvers");
 const GroupModel = require("../../models/GroupModel");
 
 const { isAuthenticated } = require("../middleware");
-const { formatQueryOptions, removeFalseyProps } = require("../../utils");
+const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
     myGroups: combineResolvers(
         isAuthenticated,
         async (parent, args, { authUserId }) =>
-            await GroupModel.find(
-                {
-                    participants: authUserId,
-                    ...removeFalseyProps(args.where)
-                },
-                null,
-                formatQueryOptions(args)
-            )
+            runListQuery({
+                model: GroupModel,
+                args,
+                requiredArgs: {
+                    participants: authUserId
+                }
+            })
     )
 };

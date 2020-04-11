@@ -74,8 +74,8 @@ describe("Gear", () => {
             query: getGear
         });
 
-        expect(data.gear.length).toEqual(2);
-        expect(data.gear[0].name).toEqual(gear[0].input.name);
+        expect(data.gear.data.length).toEqual(2);
+        expect(data.gear.data[0].name).toEqual(gear[0].input.name);
     });
 
     test("Should not return any gear if not logged in", async () => {
@@ -100,8 +100,8 @@ describe("Gear", () => {
             variables
         });
 
-        expect(data.gear.length).toEqual(1);
-        expect(data.gear[0].name).toEqual(gear[0].input.name);
+        expect(data.gear.data.length).toEqual(1);
+        expect(data.gear.data[0].name).toEqual(gear[0].input.name);
     });
 
     test("Should return one gear by other property", async () => {
@@ -118,8 +118,8 @@ describe("Gear", () => {
             variables
         });
 
-        expect(data.gear.length).toEqual(1);
-        expect(data.gear[0].name).toEqual(gear[0].input.name);
+        expect(data.gear.data.length).toEqual(1);
+        expect(data.gear.data[0].name).toEqual(gear[0].input.name);
     });
 
     test("Should sort results", async () => {
@@ -135,8 +135,8 @@ describe("Gear", () => {
             variables
         });
 
-        expect(data.gear.length).toEqual(2);
-        expect(data.gear[0].name).toEqual(gear[1].input.name);
+        expect(data.gear.data.length).toEqual(2);
+        expect(data.gear.data[0].name).toEqual(gear[1].input.name);
     });
 
     test("Should limit results", async () => {
@@ -151,24 +151,8 @@ describe("Gear", () => {
             variables
         });
 
-        expect(data.gear.length).toEqual(1);
-        expect(data.gear[0].name).toEqual(gear[0].input.name);
-    });
-
-    test("Should skip results", async () => {
-        const authenticatedClient = getClient(users[0].token);
-
-        const variables = {
-            skip: 1
-        };
-
-        const { data } = await authenticatedClient.query({
-            query: getGear,
-            variables
-        });
-
-        expect(data.gear.length).toEqual(1);
-        expect(data.gear[0].name).toEqual(gear[1].input.name);
+        expect(data.gear.data.length).toEqual(1);
+        expect(data.gear.data[0].name).toEqual(gear[0].input.name);
     });
 
     test("Should update gear", async () => {

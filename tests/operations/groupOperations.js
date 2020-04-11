@@ -25,23 +25,29 @@ exports.getMyGroups = gql`
         $sortBy: GroupSortEnum
         $sortOrder: SortOrderEnum
         $limit: Int
-        $skip: Int
+        $cursor: String
     ) {
         myGroups(
             where: $where
             sortBy: $sortBy
             sortOrder: $sortOrder
             limit: $limit
-            skip: $skip
+            cursor: $cursor
         ) {
-            id
-            name
-            participants {
+            data {
                 id
+                name
+                participants {
+                    id
+                }
+                messages {
+                    id
+                    text
+                }
             }
-            messages {
-                id
-                text
+            pageInfo {
+                hasNextPage
+                cursor
             }
         }
     }

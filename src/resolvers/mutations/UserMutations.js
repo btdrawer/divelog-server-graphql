@@ -21,7 +21,7 @@ module.exports = {
     },
     updateUser: combineResolvers(
         isAuthenticated,
-        async (parent, { data }, { authUserId }) =>
+        (parent, { data }, { authUserId }) =>
             UserModel.findByIdAndUpdate(authUserId, data, { new: true })
     ),
     sendOrAcceptFriendRequest: combineResolvers(
@@ -48,12 +48,11 @@ module.exports = {
     ),
     unfriend: combineResolvers(
         isAuthenticated,
-        async (parent, { id }, { authUserId }) =>
-            await UserModel.unfriend(authUserId, id)
+        (parent, { id }, { authUserId }) => UserModel.unfriend(authUserId, id)
     ),
     deleteUser: combineResolvers(
         isAuthenticated,
-        async (parent, args, { authUserId }) =>
-            await UserModel.findByIdAndDelete(authUserId)
+        (parent, args, { authUserId }) =>
+            UserModel.findByIdAndDelete(authUserId)
     )
 };

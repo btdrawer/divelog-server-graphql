@@ -19,19 +19,16 @@ module.exports = {
             }
         });
     },
-    myDives: combineResolvers(
-        isAuthenticated,
-        async (parent, args, { authUserId }) =>
-            await runListQuery({
-                model: DiveModel,
-                args,
-                requiredArgs: {
-                    user: authUserId
-                }
-            })
+    myDives: combineResolvers(isAuthenticated, (parent, args, { authUserId }) =>
+        runListQuery({
+            model: DiveModel,
+            args,
+            requiredArgs: {
+                user: authUserId
+            }
+        })
     ),
-    dive: combineResolvers(
-        isUserOrDiveIsPublic,
-        async (parent, { id }) => await DiveModel.findById(id)
+    dive: combineResolvers(isUserOrDiveIsPublic, (parent, { id }) =>
+        DiveModel.findById(id)
     )
 };

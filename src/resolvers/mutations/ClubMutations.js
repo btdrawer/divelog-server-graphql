@@ -39,8 +39,8 @@ module.exports = {
     updateClub: combineResolvers(
         isAuthenticated,
         isClubManager,
-        async (parent, { id, data }) =>
-            await ClubModel.findByIdAndUpdate(id, data, { new: true })
+        (parent, { id, data }) =>
+            ClubModel.findByIdAndUpdate(id, data, { new: true })
     ),
     addClubManager: combineResolvers(
         isAuthenticated,

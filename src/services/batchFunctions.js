@@ -1,7 +1,7 @@
-const UserModel = require("./models/UserModel");
-const DiveModel = require("./models/DiveModel");
-const ClubModel = require("./models/ClubModel");
-const GearModel = require("./models/GearModel");
+const UserModel = require("../models/UserModel");
+const DiveModel = require("../models/DiveModel");
+const ClubModel = require("../models/ClubModel");
+const GearModel = require("../models/GearModel");
 
 const genericBatch = async ({ model, ids }) => {
     const result = await model.find({

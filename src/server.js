@@ -2,6 +2,8 @@ const { ApolloServer } = require("apollo-server");
 const { importSchema } = require("graphql-import");
 const { makeExecutableSchema } = require("graphql-tools");
 const DataLoader = require("dataloader");
+const { RedisPubSub } = require("graphql-redis-subscriptions");
+const redis = require("redis");
 
 const { getUserId } = require("./utils/authUtils");
 
@@ -14,12 +16,20 @@ const User = require("./resolvers/types/User");
 const Club = require("./resolvers/types/Club");
 const Group = require("./resolvers/types/Group");
 
+const redisUrl = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
+const redisClient = redis.createClient(redisUrl);
+
+const pubsub = new RedisPubSub({
+    publisher: redisClient,
+    subscribe: redisClient
+});
+
 const {
     batchUser,
     batchDive,
     batchClub,
     batchGear
-} = require("./batchFunctions");
+} = require("./services/batchFunctions");
 
 const executableSchema = makeExecutableSchema({
     typeDefs: importSchema("src/schema.graphql"),
@@ -34,11 +44,12 @@ const executableSchema = makeExecutableSchema({
     }
 });
 
-module.exports = ({ context = {} } = {}) =>
+module.exports = () =>
     new ApolloServer({
         schema: executableSchema,
         context: request => ({
-            ...context,
+            redisClient,
+            pubsub,
             authUserId: getUserId(request),
             loaders: {
                 userLoader: new DataLoader(keys => batchUser(keys)),

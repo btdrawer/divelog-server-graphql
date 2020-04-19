@@ -8,11 +8,11 @@ module.exports = {
     newMessage: {
         subscribe: combineResolvers(
             isGroupParticipant,
-            async (parent, { groupId }, { pubsub }) => {
+            async (parent, { id }, { pubsub }) => {
                 if (!pubsub) {
                     throw new Error(NO_PUBSUB);
                 }
-                return pubsub.asyncIterator(newMessageSubscriptionKey(groupId));
+                return pubsub.asyncIterator(newMessageSubscriptionKey(id));
             }
         )
     }

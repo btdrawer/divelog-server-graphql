@@ -3,12 +3,12 @@ const { combineResolvers } = require("graphql-resolvers");
 const DiveModel = require("../../models/DiveModel");
 const UserModel = require("../../models/UserModel");
 
-const { isAuthenticated, isDiveUser } = require("../middleware");
-const { cleanCache } = require("../../utils/cacheUtils");
+const { isAuthenticated, isDiveUser, cleanCache } = require("../middleware");
 
 module.exports = {
     createDive: combineResolvers(
         isAuthenticated,
+        cleanCache,
         async (parent, { data }, { authUserId }) => {
             const dive = new DiveModel({
                 ...data,
@@ -20,26 +20,24 @@ module.exports = {
                     dives: dive.id
                 }
             });
-            cleanCache(authUserId);
             return dive;
         }
     ),
     updateDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, data }, { authUserId }) => {
-            const result = await DiveModel.findByIdAndUpdate(id, data, {
+        cleanCache,
+        (parent, { id, data }) =>
+            DiveModel.findByIdAndUpdate(id, data, {
                 new: true
-            });
-            cleanCache(authUserId);
-            return result;
-        }
+            })
     ),
     addGearToDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, gearId }, { authUserId }) => {
-            const dive = await DiveModel.findByIdAndUpdate(
+        cleanCache,
+        (parent, { id, gearId }) =>
+            DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $push: {
@@ -47,16 +45,14 @@ module.exports = {
                     }
                 },
                 { new: true }
-            );
-            cleanCache(authUserId);
-            return dive;
-        }
+            )
     ),
     removeGearFromDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, gearId }, { authUserId }) => {
-            const result = await DiveModel.findByIdAndUpdate(
+        cleanCache,
+        (parent, { id, gearId }) =>
+            DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $pull: {
@@ -64,16 +60,14 @@ module.exports = {
                     }
                 },
                 { new: true }
-            );
-            cleanCache(authUserId);
-            return result;
-        }
+            )
     ),
     addBuddyToDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, buddyId }, { authUserId }) => {
-            const result = await DiveModel.findByIdAndUpdate(
+        cleanCache,
+        (parent, { id, buddyId }) =>
+            DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $push: {
@@ -81,16 +75,14 @@ module.exports = {
                     }
                 },
                 { new: true }
-            );
-            cleanCache(authUserId);
-            return result;
-        }
+            )
     ),
     removeBuddyFromDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, buddyId }, { authUserId }) => {
-            const result = await DiveModel.findByIdAndUpdate(
+        cleanCache,
+        (parent, { id, buddyId }) =>
+            DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $pull: {
@@ -98,14 +90,12 @@ module.exports = {
                     }
                 },
                 { new: true }
-            );
-            cleanCache(authUserId);
-            return result;
-        }
+            )
     ),
     deleteDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
+        cleanCache,
         async (parent, { id }, { authUserId }) => {
             const dive = await DiveModel.findByIdAndDelete(id);
             await UserModel.findByIdAndUpdate(authUserId, {
@@ -113,7 +103,6 @@ module.exports = {
                     dives: dive.id
                 }
             });
-            cleanCache(authUserId);
             return dive;
         }
     )

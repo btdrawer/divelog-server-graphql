@@ -3,9 +3,10 @@ const { importSchema } = require("graphql-import");
 const { makeExecutableSchema } = require("graphql-tools");
 const DataLoader = require("dataloader");
 const { RedisPubSub } = require("graphql-redis-subscriptions");
-const redis = require("redis");
 
 const { getUserId } = require("./utils/authUtils");
+
+const redisClient = require("./services/redisClient");
 
 const Query = require("./resolvers/Query");
 const Mutation = require("./resolvers/Mutation");
@@ -15,9 +16,6 @@ const Dive = require("./resolvers/types/Dive");
 const User = require("./resolvers/types/User");
 const Club = require("./resolvers/types/Club");
 const Group = require("./resolvers/types/Group");
-
-const redisUrl = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
-const redisClient = redis.createClient(redisUrl);
 
 const pubsub = new RedisPubSub({
     publisher: redisClient,

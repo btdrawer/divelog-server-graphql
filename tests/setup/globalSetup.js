@@ -1,5 +1,6 @@
 const server = require("../../src/server");
 require("../../src/services/db");
+require("../../src/services/cache");
 
 module.exports = async () => {
     global.httpServer = server();

@@ -1,5 +1,7 @@
 const server = require("./server");
+
 require("./services/db");
+require("./services/cache");
 
 server()
     .listen({

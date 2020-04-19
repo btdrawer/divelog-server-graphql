@@ -4,6 +4,7 @@ const DiveModel = require("../../models/DiveModel");
 const UserModel = require("../../models/UserModel");
 
 const { isAuthenticated, isDiveUser } = require("../middleware");
+const { cleanCache } = require("../../utils/cacheUtils");
 
 module.exports = {
     createDive: combineResolvers(
@@ -19,20 +20,26 @@ module.exports = {
                     dives: dive.id
                 }
             });
+            cleanCache(authUserId);
             return dive;
         }
     ),
     updateDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, data }) =>
-            await DiveModel.findByIdAndUpdate(id, data, { new: true })
+        async (parent, { id, data }, { authUserId }) => {
+            const result = await DiveModel.findByIdAndUpdate(id, data, {
+                new: true
+            });
+            cleanCache(authUserId);
+            return result;
+        }
     ),
     addGearToDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, gearId }) =>
-            await DiveModel.findByIdAndUpdate(
+        async (parent, { id, gearId }, { authUserId }) => {
+            const dive = await DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $push: {
@@ -40,13 +47,16 @@ module.exports = {
                     }
                 },
                 { new: true }
-            )
+            );
+            cleanCache(authUserId);
+            return dive;
+        }
     ),
     removeGearFromDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, gearId }) =>
-            await DiveModel.findByIdAndUpdate(
+        async (parent, { id, gearId }, { authUserId }) => {
+            const result = await DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $pull: {
@@ -54,13 +64,16 @@ module.exports = {
                     }
                 },
                 { new: true }
-            )
+            );
+            cleanCache(authUserId);
+            return result;
+        }
     ),
     addBuddyToDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, buddyId }) =>
-            await DiveModel.findByIdAndUpdate(
+        async (parent, { id, buddyId }, { authUserId }) => {
+            const result = await DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $push: {
@@ -68,13 +81,16 @@ module.exports = {
                     }
                 },
                 { new: true }
-            )
+            );
+            cleanCache(authUserId);
+            return result;
+        }
     ),
     removeBuddyFromDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, buddyId }) =>
-            await DiveModel.findByIdAndUpdate(
+        async (parent, { id, buddyId }, { authUserId }) => {
+            const result = await DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $pull: {
@@ -82,7 +98,10 @@ module.exports = {
                     }
                 },
                 { new: true }
-            )
+            );
+            cleanCache(authUserId);
+            return result;
+        }
     ),
     deleteDive: combineResolvers(
         isAuthenticated,
@@ -94,6 +113,7 @@ module.exports = {
                     dives: dive.id
                 }
             });
+            cleanCache(authUserId);
             return dive;
         }
     )

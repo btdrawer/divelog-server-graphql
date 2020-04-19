@@ -4,7 +4,7 @@ const ClubModel = require("../../src/models/ClubModel");
 const GearModel = require("../../src/models/GearModel");
 const GroupModel = require("../../src/models/GroupModel");
 
-require("../../src/db");
+require("../../src/services/db");
 
 const users = [
     {

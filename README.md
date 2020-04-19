@@ -13,7 +13,7 @@ This version of the project is still based on MongoDB; in the future I plan to c
 -   NodeJS
 -   NPM
 -   MongoDB
--   Redis (for PubSub; optional)
+-   Redis
 
 ## How to run
 
@@ -31,9 +31,6 @@ Then, you can run the program by typing:
 `npm start`
 
 GraphQL playground will be available on localhost at `SERVER_PORT`. From there, you will have access to all possible mutations and queries.
-
-You can also launch the server without subscription functionality, and therefore no need to be running a Redis data store. This is available with the command:
-`npm start:noredis`
 
 ## Unit tests
 

@@ -4,7 +4,6 @@
     "private": true,
     "scripts": {
         "start": "env-cmd -f ./config/.env nodemon src/app.js",
-        "start:noredis": "env-cmd -f ./config/.env nodemon src/appNoRedis.js",
         "lint": "eslint --fix .",
         "test": "env-cmd -f ./config/.test.env jest --runInBand",
         "test:watch": "env-cmd -f ./config/.test.env jest --runInBand --watch"
@@ -23,11 +22,11 @@
         "graphql-redis-subscriptions": "^2.2.1",
         "graphql-resolvers": "^0.4.2",
         "graphql-tools": "^4.0.7",
-        "ioredis": "^4.16.0",
         "jsonwebtoken": "^8.5.1",
         "moment": "^2.24.0",
         "mongoose": "^5.7.5",
-        "nodemon": "^1.19.2"
+        "nodemon": "^1.19.2",
+        "redis": "^3.0.2"
     },
     "devDependencies": {
         "apollo-boost": "^0.4.7",

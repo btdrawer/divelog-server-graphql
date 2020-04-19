@@ -16,7 +16,8 @@ module.exports = {
             requiredArgs: {
                 user: userId,
                 public: true
-            }
+            },
+            hashKeyArg: "user"
         });
     },
     myDives: combineResolvers(isAuthenticated, (parent, args, { authUserId }) =>
@@ -25,7 +26,8 @@ module.exports = {
             args,
             requiredArgs: {
                 user: authUserId
-            }
+            },
+            hashKeyArg: "user"
         })
     ),
     dive: combineResolvers(isUserOrDiveIsPublic, (parent, { id }) =>

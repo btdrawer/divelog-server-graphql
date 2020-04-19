@@ -88,7 +88,7 @@ type Mutation {
 }
 
 type Subscription {
-    newMessage(groupId: ID!): NewMessagePayload!
+    newMessage(id: ID!): NewMessagePayload!
 }
 
 type User {

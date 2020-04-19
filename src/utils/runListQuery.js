@@ -46,7 +46,22 @@ const formatQueryOptions = ({ sortBy, sortOrder, limit }) => ({
     limit: limit + 1
 });
 
-module.exports = async ({ model, args, requiredArgs }) => {
+const useCache = async ({
+    requiredArgs,
+    hashKeyArg,
+    queryProps: { model, filter, options }
+}) => {
+    const hashKey =
+        requiredArgs && hashKeyArg ? requiredArgs[hashKeyArg] : null;
+    const result = hashKey
+        ? await model.find(filter, null, options).cache({
+              hashKey
+          })
+        : await model.find(filter, null, options);
+    return result;
+};
+
+module.exports = async ({ model, args, requiredArgs, hashKeyArg = null }) => {
     const { where, limit = 10, cursor } = args;
     let { sortBy = "_id", sortOrder = "ASC" } = args;
     let result;
@@ -54,19 +69,30 @@ module.exports = async ({ model, args, requiredArgs }) => {
         const parsedCursor = parseCursor(cursor);
         sortBy = parsedCursor.sortBy;
         sortOrder = parsedCursor.sortOrder;
-        result = await model.find(
-            { ...generateQueryFromCursor(parsedCursor), ...requiredArgs },
-            null,
-            {
-                limit: limit + 1
+        result = await useCache({
+            requiredArgs,
+            hashKeyArg,
+            queryProps: {
+                model,
+                filter: {
+                    ...generateQueryFromCursor(parsedCursor),
+                    ...requiredArgs
+                },
+                options: {
+                    limit: limit + 1
+                }
             }
-        );
+        });
     } else {
-        result = await model.find(
-            formatWhere({ where, requiredArgs }),
-            null,
-            formatQueryOptions({ sortBy, sortOrder, limit })
-        );
+        result = await useCache({
+            requiredArgs,
+            hashKeyArg,
+            queryProps: {
+                model,
+                filter: formatWhere({ where, requiredArgs }),
+                options: formatQueryOptions({ sortBy, sortOrder, limit })
+            }
+        });
     }
     const hasNextPage = result.length > limit;
     result = hasNextPage ? result.slice(0, -1) : result;

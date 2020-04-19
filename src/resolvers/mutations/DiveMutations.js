@@ -3,11 +3,12 @@ const { combineResolvers } = require("graphql-resolvers");
 const DiveModel = require("../../models/DiveModel");
 const UserModel = require("../../models/UserModel");
 
-const { isAuthenticated, isDiveUser } = require("../middleware");
+const { isAuthenticated, isDiveUser, cleanCache } = require("../middleware");
 
 module.exports = {
     createDive: combineResolvers(
         isAuthenticated,
+        cleanCache,
         async (parent, { data }, { authUserId }) => {
             const dive = new DiveModel({
                 ...data,
@@ -25,14 +26,18 @@ module.exports = {
     updateDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, data }) =>
-            await DiveModel.findByIdAndUpdate(id, data, { new: true })
+        cleanCache,
+        (parent, { id, data }) =>
+            DiveModel.findByIdAndUpdate(id, data, {
+                new: true
+            })
     ),
     addGearToDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, gearId }) =>
-            await DiveModel.findByIdAndUpdate(
+        cleanCache,
+        (parent, { id, gearId }) =>
+            DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $push: {
@@ -45,8 +50,9 @@ module.exports = {
     removeGearFromDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, gearId }) =>
-            await DiveModel.findByIdAndUpdate(
+        cleanCache,
+        (parent, { id, gearId }) =>
+            DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $pull: {
@@ -59,8 +65,9 @@ module.exports = {
     addBuddyToDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, buddyId }) =>
-            await DiveModel.findByIdAndUpdate(
+        cleanCache,
+        (parent, { id, buddyId }) =>
+            DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $push: {
@@ -73,8 +80,9 @@ module.exports = {
     removeBuddyFromDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        async (parent, { id, buddyId }) =>
-            await DiveModel.findByIdAndUpdate(
+        cleanCache,
+        (parent, { id, buddyId }) =>
+            DiveModel.findByIdAndUpdate(
                 id,
                 {
                     $pull: {
@@ -87,6 +95,7 @@ module.exports = {
     deleteDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
+        cleanCache,
         async (parent, { id }, { authUserId }) => {
             const dive = await DiveModel.findByIdAndDelete(id);
             await UserModel.findByIdAndUpdate(authUserId, {

@@ -12,7 +12,8 @@ module.exports = {
             args,
             requiredArgs: {
                 owner: authUserId
-            }
+            },
+            hashKey: "owner"
         })
     ),
     gearById: combineResolvers(isAuthenticated, isGearOwner, (parent, { id }) =>

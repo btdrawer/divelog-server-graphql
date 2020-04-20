@@ -15,7 +15,7 @@ module.exports = {
         }
         return skip;
     },
-    cleanCache: (parent, args, { authUserId }) => {
+    clearCache: (parent, args, { authUserId }) => {
         redisClient.del(authUserId);
         return skip;
     },

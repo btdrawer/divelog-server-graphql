@@ -3,12 +3,12 @@ const { combineResolvers } = require("graphql-resolvers");
 const DiveModel = require("../../models/DiveModel");
 const UserModel = require("../../models/UserModel");
 
-const { isAuthenticated, isDiveUser, cleanCache } = require("../middleware");
+const { isAuthenticated, isDiveUser, clearCache } = require("../middleware");
 
 module.exports = {
     createDive: combineResolvers(
         isAuthenticated,
-        cleanCache,
+        clearCache,
         async (parent, { data }, { authUserId }) => {
             const dive = new DiveModel({
                 ...data,
@@ -26,7 +26,7 @@ module.exports = {
     updateDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        cleanCache,
+        clearCache,
         (parent, { id, data }) =>
             DiveModel.findByIdAndUpdate(id, data, {
                 new: true
@@ -35,7 +35,7 @@ module.exports = {
     addGearToDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        cleanCache,
+        clearCache,
         (parent, { id, gearId }) =>
             DiveModel.findByIdAndUpdate(
                 id,
@@ -50,7 +50,7 @@ module.exports = {
     removeGearFromDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        cleanCache,
+        clearCache,
         (parent, { id, gearId }) =>
             DiveModel.findByIdAndUpdate(
                 id,
@@ -65,7 +65,7 @@ module.exports = {
     addBuddyToDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        cleanCache,
+        clearCache,
         (parent, { id, buddyId }) =>
             DiveModel.findByIdAndUpdate(
                 id,
@@ -80,7 +80,7 @@ module.exports = {
     removeBuddyFromDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        cleanCache,
+        clearCache,
         (parent, { id, buddyId }) =>
             DiveModel.findByIdAndUpdate(
                 id,
@@ -95,7 +95,7 @@ module.exports = {
     deleteDive: combineResolvers(
         isAuthenticated,
         isDiveUser,
-        cleanCache,
+        clearCache,
         async (parent, { id }, { authUserId }) => {
             const dive = await DiveModel.findByIdAndDelete(id);
             await UserModel.findByIdAndUpdate(authUserId, {

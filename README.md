@@ -1,12 +1,8 @@
 # divelog-server-graphql
 
-A GraphQL version of my [divelog-server-rest](https://github.com/btdrawer/divelog-server-rest) project, which was a REST API built using NodeJS. The functionality is mostly the same, but I have made some improvements which I may port back to the REST project eventually.
+A GraphQL version of my [divelog-server-rest](https://github.com/btdrawer/divelog-server-rest) project, which was a REST API built using NodeJS and Express.
 
-I learned about GraphQL and how to implement it into NodeJS from the Udemy course [The Modern GraphQL Bootcamp (with Node.js and Apollo)](https://www.udemy.com/course/graphql-bootcamp/).
-
-I also learned about dataloaders, cursor-based pagination, and how to combine multiple resolvers from this course: [GraphQL Apollo Server with Node.js, MongoDB - GraphQL API](https://www.udemy.com/course/graphql-apollo-server-api-nodejs-mongodb/).
-
-This version of the project is still based on MongoDB; in the future I plan to create another version using Prisma, which will therefore work with a number of relational and non-relational databases. I decided to build this MongoDB-specific one first as additional practice and evidence of my understanding of GraphQL.
+I have also built another iteration of this project using Prisma, also utilising TypeScript: [divelog-server-prisma](https://github.com/btdrawer/divelog-server-prisma). I decided to build this MongoDB-specific one first as additional practice and evidence of my understanding of GraphQL.
 
 ## Requirements
 
@@ -39,3 +35,11 @@ To run unit tests, add a `.test.env` file to the `config` folder with the variab
 
 You can also watch the tests:
 `npm run test:watch`
+
+## Acknowledgements
+
+I learned about GraphQL and how to implement it in NodeJS from the Udemy course [The Modern GraphQL Bootcamp (with Node.js and Apollo)](https://www.udemy.com/course/graphql-bootcamp/).
+
+I also learned about dataloaders, cursor-based pagination, and how to combine multiple resolvers from this course: [GraphQL Apollo Server with Node.js, MongoDB - GraphQL API](https://www.udemy.com/course/graphql-apollo-server-api-nodejs-mongodb/).
+
+Finally, I learned about implementing caching, using Redis, from the course [`Node JS: Advanced Concepts`](https://www.udemy.com/course/advanced-node-for-developers/).

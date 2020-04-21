@@ -1,8 +1,8 @@
 const { combineResolvers } = require("graphql-resolvers");
 
 const DiveModel = require("../../models/DiveModel");
-
 const { isAuthenticated, isUserOrDiveIsPublic } = require("../middleware");
+const { generateUserHashKey } = require("../../utils");
 const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
                 user: userId,
                 public: true
             },
-            hashKeyArg: "user"
+            hashKeyArg: generateUserHashKey(userId)
         });
     },
     myDives: combineResolvers(isAuthenticated, (parent, args, { authUserId }) =>
@@ -27,7 +27,7 @@ module.exports = {
             requiredArgs: {
                 user: authUserId
             },
-            hashKeyArg: "user"
+            hashKeyArg: generateUserHashKey(authUserId)
         })
     ),
     dive: combineResolvers(isUserOrDiveIsPublic, (parent, { id }) =>

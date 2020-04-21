@@ -6,7 +6,9 @@ const gearMiddleware = require("./gearMiddleware");
 const groupMiddleware = require("./groupMiddleware");
 
 const redisClient = require("../../services/redisClient");
+const { CLUB } = require("../../constants/resources");
 const { INVALID_AUTH } = require("../../constants/errorCodes");
+const { generateUserHashKey, generateGroupHashKey } = require("../../utils");
 
 module.exports = {
     isAuthenticated: (parent, args, { authUserId }) => {
@@ -15,8 +17,18 @@ module.exports = {
         }
         return skip;
     },
-    clearCache: (parent, args, { authUserId }) => {
-        redisClient.del(authUserId);
+    clearUserCache: (parent, args, { authUserId }) => {
+        redisClient.del(generateUserHashKey(authUserId));
+        return skip;
+    },
+    clearClubCache: async () => {
+        const cache = await redisClient.hget(CLUB);
+        console.log("CACHE", cache);
+        redisClient.del(CLUB);
+        return skip;
+    },
+    clearGroupCache: (parent, { id }) => {
+        redisClient.del(generateGroupHashKey(id));
         return skip;
     },
     ...diveMiddleware,

@@ -4,7 +4,11 @@ const GroupModel = require("../../models/GroupModel");
 const {
     newMessageSubscriptionKey
 } = require("../../constants/subscriptionKeys");
-const { isAuthenticated, isGroupParticipant } = require("../middleware");
+const {
+    isAuthenticated,
+    isGroupParticipant,
+    clearGroupCache
+} = require("../middleware");
 
 module.exports = {
     createGroup: combineResolvers(
@@ -29,6 +33,7 @@ module.exports = {
     renameGroup: combineResolvers(
         isAuthenticated,
         isGroupParticipant,
+        clearGroupCache,
         (parent, { id, name }) =>
             GroupModel.findByIdAndUpdate(
                 id,
@@ -41,6 +46,7 @@ module.exports = {
     sendMessage: combineResolvers(
         isAuthenticated,
         isGroupParticipant,
+        clearGroupCache,
         async (parent, { id, text }, { authUserId, pubsub }) => {
             const group = await GroupModel.findByIdAndUpdate(
                 id,
@@ -82,6 +88,7 @@ module.exports = {
     addGroupParticipant: combineResolvers(
         isAuthenticated,
         isGroupParticipant,
+        clearGroupCache,
         (parent, { id, userId }) =>
             GroupModel.findByIdAndUpdate(
                 id,
@@ -96,6 +103,7 @@ module.exports = {
     leaveGroup: combineResolvers(
         isAuthenticated,
         isGroupParticipant,
+        clearGroupCache,
         (parent, { id }, { authUserId }) =>
             GroupModel.findByIdAndUpdate(
                 id,

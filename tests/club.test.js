@@ -71,19 +71,6 @@ describe("Clubs", () => {
         ).rejects.toThrow();
     });
 
-    test("Should return a list of clubs", async () => {
-        const { data } = await client.query({
-            query: getClubs
-        });
-
-        expect(data.clubs.data.length).toEqual(2);
-
-        expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
-        expect(data.clubs.data[0].location).toEqual(clubs[0].input.location);
-        expect(data.clubs.data[0].website).toEqual(clubs[0].input.website);
-        expect(data.clubs.data[0].managers[0].id).toEqual(users[0].output.id);
-    });
-
     test("Should return club by ID", async () => {
         const variables = {
             id: clubs[0].output.id
@@ -98,6 +85,19 @@ describe("Clubs", () => {
         expect(data.club.location).toEqual(clubs[0].input.location);
         expect(data.club.website).toEqual(clubs[0].input.website);
         expect(data.club.managers[0].id).toEqual(users[0].output.id);
+    });
+
+    test("Should return a list of clubs", async () => {
+        const { data } = await client.query({
+            query: getClubs
+        });
+
+        expect(data.clubs.data.length).toEqual(2);
+
+        expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
+        expect(data.clubs.data[0].location).toEqual(clubs[0].input.location);
+        expect(data.clubs.data[0].website).toEqual(clubs[0].input.website);
+        expect(data.clubs.data[0].managers[0].id).toEqual(users[0].output.id);
     });
 
     test("Should return one club by other property", async () => {

@@ -2,13 +2,16 @@ const { combineResolvers } = require("graphql-resolvers");
 
 const GearModel = require("../../models/GearModel");
 const UserModel = require("../../models/UserModel");
-
-const { isAuthenticated, clearCache, isGearOwner } = require("../middleware");
+const {
+    isAuthenticated,
+    clearUserCache,
+    isGearOwner
+} = require("../middleware");
 
 module.exports = {
     createGear: combineResolvers(
         isAuthenticated,
-        clearCache,
+        clearUserCache,
         async (parent, { data }, { authUserId }) => {
             const gear = new GearModel({
                 ...data,
@@ -26,14 +29,14 @@ module.exports = {
     updateGear: combineResolvers(
         isAuthenticated,
         isGearOwner,
-        clearCache,
+        clearUserCache,
         (parent, { id, data }) =>
             GearModel.findByIdAndUpdate(id, data, { new: true })
     ),
     deleteGear: combineResolvers(
         isAuthenticated,
         isGearOwner,
-        clearCache,
+        clearUserCache,
         async (parent, { id }, { authUserId }) => {
             await UserModel.findByIdAndUpdate(authUserId, {
                 $pull: {

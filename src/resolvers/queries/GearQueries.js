@@ -1,8 +1,8 @@
 const { combineResolvers } = require("graphql-resolvers");
 
 const GearModel = require("../../models/GearModel");
-
 const { isAuthenticated, isGearOwner } = require("../middleware");
+const { generateUserHashKey } = require("../../utils");
 const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
             requiredArgs: {
                 owner: authUserId
             },
-            hashKey: "owner"
+            hashKey: generateUserHashKey(authUserId)
         })
     ),
     gearById: combineResolvers(isAuthenticated, isGearOwner, (parent, { id }) =>

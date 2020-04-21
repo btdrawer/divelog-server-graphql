@@ -1,17 +1,12 @@
 {
     "name": "divelog-server-graphql",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "private": true,
     "scripts": {
         "start": "env-cmd -f ./config/.env nodemon src/app.js",
         "lint": "eslint --fix .",
         "test": "env-cmd -f ./config/.test.env jest --runInBand",
-        "test:watch": "env-cmd -f ./config/.test.env jest --runInBand --watch"
-    },
-    "jest": {
-        "globalSetup": "./tests/setup/globalSetup.js",
-        "globalTeardown": "./tests/setup/globalTeardown.js",
-        "testEnvironment": "node"
+        "test:watch": "env-cmd -f ./config/.test.env jest tests --runInBand --watch"
     },
     "dependencies": {
         "apollo-server": "^2.11.0",

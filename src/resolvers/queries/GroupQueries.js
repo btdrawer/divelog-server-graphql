@@ -1,8 +1,8 @@
 const { combineResolvers } = require("graphql-resolvers");
 
 const GroupModel = require("../../models/GroupModel");
-
 const { isAuthenticated } = require("../middleware");
+const { generateGroupHashKey } = require("../../utils");
 const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
@@ -18,6 +18,8 @@ module.exports = {
             })
     ),
     group: combineResolvers(isAuthenticated, (parent, { id }) =>
-        GroupModel.findById(id)
+        GroupModel.findById(id).cache({
+            hashKey: generateGroupHashKey(id)
+        })
     )
 };

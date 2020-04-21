@@ -2,9 +2,9 @@ const { combineResolvers } = require("graphql-resolvers");
 
 const ClubModel = require("../../models/ClubModel");
 const UserModel = require("../../models/UserModel");
-
 const {
     isAuthenticated,
+    clearClubCache,
     isClubManager,
     isClubMember
 } = require("../middleware");
@@ -18,6 +18,7 @@ const {
 module.exports = {
     createClub: combineResolvers(
         isAuthenticated,
+        clearClubCache,
         async (parent, { data }, { authUserId }) => {
             const club = new ClubModel({
                 ...data,
@@ -39,12 +40,14 @@ module.exports = {
     updateClub: combineResolvers(
         isAuthenticated,
         isClubManager,
+        clearClubCache,
         (parent, { id, data }) =>
             ClubModel.findByIdAndUpdate(id, data, { new: true })
     ),
     addClubManager: combineResolvers(
         isAuthenticated,
         isClubManager,
+        clearClubCache,
         async (parent, { id, userId }) => {
             const { managers } = await ClubModel.findById(id);
             if (managers.includes(userId)) {
@@ -70,6 +73,7 @@ module.exports = {
     removeClubManager: combineResolvers(
         isAuthenticated,
         isClubManager,
+        clearClubCache,
         async (parent, { id, userId }) => {
             const { managers } = await ClubModel.findById(id);
             if (!managers.includes(userId)) {
@@ -94,6 +98,7 @@ module.exports = {
     ),
     joinClub: combineResolvers(
         isAuthenticated,
+        clearClubCache,
         async (parent, { id }, { authUserId }) => {
             const { members } = await ClubModel.findById(id);
             if (members.includes(authUserId)) {
@@ -119,6 +124,7 @@ module.exports = {
     leaveClub: combineResolvers(
         isAuthenticated,
         isClubMember,
+        clearClubCache,
         async (parent, { id }, { authUserId }) => {
             const { members } = await ClubModel.findById(id);
             if (!members.includes(authUserId)) {
@@ -144,6 +150,7 @@ module.exports = {
     removeClubMember: combineResolvers(
         isAuthenticated,
         isClubManager,
+        clearClubCache,
         async (parent, { id, userId }) => {
             const { members } = await ClubModel.findById(id);
             if (!members.includes(userId)) {
@@ -169,6 +176,7 @@ module.exports = {
     deleteClub: combineResolvers(
         isAuthenticated,
         isClubManager,
+        clearClubCache,
         async (parent, { id }) => {
             await UserModel.updateMany(
                 {

@@ -4,6 +4,9 @@ const ClubModel = require("../../src/models/ClubModel");
 const GearModel = require("../../src/models/GearModel");
 const GroupModel = require("../../src/models/GroupModel");
 
+const redisClient = require("../../src/services/redisClient");
+const { CLUB } = require("../../src/constants/resources");
+
 require("../../src/services/db");
 
 const users = [
@@ -206,6 +209,10 @@ const saveGroup = async (index, myId, userIds) => {
 const seedDatabase = async ({ resources = {} } = {}) => {
     await UserModel.deleteMany();
     await ClubModel.deleteMany();
+
+    // Because the `club` key is always the same, cached data will cause
+    // problems for tests run sequentially with newly-seeded data
+    redisClient.del(CLUB);
 
     // Example users
     await saveUser(0);

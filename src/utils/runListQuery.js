@@ -1,7 +1,4 @@
-const {
-    convertStringToBase64,
-    convertBase64ToString
-} = require("./base64Utils");
+const { convertStringToBase64, convertBase64ToString } = require("./index");
 
 const generateCursor = ({ sortBy, sortOrder, value }) =>
     convertStringToBase64(
@@ -47,12 +44,9 @@ const formatQueryOptions = ({ sortBy, sortOrder, limit }) => ({
 });
 
 const useCache = async ({
-    requiredArgs,
-    hashKeyArg,
+    hashKey,
     queryProps: { model, filter, options }
 }) => {
-    const hashKey =
-        requiredArgs && hashKeyArg ? requiredArgs[hashKeyArg] : null;
     const result = hashKey
         ? await model.find(filter, null, options).cache({
               hashKey
@@ -61,7 +55,7 @@ const useCache = async ({
     return result;
 };
 
-module.exports = async ({ model, args, requiredArgs, hashKeyArg = null }) => {
+module.exports = async ({ model, args, requiredArgs, hashKey = null }) => {
     const { where, limit = 10, cursor } = args;
     let { sortBy = "_id", sortOrder = "ASC" } = args;
     let result;
@@ -70,8 +64,7 @@ module.exports = async ({ model, args, requiredArgs, hashKeyArg = null }) => {
         sortBy = parsedCursor.sortBy;
         sortOrder = parsedCursor.sortOrder;
         result = await useCache({
-            requiredArgs,
-            hashKeyArg,
+            hashKey,
             queryProps: {
                 model,
                 filter: {
@@ -85,8 +78,7 @@ module.exports = async ({ model, args, requiredArgs, hashKeyArg = null }) => {
         });
     } else {
         result = await useCache({
-            requiredArgs,
-            hashKeyArg,
+            hashKey,
             queryProps: {
                 model,
                 filter: formatWhere({ where, requiredArgs }),

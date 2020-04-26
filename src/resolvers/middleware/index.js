@@ -22,8 +22,6 @@ module.exports = {
         return skip;
     },
     clearClubCache: async () => {
-        const cache = await redisClient.hget(CLUB);
-        console.log("CACHE", cache);
         redisClient.del(CLUB);
         return skip;
     },

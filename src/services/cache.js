@@ -14,8 +14,9 @@ mongoose.Query.prototype.exec = async function() {
         return exec.apply(this, arguments);
     }
     const key = JSON.stringify({
-        ...this.getQuery(),
-        name: this.mongooseCollection.name
+        query: this.getQuery(),
+        options: this.getOptions(),
+        collection: this.mongooseCollection.name
     });
     const cachedData = await redisClient.hget(this.hashKey, key);
     if (cachedData) {

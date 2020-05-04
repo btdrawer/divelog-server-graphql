@@ -1,7 +1,8 @@
+const { db, cache } = require("@btdrawer/divelog-server-utils");
 const server = require("./server");
 
-require("./services/db");
-require("./services/cache");
+db();
+cache();
 
 server()
     .listen({

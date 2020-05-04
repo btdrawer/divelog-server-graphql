@@ -1,3 +1,4 @@
+const { DiveModel } = require("@btdrawer/divelog-server-utils").models;
 const { seedDatabase, users, dives, gear } = require("./utils/seedDatabase");
 const {
     createDive,
@@ -12,7 +13,6 @@ const {
     deleteDive
 } = require("./operations/diveOperations");
 const getClient = require("./utils/getClient");
-const DiveModel = require("../src/models/DiveModel");
 
 const client = getClient();
 let authenticatedClient;

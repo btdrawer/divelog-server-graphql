@@ -1,6 +1,7 @@
-const ClubModel = require("../../models/ClubModel");
+const { models, resources } = require("@btdrawer/divelog-server-utils");
+const { ClubModel } = models;
+const { CLUB } = resources;
 const runListQuery = require("../../utils/runListQuery");
-const { CLUB } = require("../../constants/resources");
 
 module.exports = {
     clubs: (parent, args) =>

@@ -1,4 +1,4 @@
-const UserModel = require("../../models/UserModel");
+const { UserModel } = require("@btdrawer/divelog-server-utils").models;
 
 const getParticipants = ({ participants }) =>
     UserModel.find({

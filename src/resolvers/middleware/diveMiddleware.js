@@ -1,7 +1,7 @@
 const { skip } = require("graphql-resolvers");
-
-const DiveModel = require("../../models/DiveModel");
-const { NOT_FOUND, FORBIDDEN } = require("../../constants/errorCodes");
+const { models, errorCodes } = require("@btdrawer/divelog-server-utils");
+const { DiveModel } = models;
+const { NOT_FOUND, FORBIDDEN } = errorCodes;
 
 module.exports = {
     isDiveUser: async (parent, { id }, { authUserId }) => {

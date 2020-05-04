@@ -1,13 +1,13 @@
-const UserModel = require("../../src/models/UserModel");
-const DiveModel = require("../../src/models/DiveModel");
-const ClubModel = require("../../src/models/ClubModel");
-const GearModel = require("../../src/models/GearModel");
-const GroupModel = require("../../src/models/GroupModel");
+const {
+    models,
+    resources,
+    redisClient,
+    db
+} = require("@btdrawer/divelog-server-utils");
+const { UserModel, DiveModel, ClubModel, GearModel, GroupModel } = models;
+const { CLUB } = resources;
 
-const redisClient = require("../../src/services/redisClient");
-const { CLUB } = require("../../src/constants/resources");
-
-require("../../src/services/db");
+db();
 
 const users = [
     {

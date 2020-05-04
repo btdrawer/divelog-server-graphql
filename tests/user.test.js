@@ -1,3 +1,4 @@
+const { UserModel } = require("@btdrawer/divelog-server-utils").models;
 const { seedDatabase, users } = require("./utils/seedDatabase");
 const {
     createUser,
@@ -9,7 +10,6 @@ const {
     deleteUser
 } = require("./operations/userOperations");
 const getClient = require("./utils/getClient");
-const UserModel = require("../src/models/UserModel");
 
 const client = getClient();
 let authenticatedClient;

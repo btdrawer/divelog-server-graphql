@@ -1,7 +1,7 @@
 const { skip } = require("graphql-resolvers");
-
-const GroupModel = require("../../models/GroupModel");
-const { NOT_FOUND, FORBIDDEN } = require("../../constants/errorCodes");
+const { models, errorCodes } = require("@btdrawer/divelog-server-utils");
+const { GroupModel } = models;
+const { NOT_FOUND, FORBIDDEN } = errorCodes;
 
 module.exports = {
     isGroupParticipant: async (parent, { id }, { authUserId }) => {

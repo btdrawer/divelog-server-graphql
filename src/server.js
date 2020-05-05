@@ -3,8 +3,8 @@ const { importSchema } = require("graphql-import");
 const { makeExecutableSchema } = require("graphql-tools");
 const DataLoader = require("dataloader");
 const { RedisPubSub } = require("graphql-redis-subscriptions");
-const { auth, redisClient } = require("@btdrawer/divelog-server-utils");
-const { getUserId } = auth;
+const { redisClient } = require("@btdrawer/divelog-server-utils");
+const getUserId = require("./utils/getUserId");
 
 const Query = require("./resolvers/Query");
 const Mutation = require("./resolvers/Mutation");

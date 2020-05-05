@@ -1,6 +1,6 @@
 {
     "name": "divelog-server-graphql",
-    "version": "0.3.6",
+    "version": "0.3.7",
     "private": true,
     "scripts": {
         "start": "env-cmd -f ./config/.env nodemon src/app.js",
@@ -9,7 +9,7 @@
         "test:watch": "env-cmd -f ./config/.test.env jest tests --runInBand --watch"
     },
     "dependencies": {
-        "@btdrawer/divelog-server-utils": "^0.1.5",
+        "@btdrawer/divelog-server-utils": "^0.3.0",
         "apollo-server": "^2.11.0",
         "bcrypt": "^4.0.1",
         "dataloader": "^2.0.0",

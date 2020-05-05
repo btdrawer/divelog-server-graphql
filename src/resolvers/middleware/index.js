@@ -1,14 +1,17 @@
 const { skip } = require("graphql-resolvers");
+const {
+    resources,
+    errorCodes,
+    redisClient
+} = require("@btdrawer/divelog-server-utils");
+const { CLUB } = resources;
+const { INVALID_AUTH } = errorCodes;
+const { generateUserHashKey, generateGroupHashKey } = require("../../utils");
 
 const diveMiddleware = require("./diveMiddleware");
 const clubMiddleware = require("./clubMiddleware");
 const gearMiddleware = require("./gearMiddleware");
 const groupMiddleware = require("./groupMiddleware");
-
-const redisClient = require("../../services/redisClient");
-const { CLUB } = require("../../constants/resources");
-const { INVALID_AUTH } = require("../../constants/errorCodes");
-const { generateUserHashKey, generateGroupHashKey } = require("../../utils");
 
 module.exports = {
     isAuthenticated: (parent, args, { authUserId }) => {

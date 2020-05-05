@@ -1,7 +1,9 @@
-const UserModel = require("../models/UserModel");
-const DiveModel = require("../models/DiveModel");
-const ClubModel = require("../models/ClubModel");
-const GearModel = require("../models/GearModel");
+const {
+    UserModel,
+    DiveModel,
+    ClubModel,
+    GearModel
+} = require("@btdrawer/divelog-server-utils").models;
 
 const genericBatch = async ({ model, ids }) => {
     const result = await model.find({

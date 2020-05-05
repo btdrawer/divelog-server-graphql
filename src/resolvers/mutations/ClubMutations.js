@@ -1,19 +1,18 @@
 const { combineResolvers } = require("graphql-resolvers");
-
-const ClubModel = require("../../models/ClubModel");
-const UserModel = require("../../models/UserModel");
+const { models, errorCodes } = require("@btdrawer/divelog-server-utils");
+const { ClubModel, UserModel } = models;
+const {
+    ALREADY_A_MANAGER,
+    NOT_A_MANAGER,
+    ALREADY_A_MEMBER,
+    NOT_A_MEMBER
+} = errorCodes;
 const {
     isAuthenticated,
     clearClubCache,
     isClubManager,
     isClubMember
 } = require("../middleware");
-const {
-    ALREADY_A_MANAGER,
-    NOT_A_MANAGER,
-    ALREADY_A_MEMBER,
-    NOT_A_MEMBER
-} = require("../../constants/errorCodes");
 
 module.exports = {
     createClub: combineResolvers(

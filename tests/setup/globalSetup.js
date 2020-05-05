@@ -1,8 +1,10 @@
 const server = require("../../src/server");
-require("../../src/services/db");
-require("../../src/services/cache");
+const { db, cache } = require("@btdrawer/divelog-server-utils");
 
 module.exports = async () => {
+    global.db = db();
+    cache();
+
     global.httpServer = server();
     await global.httpServer
         .listen({

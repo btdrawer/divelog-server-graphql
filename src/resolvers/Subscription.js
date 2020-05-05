@@ -1,8 +1,7 @@
 const { combineResolvers } = require("graphql-resolvers");
-
-const { newMessageSubscriptionKey } = require("../constants/subscriptionKeys");
+const { NO_PUBSUB } = require("@btdrawer/divelog-server-utils").errorCodes;
+const { newMessageSubscriptionKey } = require("../utils/subscriptionKeys");
 const { isGroupParticipant } = require("./middleware");
-const { NO_PUBSUB } = require("../constants/errorCodes");
 
 module.exports = {
     newMessage: {

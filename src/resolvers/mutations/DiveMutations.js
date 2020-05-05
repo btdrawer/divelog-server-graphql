@@ -1,7 +1,8 @@
 const { combineResolvers } = require("graphql-resolvers");
-
-const DiveModel = require("../../models/DiveModel");
-const UserModel = require("../../models/UserModel");
+const {
+    DiveModel,
+    UserModel
+} = require("@btdrawer/divelog-server-utils").models;
 const {
     isAuthenticated,
     isDiveUser,

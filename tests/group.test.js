@@ -1,3 +1,4 @@
+const { GroupModel } = require("@btdrawer/divelog-server-utils").models;
 const { seedDatabase, users, groups } = require("./utils/seedDatabase");
 const {
     createGroup,
@@ -9,7 +10,6 @@ const {
     leaveGroup
 } = require("./operations/groupOperations");
 const getClient = require("./utils/getClient");
-const GroupModel = require("../src/models/GroupModel");
 
 const client = getClient();
 let authenticatedClient;

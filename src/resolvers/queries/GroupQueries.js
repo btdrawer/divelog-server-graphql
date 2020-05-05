@@ -1,6 +1,5 @@
 const { combineResolvers } = require("graphql-resolvers");
-
-const GroupModel = require("../../models/GroupModel");
+const { GroupModel } = require("@btdrawer/divelog-server-utils").models;
 const { isAuthenticated, isGroupParticipant } = require("../middleware");
 const { generateGroupHashKey } = require("../../utils");
 const runListQuery = require("../../utils/runListQuery");

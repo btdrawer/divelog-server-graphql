@@ -1,7 +1,7 @@
 const { skip } = require("graphql-resolvers");
-
-const ClubModel = require("../../models/ClubModel");
-const { NOT_FOUND, FORBIDDEN } = require("../../constants/errorCodes");
+const { models, errorCodes } = require("@btdrawer/divelog-server-utils");
+const { ClubModel } = models;
+const { NOT_FOUND, FORBIDDEN } = errorCodes;
 
 module.exports = {
     isClubManager: async (parent, { id }, { authUserId }) => {

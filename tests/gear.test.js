@@ -1,3 +1,4 @@
+const { GearModel } = require("@btdrawer/divelog-server-utils").models;
 const { seedDatabase, users, gear } = require("./utils/seedDatabase");
 const {
     createGear,
@@ -7,7 +8,6 @@ const {
     deleteGear
 } = require("./operations/gearOperations");
 const getClient = require("./utils/getClient");
-const GearModel = require("../src/models/GearModel");
 
 const client = getClient();
 let authenticatedClient;

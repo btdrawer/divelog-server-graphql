@@ -1,4 +1,4 @@
-const { USER, GROUP } = require("../constants/resources");
+const { USER, GROUP } = require("@btdrawer/divelog-server-utils").resources;
 
 const formatAuthPayload = result => ({
     user: {

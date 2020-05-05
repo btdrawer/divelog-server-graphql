@@ -1,7 +1,7 @@
 const { skip } = require("graphql-resolvers");
-
-const GearModel = require("../../models/GearModel");
-const { NOT_FOUND } = require("../../constants/errorCodes");
+const { models, errorCodes } = require("@btdrawer/divelog-server-utils");
+const { GearModel } = models;
+const { NOT_FOUND } = errorCodes;
 
 module.exports = {
     isGearOwner: async (parent, { id }, { authUserId }) => {

@@ -1,4 +1,4 @@
-const ClubModel = require("../../models/ClubModel");
+const { ClubModel } = require("@btdrawer/divelog-server-utils").models;
 
 module.exports = {
     email: ({ id, email }, args, { authUserId }) =>

@@ -1,3 +1,4 @@
+const { ClubModel } = require("@btdrawer/divelog-server-utils").models;
 const { seedDatabase, users, clubs } = require("./utils/seedDatabase");
 const {
     createClub,
@@ -12,7 +13,6 @@ const {
     deleteClub
 } = require("./operations/clubOperations");
 const getClient = require("./utils/getClient");
-const ClubModel = require("../src/models/ClubModel");
 
 const client = getClient();
 let authenticatedClient;

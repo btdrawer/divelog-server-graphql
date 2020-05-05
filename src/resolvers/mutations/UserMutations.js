@@ -1,11 +1,11 @@
 const { combineResolvers } = require("graphql-resolvers");
-
-const UserModel = require("../../models/UserModel");
+const { models, errorCodes } = require("@btdrawer/divelog-server-utils");
+const { UserModel } = models;
 const {
     CANNOT_ADD_YOURSELF,
     FRIEND_REQUEST_ALREADY_SENT,
     ALREADY_FRIENDS
-} = require("../../constants/errorCodes");
+} = errorCodes;
 const { isAuthenticated } = require("../middleware");
 const { formatAuthPayload } = require("../../utils");
 

@@ -1,6 +1,7 @@
 const { combineResolvers } = require("graphql-resolvers");
-const { GroupModel } = require("@btdrawer/divelog-server-utils").models;
-const { newMessageSubscriptionKey } = require("../../utils/subscriptionKeys");
+const { models, subscriptionKeys } = require("@btdrawer/divelog-server-utils");
+const { GroupModel } = models;
+const { newMessageSubscriptionKey } = subscriptionKeys;
 const {
     isAuthenticated,
     isGroupParticipant,

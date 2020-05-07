@@ -11,7 +11,6 @@
     "dependencies": {
         "@btdrawer/divelog-server-utils": "^0.3.0",
         "apollo-server": "^2.11.0",
-        "bcrypt": "^4.0.1",
         "dataloader": "^2.0.0",
         "env-cmd": "^10.0.1",
         "graphql-import": "^1.0.1",
@@ -19,10 +18,7 @@
         "graphql-resolvers": "^0.4.2",
         "graphql-tools": "^4.0.7",
         "jsonwebtoken": "^8.5.1",
-        "moment": "^2.24.0",
-        "mongoose": "^5.7.5",
-        "nodemon": "^1.19.2",
-        "redis": "^3.0.2"
+        "nodemon": "^1.19.2"
     },
     "devDependencies": {
         "apollo-boost": "^0.4.7",

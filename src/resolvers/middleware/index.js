@@ -1,9 +1,5 @@
 const { skip } = require("graphql-resolvers");
-const {
-    resources,
-    errorCodes,
-    redisClient
-} = require("@btdrawer/divelog-server-utils");
+const { resources, errorCodes } = require("@btdrawer/divelog-server-utils");
 const { CLUB } = resources;
 const { INVALID_AUTH } = errorCodes;
 const { generateUserHashKey, generateGroupHashKey } = require("../../utils");
@@ -20,15 +16,15 @@ module.exports = {
         }
         return skip;
     },
-    clearUserCache: (parent, args, { authUserId }) => {
+    clearUserCache: (parent, args, { redisClient, authUserId }) => {
         redisClient.del(generateUserHashKey(authUserId));
         return skip;
     },
-    clearClubCache: async () => {
+    clearClubCache: (parent, args, { redisClient }) => {
         redisClient.del(CLUB);
         return skip;
     },
-    clearGroupCache: (parent, { id }) => {
+    clearGroupCache: (parent, { id }, { redisClient }) => {
         redisClient.del(generateGroupHashKey(id));
         return skip;
     },

@@ -1,5 +1,5 @@
 const { UserModel } = require("@btdrawer/divelog-server-utils").models;
-const { seedDatabase, users } = require("./utils/seedDatabase");
+const { seedDatabase, users, close } = require("./utils/seedDatabase");
 const {
     createUser,
     login,
@@ -377,4 +377,6 @@ describe("Users", () => {
             });
         });
     });
+
+    afterAll(async () => await close());
 });

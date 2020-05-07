@@ -3,7 +3,7 @@ const { importSchema } = require("graphql-import");
 const { makeExecutableSchema } = require("graphql-tools");
 const DataLoader = require("dataloader");
 const { RedisPubSub } = require("graphql-redis-subscriptions");
-const { redisClient } = require("@btdrawer/divelog-server-utils");
+const { connect } = require("@btdrawer/divelog-server-utils");
 const getUserId = require("./utils/getUserId");
 
 const Query = require("./resolvers/Query");
@@ -21,6 +21,8 @@ const {
     batchClub,
     batchGear
 } = require("./utils/batchFunctions");
+
+const { redisClient } = connect();
 
 const pubsub = new RedisPubSub({
     publisher: redisClient,
@@ -40,18 +42,17 @@ const executableSchema = makeExecutableSchema({
     }
 });
 
-module.exports = () =>
-    new ApolloServer({
-        schema: executableSchema,
-        context: request => ({
-            redisClient,
-            pubsub,
-            authUserId: getUserId(request),
-            loaders: {
-                userLoader: new DataLoader(keys => batchUser(keys)),
-                diveLoader: new DataLoader(keys => batchDive(keys)),
-                clubLoader: new DataLoader(keys => batchClub(keys)),
-                gearLoader: new DataLoader(keys => batchGear(keys))
-            }
-        })
-    });
+module.exports = new ApolloServer({
+    schema: executableSchema,
+    context: request => ({
+        redisClient,
+        pubsub,
+        authUserId: getUserId(request),
+        loaders: {
+            userLoader: new DataLoader(keys => batchUser(keys)),
+            diveLoader: new DataLoader(keys => batchDive(keys)),
+            clubLoader: new DataLoader(keys => batchClub(keys)),
+            gearLoader: new DataLoader(keys => batchGear(keys))
+        }
+    })
+});

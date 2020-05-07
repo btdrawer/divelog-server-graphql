@@ -1,13 +1,12 @@
 const {
     models,
     resources,
-    redisClient,
-    db
+    connect
 } = require("@btdrawer/divelog-server-utils");
 const { UserModel, DiveModel, ClubModel, GearModel, GroupModel } = models;
 const { CLUB } = resources;
 
-db();
+const { db, redisClient } = connect();
 
 const users = [
     {
@@ -340,11 +339,16 @@ const seedDatabase = async ({ resources = {} } = {}) => {
     }
 };
 
+const close = async () => {
+    await db.close();
+};
+
 module.exports = {
     seedDatabase,
     users,
     dives,
     clubs,
     gear,
-    groups
+    groups,
+    close
 };

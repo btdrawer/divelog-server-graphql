@@ -1,5 +1,5 @@
 const { ClubModel } = require("@btdrawer/divelog-server-utils").models;
-const { seedDatabase, users, clubs } = require("./utils/seedDatabase");
+const { seedDatabase, users, clubs, close } = require("./utils/seedDatabase");
 const {
     createClub,
     getClubs,
@@ -649,4 +649,6 @@ describe("Clubs", () => {
             });
         });
     });
+
+    afterAll(async () => await close());
 });

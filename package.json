@@ -5,11 +5,11 @@
     "scripts": {
         "start": "env-cmd -f ./config/.env nodemon src/app.js",
         "lint": "eslint --fix .",
-        "test": "env-cmd -f ./config/.test.env jest --runInBand",
+        "test": "env-cmd -f ./config/.test.env jest --runInBand --forceExit",
         "test:watch": "env-cmd -f ./config/.test.env jest tests --runInBand --watch"
     },
     "dependencies": {
-        "@btdrawer/divelog-server-utils": "^0.3.1",
+        "@btdrawer/divelog-server-utils": "^0.4.0",
         "apollo-server": "^2.11.0",
         "dataloader": "^2.0.0",
         "env-cmd": "^10.0.1",

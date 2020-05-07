@@ -1,5 +1,5 @@
 const { GroupModel } = require("@btdrawer/divelog-server-utils").models;
-const { seedDatabase, users, groups } = require("./utils/seedDatabase");
+const { seedDatabase, users, groups, close } = require("./utils/seedDatabase");
 const {
     createGroup,
     getMyGroups,
@@ -442,4 +442,6 @@ describe("Groups", () => {
             ).rejects.toThrow();
         });
     });
+
+    afterAll(async () => await close());
 });

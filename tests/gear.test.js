@@ -1,5 +1,5 @@
 const { GearModel } = require("@btdrawer/divelog-server-utils").models;
-const { seedDatabase, users, gear } = require("./utils/seedDatabase");
+const { seedDatabase, users, gear, close } = require("./utils/seedDatabase");
 const {
     createGear,
     getGear,
@@ -307,4 +307,6 @@ describe("Gear", () => {
             ).rejects.toThrow();
         });
     });
+
+    afterAll(async () => await close());
 });

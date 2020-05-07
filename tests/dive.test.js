@@ -1,5 +1,11 @@
 const { DiveModel } = require("@btdrawer/divelog-server-utils").models;
-const { seedDatabase, users, dives, gear } = require("./utils/seedDatabase");
+const {
+    seedDatabase,
+    users,
+    dives,
+    gear,
+    close
+} = require("./utils/seedDatabase");
 const {
     createDive,
     getDives,
@@ -620,4 +626,6 @@ describe("Dives", () => {
             });
         });
     });
+
+    afterAll(async () => await close());
 });

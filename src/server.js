@@ -22,7 +22,7 @@ const {
     batchGear
 } = require("./utils/batchFunctions");
 
-const { redisClient } = connect();
+const { db, redisClient } = connect();
 
 const pubsub = new RedisPubSub({
     publisher: redisClient,
@@ -41,6 +41,13 @@ const executableSchema = makeExecutableSchema({
         Group
     }
 });
+
+const closeDatabase = async () => {
+    await db.close();
+};
+
+process.on("SIGTERM", closeDatabase);
+process.on("SIGINT", closeDatabase);
 
 module.exports = new ApolloServer({
     schema: executableSchema,

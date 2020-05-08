@@ -12,6 +12,7 @@ exports.globalSetup = async () => {
             port: process.env.SERVER_PORT
         })
         .then(({ url }) => console.log(`Server started on ${url}.`));
+
     return undefined;
 };
 

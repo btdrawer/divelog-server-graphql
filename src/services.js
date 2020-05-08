@@ -22,7 +22,7 @@ const {
     batchGear
 } = require("./utils/batchFunctions");
 
-const services = async () => {
+module.exports = async () => {
     const { db, redisClient } = await connect();
 
     const pubsub = new RedisPubSub({
@@ -68,5 +68,3 @@ const services = async () => {
 
     return { server, db, redisClient };
 };
-
-module.exports = services;

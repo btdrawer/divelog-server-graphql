@@ -1,5 +1,6 @@
 const { UserModel } = require("@btdrawer/divelog-server-utils").models;
-const { seedDatabase, users, close } = require("./utils/seedDatabase");
+const { globalSetup, globalTeardown } = require("./utils/setup");
+const { seedDatabase, users } = require("./utils/seedDatabase");
 const {
     createUser,
     login,
@@ -13,6 +14,8 @@ const getClient = require("./utils/getClient");
 
 const client = getClient();
 let authenticatedClient;
+
+beforeAll(async () => await globalSetup());
 
 describe("Users", () => {
     beforeEach(seedDatabase);
@@ -377,6 +380,6 @@ describe("Users", () => {
             });
         });
     });
-
-    afterAll(async () => await close());
 });
+
+afterAll(async () => await globalTeardown());

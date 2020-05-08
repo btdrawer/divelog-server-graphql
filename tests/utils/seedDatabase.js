@@ -1,12 +1,6 @@
-const {
-    models,
-    resources,
-    connect
-} = require("@btdrawer/divelog-server-utils");
+const { models, resources } = require("@btdrawer/divelog-server-utils");
 const { UserModel, DiveModel, ClubModel, GearModel, GroupModel } = models;
 const { CLUB } = resources;
-
-const { db, redisClient } = connect();
 
 const users = [
     {
@@ -255,7 +249,7 @@ const seedDatabase = async ({ resources = {} } = {}) => {
 
     // Because the `club` key is always the same, cached data will cause
     // problems for tests run sequentially with newly-seeded data
-    redisClient.del(CLUB);
+    global.redisClient.del(CLUB);
 
     // Example users
     await saveUser(0);
@@ -339,16 +333,11 @@ const seedDatabase = async ({ resources = {} } = {}) => {
     }
 };
 
-const close = async () => {
-    await db.close();
-};
-
 module.exports = {
     seedDatabase,
     users,
     dives,
     clubs,
     gear,
-    groups,
-    close
+    groups
 };

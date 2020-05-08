@@ -1,11 +1,6 @@
 const { DiveModel } = require("@btdrawer/divelog-server-utils").models;
-const {
-    seedDatabase,
-    users,
-    dives,
-    gear,
-    close
-} = require("./utils/seedDatabase");
+const { globalSetup, globalTeardown } = require("./utils/setup");
+const { seedDatabase, users, dives, gear } = require("./utils/seedDatabase");
 const {
     createDive,
     getDives,
@@ -22,6 +17,8 @@ const getClient = require("./utils/getClient");
 
 const client = getClient();
 let authenticatedClient;
+
+beforeAll(async () => await globalSetup());
 
 describe("Dives", () => {
     beforeEach(
@@ -626,6 +623,6 @@ describe("Dives", () => {
             });
         });
     });
-
-    afterAll(async () => await close());
 });
+
+afterAll(async () => await globalTeardown());

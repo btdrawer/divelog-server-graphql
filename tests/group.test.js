@@ -1,5 +1,6 @@
 const { GroupModel } = require("@btdrawer/divelog-server-utils").models;
-const { seedDatabase, users, groups, close } = require("./utils/seedDatabase");
+const { globalSetup, globalTeardown } = require("./utils/setup");
+const { seedDatabase, users, groups } = require("./utils/seedDatabase");
 const {
     createGroup,
     getMyGroups,
@@ -13,6 +14,8 @@ const getClient = require("./utils/getClient");
 
 const client = getClient();
 let authenticatedClient;
+
+beforeAll(async () => await globalSetup());
 
 describe("Groups", () => {
     beforeEach(
@@ -442,6 +445,6 @@ describe("Groups", () => {
             ).rejects.toThrow();
         });
     });
-
-    afterAll(async () => await close());
 });
+
+afterAll(async () => await globalTeardown());

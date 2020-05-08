@@ -1,5 +1,6 @@
 const { GearModel } = require("@btdrawer/divelog-server-utils").models;
-const { seedDatabase, users, gear, close } = require("./utils/seedDatabase");
+const { globalSetup, globalTeardown } = require("./utils/setup");
+const { seedDatabase, users, gear } = require("./utils/seedDatabase");
 const {
     createGear,
     getGear,
@@ -11,6 +12,8 @@ const getClient = require("./utils/getClient");
 
 const client = getClient();
 let authenticatedClient;
+
+beforeAll(async () => await globalSetup());
 
 describe("Gear", () => {
     beforeEach(
@@ -307,6 +310,6 @@ describe("Gear", () => {
             ).rejects.toThrow();
         });
     });
-
-    afterAll(async () => await close());
 });
+
+afterAll(async () => await globalTeardown());

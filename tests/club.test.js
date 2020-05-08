@@ -1,5 +1,6 @@
 const { ClubModel } = require("@btdrawer/divelog-server-utils").models;
-const { seedDatabase, users, clubs, close } = require("./utils/seedDatabase");
+const { globalSetup, globalTeardown } = require("./utils/setup");
+const { seedDatabase, users, clubs } = require("./utils/seedDatabase");
 const {
     createClub,
     getClubs,
@@ -16,6 +17,8 @@ const getClient = require("./utils/getClient");
 
 const client = getClient();
 let authenticatedClient;
+
+beforeAll(async () => await globalSetup());
 
 describe("Clubs", () => {
     beforeEach(
@@ -649,6 +652,6 @@ describe("Clubs", () => {
             });
         });
     });
-
-    afterAll(async () => await close());
 });
+
+afterAll(async () => await globalTeardown());

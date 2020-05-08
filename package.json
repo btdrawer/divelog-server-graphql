@@ -8,8 +8,11 @@
         "test": "env-cmd -f ./config/.test.env jest --runInBand --forceExit",
         "test:watch": "env-cmd -f ./config/.test.env jest tests --runInBand --watch"
     },
+    "jest": {
+        "testEnvironment": "node"
+    },
     "dependencies": {
-        "@btdrawer/divelog-server-utils": "^0.4.0",
+        "@btdrawer/divelog-server-utils": "^0.4.1",
         "apollo-server": "^2.11.0",
         "dataloader": "^2.0.0",
         "env-cmd": "^10.0.1",

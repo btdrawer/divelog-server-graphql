@@ -1,13 +1,13 @@
-const UserQueries = require("./queries/UserQueries");
-const DiveQueries = require("./queries/DiveQueries");
-const ClubQueries = require("./queries/ClubQueries");
-const GearQueries = require("./queries/GearQueries");
-const GroupQueries = require("./queries/GroupQueries");
+const userQueries = require("./queries/userQueries");
+const diveQueries = require("./queries/diveQueries");
+const clubQueries = require("./queries/clubQueries");
+const gearQueries = require("./queries/gearQueries");
+const groupQueries = require("./queries/groupQueries");
 
 module.exports = {
-    ...UserQueries,
-    ...DiveQueries,
-    ...ClubQueries,
-    ...GearQueries,
-    ...GroupQueries
+    ...userQueries,
+    ...diveQueries,
+    ...clubQueries,
+    ...gearQueries,
+    ...groupQueries
 };

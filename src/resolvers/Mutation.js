@@ -1,13 +1,13 @@
-const UserMutations = require("./mutations/UserMutations");
-const DiveMutations = require("./mutations/DiveMutations");
-const ClubMutations = require("./mutations/ClubMutations");
-const GearMutations = require("./mutations/GearMutations");
-const GroupMutations = require("./mutations/GroupMutations");
+const userMutations = require("./mutations/userMutations");
+const diveMutations = require("./mutations/diveMutations");
+const clubMutations = require("./mutations/clubMutations");
+const gearMutations = require("./mutations/gearMutations");
+const groupMutations = require("./mutations/groupMutations");
 
 module.exports = {
-    ...UserMutations,
-    ...DiveMutations,
-    ...ClubMutations,
-    ...GearMutations,
-    ...GroupMutations
+    ...userMutations,
+    ...diveMutations,
+    ...clubMutations,
+    ...gearMutations,
+    ...groupMutations
 };

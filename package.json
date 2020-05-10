@@ -6,7 +6,8 @@
         "start": "env-cmd -f ./config/.env nodemon src/app.js",
         "lint": "eslint --fix .",
         "test": "env-cmd -f ./config/.test.env jest --runInBand --forceExit",
-        "test:watch": "env-cmd -f ./config/.test.env jest tests --runInBand --watch"
+        "test:watch": "env-cmd -f ./config/.test.env jest tests --runInBand --watch",
+        "test:ci": "jest --runInBand --forceExit"
     },
     "jest": {
         "testEnvironment": "node"

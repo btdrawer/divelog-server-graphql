@@ -2,12 +2,11 @@ const { combineResolvers } = require("graphql-resolvers");
 const { GroupModel } = require("@btdrawer/divelog-server-utils").models;
 const { isAuthenticated, isGroupParticipant } = require("../middleware");
 const { generateGroupHashKey } = require("../../utils");
-const runListQuery = require("../../utils/runListQuery");
 
 module.exports = {
     myGroups: combineResolvers(
         isAuthenticated,
-        (parent, args, { authUserId }) =>
+        (parent, args, { runListQuery, authUserId }) =>
             runListQuery({
                 model: GroupModel,
                 args,
@@ -19,9 +18,18 @@ module.exports = {
     group: combineResolvers(
         isAuthenticated,
         isGroupParticipant,
-        (parent, { id }) =>
-            GroupModel.findById(id).cache({
-                hashKey: generateGroupHashKey(id)
-            })
+        async (parent, { id }, { cacheFunctions }) => {
+            const [group] = await cacheFunctions.queryWithCache(
+                true,
+                generateGroupHashKey(id),
+                {
+                    model: GroupModel,
+                    filter: {
+                        _id: id
+                    }
+                }
+            );
+            return group;
+        }
     )
 };

@@ -13,7 +13,7 @@
         "testEnvironment": "node"
     },
     "dependencies": {
-        "@btdrawer/divelog-server-utils": "^0.4.3",
+        "@btdrawer/divelog-server-utils": "^0.6.1",
         "apollo-server": "^2.11.0",
         "dataloader": "^2.0.0",
         "env-cmd": "^10.0.1",

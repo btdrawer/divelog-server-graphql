@@ -3,7 +3,7 @@ const { importSchema } = require("graphql-import");
 const { makeExecutableSchema } = require("graphql-tools");
 const DataLoader = require("dataloader");
 const { RedisPubSub } = require("graphql-redis-subscriptions");
-const { connect } = require("@btdrawer/divelog-server-utils");
+const { launchServices } = require("@btdrawer/divelog-server-utils");
 
 const Query = require("./resolvers/Query");
 const Mutation = require("./resolvers/Mutation");
@@ -21,14 +21,14 @@ const {
     batchClub,
     batchGear
 } = require("./utils/batchFunctions");
+const runListQuery = require("./utils/runListQuery");
 
 module.exports = async () => {
-    const { db, redisClient } = await connect();
-
-    const pubsub = new RedisPubSub({
-        publisher: redisClient,
-        subscribe: redisClient
-    });
+    const {
+        redisClient,
+        cacheFunctions,
+        closeServices
+    } = await launchServices();
 
     const executableSchema = makeExecutableSchema({
         typeDefs: importSchema("src/schema.graphql"),
@@ -46,8 +46,12 @@ module.exports = async () => {
     const server = new ApolloServer({
         schema: executableSchema,
         context: request => ({
-            redisClient,
-            pubsub,
+            runListQuery: runListQuery(cacheFunctions.queryWithCache),
+            cacheFunctions,
+            pubsub: new RedisPubSub({
+                publisher: redisClient,
+                subscribe: redisClient
+            }),
             authUserId: getUserId(request),
             loaders: {
                 userLoader: new DataLoader(keys => batchUser(keys)),
@@ -59,12 +63,10 @@ module.exports = async () => {
     });
 
     const closeServer = async () => {
-        await db.close();
+        await closeServices();
         await server.stop();
+        console.log("Server closed.");
     };
 
-    process.on("SIGTERM", closeServer);
-    process.on("SIGINT", closeServer);
-
-    return { server, db, redisClient };
+    return { server, closeServer };
 };

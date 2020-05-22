@@ -1,6 +1,10 @@
-const { models, resources } = require("@btdrawer/divelog-server-utils");
-const { UserModel, DiveModel, ClubModel, GearModel, GroupModel } = models;
-const { CLUB } = resources;
+const {
+    UserModel,
+    DiveModel,
+    ClubModel,
+    GearModel,
+    GroupModel
+} = require("@btdrawer/divelog-server-utils").models;
 
 const users = [
     {
@@ -246,10 +250,6 @@ const saveGroup = async ({ index, myId, userIds }) => {
 const seedDatabase = async ({ resources = {} } = {}) => {
     await UserModel.deleteMany();
     await ClubModel.deleteMany();
-
-    // Because the `club` key is always the same, cached data will cause
-    // problems for tests run sequentially with newly-seeded data
-    global.redisClient.del(CLUB);
 
     // Example users
     await saveUser(0);

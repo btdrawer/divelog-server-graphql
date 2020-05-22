@@ -43,19 +43,12 @@ const formatQueryOptions = ({ sortBy, sortOrder, limit }) => ({
     limit: limit + 1
 });
 
-const useCache = async ({
-    hashKey,
-    queryProps: { model, filter, options }
+module.exports = queryWithCache => async ({
+    model,
+    args,
+    requiredArgs,
+    hashKey = null
 }) => {
-    const result = hashKey
-        ? await model.find(filter, null, options).cache({
-              hashKey
-          })
-        : await model.find(filter, null, options);
-    return result;
-};
-
-module.exports = async ({ model, args, requiredArgs, hashKey = null }) => {
     const { where, limit = 10, cursor } = args;
     let { sortBy = "_id", sortOrder = "ASC" } = args;
     let result;
@@ -63,27 +56,21 @@ module.exports = async ({ model, args, requiredArgs, hashKey = null }) => {
         const parsedCursor = parseCursor(cursor);
         sortBy = parsedCursor.sortBy;
         sortOrder = parsedCursor.sortOrder;
-        result = await useCache({
-            hashKey,
-            queryProps: {
-                model,
-                filter: {
-                    ...generateQueryFromCursor(parsedCursor),
-                    ...requiredArgs
-                },
-                options: {
-                    limit: limit + 1
-                }
+        result = await queryWithCache(hashKey ? true : false, hashKey, {
+            model,
+            filter: {
+                ...generateQueryFromCursor(parsedCursor),
+                ...requiredArgs
+            },
+            options: {
+                limit: limit + 1
             }
         });
     } else {
-        result = await useCache({
-            hashKey,
-            queryProps: {
-                model,
-                filter: formatWhere({ where, requiredArgs }),
-                options: formatQueryOptions({ sortBy, sortOrder, limit })
-            }
+        result = await queryWithCache(hashKey ? true : false, hashKey, {
+            model,
+            filter: formatWhere({ where, requiredArgs }),
+            options: formatQueryOptions({ sortBy, sortOrder, limit })
         });
     }
     const hasNextPage = result.length > limit;

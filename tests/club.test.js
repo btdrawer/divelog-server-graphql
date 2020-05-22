@@ -18,7 +18,7 @@ const getClient = require("./utils/getClient");
 const client = getClient();
 let authenticatedClient;
 
-beforeAll(async () => await globalSetup());
+beforeAll(globalSetup);
 
 describe("Clubs", () => {
     beforeEach(
@@ -654,4 +654,4 @@ describe("Clubs", () => {
     });
 });
 
-afterAll(async () => await globalTeardown());
+afterAll(globalTeardown);

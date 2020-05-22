@@ -16,16 +16,16 @@ module.exports = {
         }
         return skip;
     },
-    clearUserCache: (parent, args, { redisClient, authUserId }) => {
-        redisClient.del(generateUserHashKey(authUserId));
+    clearUserCache: (parent, args, { cacheFunctions, authUserId }) => {
+        cacheFunctions.clearCache(generateUserHashKey(authUserId));
         return skip;
     },
-    clearClubCache: (parent, args, { redisClient }) => {
-        redisClient.del(CLUB);
+    clearClubCache: (parent, args, { cacheFunctions }) => {
+        cacheFunctions.clearCache(CLUB);
         return skip;
     },
-    clearGroupCache: (parent, { id }, { redisClient }) => {
-        redisClient.del(generateGroupHashKey(id));
+    clearGroupCache: (parent, { id }, { cacheFunctions }) => {
+        cacheFunctions.clearCache(generateGroupHashKey(id));
         return skip;
     },
     ...diveMiddleware,

@@ -14,26 +14,26 @@ const genericBatch = async ({ model, ids }) => {
     return ids.map(id => result.find(({ id: resultId }) => id === resultId));
 };
 
-exports.batchUser = async userIds =>
-    await genericBatch({
+exports.batchUser = userIds =>
+    genericBatch({
         model: UserModel,
         ids: userIds
     });
 
-exports.batchDive = async diveIds =>
-    await genericBatch({
+exports.batchDive = diveIds =>
+    genericBatch({
         model: DiveModel,
         ids: diveIds
     });
 
-exports.batchClub = async clubIds =>
-    await genericBatch({
+exports.batchClub = clubIds =>
+    genericBatch({
         model: ClubModel,
         ids: clubIds
     });
 
-exports.batchGear = async gearIds =>
-    await genericBatch({
+exports.batchGear = gearIds =>
+    genericBatch({
         model: GearModel,
         ids: gearIds
     });

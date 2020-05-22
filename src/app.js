@@ -1,7 +1,11 @@
-const services = require("./services");
+const getServer = require("./server");
 
 (async () => {
-    const { server } = await services();
+    const { server, closeServer } = await getServer();
+
+    process.on("SIGTERM", closeServer);
+    process.on("SIGINT", closeServer);
+
     server
         .listen({
             port: process.env.SERVER_PORT

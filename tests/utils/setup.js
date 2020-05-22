@@ -1,11 +1,10 @@
-const services = require("../../src/services");
+const getServer = require("../../src/server");
 
-exports.globalSetup = async () => {
-    const { server, db, redisClient } = await services();
+exports.globalSetup = async done => {
+    const { server, closeServer } = await getServer();
 
     global.httpServer = server;
-    global.db = db;
-    global.redisClient = redisClient;
+    global.closeServer = closeServer;
 
     server
         .listen({
@@ -13,10 +12,10 @@ exports.globalSetup = async () => {
         })
         .then(({ url }) => console.log(`Server started on ${url}.`));
 
-    return undefined;
+    done();
 };
 
-exports.globalTeardown = async () => {
-    await global.httpServer.stop();
-    await global.db.close();
+exports.globalTeardown = done => {
+    global.closeServer();
+    done();
 };

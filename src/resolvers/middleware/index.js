@@ -16,16 +16,16 @@ module.exports = {
         }
         return skip;
     },
-    clearUserCache: (parent, args, { cacheFunctions, authUserId }) => {
-        cacheFunctions.clearCache(generateUserHashKey(authUserId));
+    clearUserCache: (parent, args, { cacheUtils, authUserId }) => {
+        cacheUtils.clearCache(generateUserHashKey(authUserId));
         return skip;
     },
-    clearClubCache: (parent, args, { cacheFunctions }) => {
-        cacheFunctions.clearCache(CLUB);
+    clearClubCache: (parent, args, { cacheUtils }) => {
+        cacheUtils.clearCache(CLUB);
         return skip;
     },
-    clearGroupCache: (parent, { id }, { cacheFunctions }) => {
-        cacheFunctions.clearCache(generateGroupHashKey(id));
+    clearGroupCache: (parent, { id }, { cacheUtils }) => {
+        cacheUtils.clearCache(generateGroupHashKey(id));
         return skip;
     },
     ...diveMiddleware,

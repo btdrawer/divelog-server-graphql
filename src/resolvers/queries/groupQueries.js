@@ -18,9 +18,8 @@ module.exports = {
     group: combineResolvers(
         isAuthenticated,
         isGroupParticipant,
-        async (parent, { id }, { cacheFunctions }) => {
-            const [group] = await cacheFunctions.queryWithCache(
-                true,
+        async (parent, { id }, { cacheUtils }) => {
+            const [group] = await cacheUtils.queryWithCache(
                 generateGroupHashKey(id),
                 {
                     model: GroupModel,

@@ -1,6 +1,6 @@
 {
     "name": "divelog-server-graphql",
-    "version": "0.3.11",
+    "version": "0.3.12",
     "private": true,
     "scripts": {
         "start": "env-cmd -f ./config/.env nodemon src/app.js",
@@ -13,7 +13,7 @@
         "testEnvironment": "node"
     },
     "dependencies": {
-        "@btdrawer/divelog-server-utils": "^0.6.1",
+        "@btdrawer/divelog-server-utils": "^0.8.0",
         "apollo-server": "^2.11.0",
         "dataloader": "^2.0.0",
         "env-cmd": "^10.0.1",

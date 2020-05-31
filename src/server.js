@@ -25,8 +25,7 @@ const runListQuery = require("./utils/runListQuery");
 
 module.exports = async () => {
     const {
-        redisClient,
-        cacheFunctions,
+        cache: { redisClient, cacheUtils },
         closeServices
     } = await launchServices();
 
@@ -46,8 +45,8 @@ module.exports = async () => {
     const server = new ApolloServer({
         schema: executableSchema,
         context: request => ({
-            runListQuery: runListQuery(cacheFunctions.queryWithCache),
-            cacheFunctions,
+            runListQuery: runListQuery(cacheUtils.queryWithCache),
+            cacheUtils,
             pubsub: new RedisPubSub({
                 publisher: redisClient,
                 subscribe: redisClient

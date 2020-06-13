@@ -4,11 +4,8 @@ const { isAuthenticated, isUserOrDiveIsPublic } = require("../middleware");
 const { generateUserHashKey } = require("../../utils");
 
 module.exports = {
-    dives: async (parent, { userId, ...args }, { runListQuery }) => {
-        if (args.where) {
-            if (args.where.public) delete args.where.public;
-        }
-        return await runListQuery({
+    dives: (parent, { userId, ...args }, { runListQuery }) =>
+        runListQuery({
             model: DiveModel,
             args,
             requiredArgs: {
@@ -16,8 +13,7 @@ module.exports = {
                 public: true
             },
             hashKey: generateUserHashKey(userId)
-        });
-    },
+        }),
     myDives: combineResolvers(
         isAuthenticated,
         (parent, args, { runListQuery, authUserId }) =>

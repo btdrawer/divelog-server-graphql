@@ -11,8 +11,7 @@ const { formatAuthPayload } = require("../../utils");
 
 module.exports = {
     createUser: async (parent, { data }) => {
-        const user = new UserModel(data);
-        await user.save();
+        const user = await new UserModel(data).save();
         return formatAuthPayload(user);
     },
     login: async (parent, { username, password }) => {

@@ -14,11 +14,10 @@ module.exports = {
         isAuthenticated,
         clearUserCache,
         async (parent, { data }, { authUserId }) => {
-            const gear = new GearModel({
+            const gear = await new GearModel({
                 ...data,
                 owner: authUserId
-            });
-            await gear.save();
+            }).save();
             await UserModel.findByIdAndUpdate(authUserId, {
                 $push: {
                     gear: gear.id

@@ -14,7 +14,7 @@ module.exports = {
         async (parent, { data }, { authUserId }) => {
             const { name, participants, text } = data;
             participants.push(authUserId);
-            const group = new GroupModel({
+            const group = await new GroupModel({
                 name,
                 participants,
                 messages: [
@@ -23,8 +23,7 @@ module.exports = {
                         sender: authUserId
                     }
                 ]
-            });
-            await group.save();
+            }).save();
             return group;
         }
     ),

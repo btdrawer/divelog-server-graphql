@@ -14,16 +14,51 @@ const {
     isClubMember
 } = require("../middleware");
 
+const MANAGERS = "managers";
+const MEMBERS = "members";
+
+const checkArrayTemplate = async ({
+    arrName,
+    clubId,
+    userId,
+    err,
+    shouldInclude
+}) => {
+    const club = await ClubModel.findById(clubId);
+    const arr = club[arrName];
+    const predicate = shouldInclude
+        ? !arr.includes(userId)
+        : arr.includes(userId);
+    if (predicate) {
+        throw new Error(err);
+    }
+    return undefined;
+};
+
+const updateTemplate = async ({ club, user, check }) => {
+    await checkArrayTemplate({
+        clubId: club.id,
+        userId: user.id,
+        ...check
+    });
+    const updatedClub = await ClubModel.findByIdAndUpdate(
+        club.id,
+        club.payload,
+        { new: true }
+    );
+    await UserModel.findByIdAndUpdate(user.id, user.payload);
+    return updatedClub;
+};
+
 module.exports = {
     createClub: combineResolvers(
         isAuthenticated,
         clearClubCache,
         async (parent, { data }, { authUserId }) => {
-            const club = new ClubModel({
+            const club = await new ClubModel({
                 ...data,
                 managers: [authUserId]
-            });
-            await club.save();
+            }).save();
             await UserModel.findByIdAndUpdate(
                 authUserId,
                 {
@@ -47,130 +82,145 @@ module.exports = {
         isAuthenticated,
         isClubManager,
         clearClubCache,
-        async (parent, { id, userId }) => {
-            const { managers } = await ClubModel.findById(id);
-            if (managers.includes(userId)) {
-                throw new Error(ALREADY_A_MANAGER);
-            }
-            const club = await ClubModel.findByIdAndUpdate(
-                id,
-                {
-                    $push: {
-                        managers: userId
+        (parent, { id: clubId, userId }) =>
+            updateTemplate({
+                club: {
+                    id: clubId,
+                    payload: {
+                        $push: {
+                            managers: userId
+                        }
                     }
                 },
-                { new: true }
-            );
-            await UserModel.findByIdAndUpdate(userId, {
-                $push: {
-                    "clubs.manager": club.id
+                user: {
+                    id: userId,
+                    payload: {
+                        $push: {
+                            "clubs.manager": clubId
+                        }
+                    }
+                },
+                check: {
+                    arrName: MANAGERS,
+                    shouldInclude: false,
+                    err: ALREADY_A_MANAGER
                 }
-            });
-            return club;
-        }
+            })
     ),
     removeClubManager: combineResolvers(
         isAuthenticated,
         isClubManager,
         clearClubCache,
-        async (parent, { id, userId }) => {
-            const { managers } = await ClubModel.findById(id);
-            if (!managers.includes(userId)) {
-                throw new Error(NOT_A_MANAGER);
-            }
-            const club = await ClubModel.findByIdAndUpdate(
-                id,
-                {
-                    $pull: {
-                        managers: userId
+        (parent, { id: clubId, userId }) =>
+            updateTemplate({
+                club: {
+                    id: clubId,
+                    payload: {
+                        $pull: {
+                            managers: userId
+                        }
                     }
                 },
-                { new: true }
-            );
-            await UserModel.findByIdAndUpdate(userId, {
-                $pull: {
-                    "clubs.manager": club.id
+                user: {
+                    id: userId,
+                    payload: {
+                        $pull: {
+                            "clubs.manager": clubId
+                        }
+                    }
+                },
+                check: {
+                    arrName: MANAGERS,
+                    shouldInclude: true,
+                    err: NOT_A_MANAGER
                 }
-            });
-            return club;
-        }
+            })
     ),
     joinClub: combineResolvers(
         isAuthenticated,
         clearClubCache,
-        async (parent, { id }, { authUserId }) => {
-            const { members } = await ClubModel.findById(id);
-            if (members.includes(authUserId)) {
-                throw new Error(ALREADY_A_MEMBER);
-            }
-            const club = await ClubModel.findByIdAndUpdate(
-                id,
-                {
-                    $push: {
-                        members: authUserId
+        (parent, { id: clubId }, { authUserId }) =>
+            updateTemplate({
+                club: {
+                    id: clubId,
+                    payload: {
+                        $push: {
+                            members: authUserId
+                        }
                     }
                 },
-                { new: true }
-            );
-            await UserModel.findByIdAndUpdate(authUserId, {
-                $push: {
-                    "clubs.member": club.id
+                user: {
+                    id: authUserId,
+                    payload: {
+                        $push: {
+                            "clubs.member": clubId
+                        }
+                    }
+                },
+                check: {
+                    arrName: MEMBERS,
+                    shouldInclude: false,
+                    err: ALREADY_A_MEMBER
                 }
-            });
-            return club;
-        }
+            })
     ),
     leaveClub: combineResolvers(
         isAuthenticated,
         isClubMember,
         clearClubCache,
-        async (parent, { id }, { authUserId }) => {
-            const { members } = await ClubModel.findById(id);
-            if (!members.includes(authUserId)) {
-                throw new Error(NOT_A_MEMBER);
-            }
-            const club = await ClubModel.findByIdAndUpdate(
-                id,
-                {
-                    $pull: {
-                        members: authUserId
+        (parent, { id: clubId }, { authUserId }) =>
+            updateTemplate({
+                club: {
+                    id: clubId,
+                    payload: {
+                        $pull: {
+                            members: authUserId
+                        }
                     }
                 },
-                { new: true }
-            );
-            await UserModel.findByIdAndUpdate(authUserId, {
-                $pull: {
-                    "clubs.member": club.id
+                user: {
+                    id: authUserId,
+                    payload: {
+                        $pull: {
+                            "clubs.member": clubId
+                        }
+                    }
+                },
+                check: {
+                    arrName: MEMBERS,
+                    shouldInclude: true,
+                    err: NOT_A_MEMBER
                 }
-            });
-            return club;
-        }
+            })
     ),
     removeClubMember: combineResolvers(
         isAuthenticated,
         isClubManager,
         clearClubCache,
-        async (parent, { id, userId }) => {
-            const { members } = await ClubModel.findById(id);
-            if (!members.includes(userId)) {
-                throw new Error(NOT_A_MEMBER);
-            }
-            const club = await ClubModel.findByIdAndUpdate(
-                id,
-                {
-                    $pull: {
-                        members: userId
+        (parent, { id: clubId, userId }) =>
+            updateTemplate({
+                club: {
+                    id: clubId,
+                    payload: {
+                        $pull: {
+                            members: userId
+                        }
                     }
                 },
-                { new: true }
-            );
-            await UserModel.findByIdAndUpdate(userId, {
-                $pull: {
-                    "clubs.member": club.id
+                user: {
+                    id: userId,
+                    payload: {
+                        $pull: {
+                            "clubs.member": clubId
+                        }
+                    }
+                },
+                check: {
+                    arrName: MEMBERS,
+                    shouldInclude: true,
+                    err: NOT_A_MEMBER
                 }
-            });
-            return club;
-        }
+            })
     ),
     deleteClub: combineResolvers(
         isAuthenticated,

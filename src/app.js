@@ -1,14 +1,10 @@
-const getServer = require("./server");
+const Server = require("./Server");
 
 (async () => {
-    const { server, closeServer } = await getServer();
+    const server = await Server.build();
 
-    process.on("SIGTERM", closeServer);
-    process.on("SIGINT", closeServer);
+    process.on("SIGTERM", server.close);
+    process.on("SIGINT", server.close);
 
-    server
-        .listen({
-            port: process.env.SERVER_PORT
-        })
-        .then(({ url }) => console.log(`Server listening on ${url}.`));
+    server.launch();
 })();

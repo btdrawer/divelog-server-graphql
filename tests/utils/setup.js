@@ -1,21 +1,19 @@
-const getServer = require("../../src/server");
+const Server = require("../../src/server");
 
 exports.globalSetup = async done => {
-    const { server, closeServer } = await getServer();
+    const server = await Server.build();
 
-    global.httpServer = server;
-    global.closeServer = closeServer;
+    global.server = server;
 
-    server
-        .listen({
-            port: process.env.SERVER_PORT
-        })
-        .then(({ url }) => console.log(`Server started on ${url}.`));
+    process.on("SIGTERM", server.close);
+    process.on("SIGINT", server.close);
+
+    server.launch();
 
     done();
 };
 
 exports.globalTeardown = done => {
-    global.closeServer();
+    global.server.close();
     done();
 };

@@ -35,11 +35,3 @@ To run unit tests, add a `.test.env` file to the `config` folder with the variab
 
 You can also watch the tests:
 `npm run test:watch`
-
-## Acknowledgements
-
-I learned about GraphQL and how to implement it in NodeJS from the Udemy course [The Modern GraphQL Bootcamp (with Node.js and Apollo)](https://www.udemy.com/course/graphql-bootcamp/).
-
-I also learned about dataloaders, cursor-based pagination, and how to combine multiple resolvers from this course: [GraphQL Apollo Server with Node.js, MongoDB - GraphQL API](https://www.udemy.com/course/graphql-apollo-server-api-nodejs-mongodb/).
-
-Finally, I learned about implementing caching, using Redis, from the course [`Node JS: Advanced Concepts`](https://www.udemy.com/course/advanced-node-for-developers/).

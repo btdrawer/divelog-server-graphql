@@ -3,7 +3,8 @@
     "version": "0.3.15",
     "private": true,
     "scripts": {
-        "start": "env-cmd -f ./config/.env nodemon src/app.js",
+        "start": "tsc && env-cmd -f ./config/.env nodemon built/app.js",
+        "start:nocompile": "env-cmd -f ./config/.env nodemon built/app.js",
         "lint": "eslint --fix .",
         "test": "env-cmd -f ./config/.test.env jest --runInBand --forceExit",
         "test:watch": "env-cmd -f ./config/.test.env jest tests --runInBand --watch",
@@ -25,12 +26,20 @@
         "nodemon": "^1.19.2"
     },
     "devDependencies": {
+        "@types/graphql-resolvers": "^0.3.0",
+        "@types/ioredis": "^4.17.5",
+        "@types/jsonwebtoken": "^8.5.0",
+        "@types/node-fetch": "^2.5.7",
+        "@types/redis": "^2.8.27",
         "apollo-boost": "^0.4.7",
+        "cross-fetch": "^3.0.6",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.10.0",
         "eslint-plugin-prettier": "^3.1.2",
-        "jest": "^25.2.3",
-        "node-fetch": "^2.6.0",
-        "prettier": "^1.19.1"
+        "jest": "^26.0.0",
+        "node-fetch": "^2.6.1",
+        "prettier": "^1.19.1",
+        "ts-jest": "^26.4.0",
+        "typescript": "^4.0.3"
     }
 }

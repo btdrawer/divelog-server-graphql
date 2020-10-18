@@ -1,5 +1,5 @@
 import { combineResolvers } from "graphql-resolvers";
-import { models, subscriptionKeys } from "@btdrawer/divelog-server-utils";
+import { Group, subscriptionKeys } from "@btdrawer/divelog-server-core";
 import {
     isAuthenticated,
     isGroupParticipant,
@@ -8,24 +8,21 @@ import {
 import { Context } from "../../types";
 
 const { newMessageSubscriptionKey } = subscriptionKeys;
-const { GroupModel } = models;
 
 export const createGroup = combineResolvers(
     isAuthenticated,
     async (parent: any, { data }: any, { authUserId }: Context) => {
         const { name, participants, text } = data;
-        participants.push(authUserId);
-        const group = await new GroupModel({
+        return Group.create({
             name,
-            participants,
+            participants: [...participants, authUserId],
             messages: [
                 {
                     text,
                     sender: authUserId
                 }
             ]
-        }).save();
-        return group;
+        });
     }
 );
 
@@ -34,13 +31,9 @@ export const renameGroup = combineResolvers(
     isGroupParticipant,
     clearGroupCache,
     (parent: any, { id, name }: any) =>
-        GroupModel.findByIdAndUpdate(
-            id,
-            {
-                name
-            },
-            { new: true }
-        )
+        Group.update(id, {
+            name
+        })
 );
 
 export const sendMessage = combineResolvers(
@@ -48,24 +41,15 @@ export const sendMessage = combineResolvers(
     isGroupParticipant,
     clearGroupCache,
     async (parent: any, { id, text }: any, { authUserId, pubsub }: Context) => {
-        const group = await GroupModel.findByIdAndUpdate(
-            id,
-            {
-                push: {
-                    messages: {
-                        text,
-                        sender: authUserId
-                    }
-                }
-            },
-            { new: true }
-        );
+        const group = await Group.sendMessage(id, {
+            text,
+            sender: authUserId
+        });
         if (pubsub && group) {
             const message = group.messages[group.messages.length - 1];
             pubsub.publish(newMessageSubscriptionKey(id), {
                 newMessage: {
                     message: {
-                        id: message.id,
                         text: message.text,
                         sender: message.sender
                     },
@@ -74,7 +58,6 @@ export const sendMessage = combineResolvers(
                         name: group.name,
                         participants: group.participants,
                         messages: group.messages.map(message => ({
-                            id: message.id,
                             text: message.text,
                             sender: message.sender
                         }))
@@ -90,16 +73,8 @@ export const addGroupParticipant = combineResolvers(
     isAuthenticated,
     isGroupParticipant,
     clearGroupCache,
-    (parent: any, { id, userId }: any) =>
-        GroupModel.findByIdAndUpdate(
-            id,
-            {
-                $push: {
-                    participants: userId
-                }
-            },
-            { new: true }
-        )
+    (parent: any, { id, userId }: any, { authUserId }: Context) =>
+        Group.addUser(id, userId)
 );
 
 export const leaveGroup = combineResolvers(
@@ -107,13 +82,5 @@ export const leaveGroup = combineResolvers(
     isGroupParticipant,
     clearGroupCache,
     (parent: any, { id }: any, { authUserId }: Context) =>
-        GroupModel.findByIdAndUpdate(
-            id,
-            {
-                $pull: {
-                    participants: authUserId
-                }
-            },
-            { new: true }
-        )
+        Group.removeUser(id, authUserId)
 );

@@ -1,5 +1,5 @@
-import { models } from "@btdrawer/divelog-server-utils";
-import { seedDatabase, users, clubs } from "./utils/seedDatabase";
+import { get } from "lodash";
+import { Club, seeder } from "@btdrawer/divelog-server-core";
 import {
     createClub,
     getClubs,
@@ -12,17 +12,18 @@ import {
     removeClubMember,
     deleteClub
 } from "./operations/clubOperations";
-import getClient from "./utils/getClient";
+import { setup, teardown, getClient } from "./utils";
 
-const { ClubModel } = models;
+const { seedDatabase, users, clubs } = seeder;
 const client = getClient();
 
 describe("Clubs", () => {
+    beforeAll(setup);
+    afterAll(teardown);
     beforeEach(
-        async () =>
-            await seedDatabase({
-                clubs: true
-            })
+        seedDatabase({
+            clubs: true
+        })
     );
 
     describe("When logged in as a manager of an existing club", () => {
@@ -51,12 +52,10 @@ describe("Clubs", () => {
                 expect(data.createClub.location).toEqual("C");
                 expect(data.createClub.website).toEqual("example2.com");
                 expect(data.createClub.managers[0].id).toEqual(
-                    users[0].output.id
+                    get(users[0], "output.id")
                 );
 
-                const club = await ClubModel.findOne({
-                    _id: data.createClub.id
-                });
+                const club = await Club.get(data.createClub.id);
 
                 if (club) {
                     expect(club.name).toEqual("B");
@@ -67,7 +66,7 @@ describe("Clubs", () => {
 
             test("should return club by ID", async () => {
                 const variables = {
-                    id: clubs[0].output.id
+                    id: get(clubs[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.query({
@@ -78,7 +77,9 @@ describe("Clubs", () => {
                 expect(data.club.name).toEqual(clubs[0].input.name);
                 expect(data.club.location).toEqual(clubs[0].input.location);
                 expect(data.club.website).toEqual(clubs[0].input.website);
-                expect(data.club.managers[0].id).toEqual(users[0].output.id);
+                expect(data.club.managers[0].id).toEqual(
+                    get(users[0], "output.id")
+                );
             });
 
             test("should return a list of clubs", async () => {
@@ -96,7 +97,7 @@ describe("Clubs", () => {
                     clubs[0].input.website
                 );
                 expect(data.clubs.data[0].managers[0].id).toEqual(
-                    users[0].output.id
+                    get(users[0], "output.id")
                 );
             });
 
@@ -122,7 +123,7 @@ describe("Clubs", () => {
                     clubs[0].input.website
                 );
                 expect(data.clubs.data[0].managers[0].id).toEqual(
-                    users[0].output.id
+                    get(users[0], "output.id")
                 );
             });
 
@@ -157,7 +158,7 @@ describe("Clubs", () => {
 
             test("should update club", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
+                    id: get(clubs[0], "output.id"),
                     data: {
                         name: "Updated name"
                     }
@@ -173,8 +174,8 @@ describe("Clubs", () => {
 
             test("should add club manager", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
-                    userId: users[1].output.id
+                    id: get(clubs[0], "output.id"),
+                    userId: get(users[1], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -184,14 +185,14 @@ describe("Clubs", () => {
 
                 expect(data.addClubManager.managers.length).toEqual(3);
                 expect(data.addClubManager.managers[2].id).toEqual(
-                    users[1].output.id
+                    get(users[1], "output.id")
                 );
             });
 
             test("should remove club manager", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
-                    userId: users[2].output.id
+                    id: get(clubs[0], "output.id"),
+                    userId: get(users[2], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -201,14 +202,14 @@ describe("Clubs", () => {
 
                 expect(data.removeClubManager.managers.length).toEqual(1);
                 expect(data.removeClubManager.managers[0].id).toEqual(
-                    users[0].output.id
+                    get(users[0], "output.id")
                 );
             });
 
             test("Should remove club member", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
-                    userId: users[1].output.id
+                    id: get(clubs[0], "output.id"),
+                    userId: get(users[1], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -221,7 +222,7 @@ describe("Clubs", () => {
 
             test("Should delete club", async () => {
                 const variables = {
-                    id: clubs[0].output.id
+                    id: get(clubs[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -229,7 +230,7 @@ describe("Clubs", () => {
                     variables
                 });
 
-                expect(data.deleteClub.id).toEqual(clubs[0].output.id);
+                expect(data.deleteClub.id).toEqual(get(clubs[0], "output.id"));
             });
         });
 
@@ -268,8 +269,8 @@ describe("Clubs", () => {
 
             test("should fail to add club manager if user already a manager", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
-                    userId: users[0].output.id
+                    id: get(clubs[0], "output.id"),
+                    userId: get(users[0], "output.id")
                 };
 
                 await expect(
@@ -282,8 +283,8 @@ describe("Clubs", () => {
 
             test("should fail to remove club manager if user to be removed is not a manager", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
-                    userId: users[1].output.id
+                    id: get(clubs[0], "output.id"),
+                    userId: get(users[1], "output.id")
                 };
 
                 await expect(
@@ -296,8 +297,8 @@ describe("Clubs", () => {
 
             test("should fail to remove club member if user to be removed is not a member", async () => {
                 const variables = {
-                    id: clubs[1].output.id,
-                    userId: users[1].output.id
+                    id: get(clubs[1], "output.id"),
+                    userId: get(users[1], "output.id")
                 };
 
                 await expect(
@@ -320,7 +321,7 @@ describe("Clubs", () => {
         describe("and using valid inputs", () => {
             test("should join club", async () => {
                 const variables = {
-                    id: clubs[1].output.id
+                    id: get(clubs[1], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -329,12 +330,14 @@ describe("Clubs", () => {
                 });
 
                 expect(data.joinClub.members.length).toEqual(2);
-                expect(data.joinClub.members[1].id).toEqual(users[1].output.id);
+                expect(data.joinClub.members[1].id).toEqual(
+                    get(users[1], "output.id")
+                );
             });
 
             test("should leave club", async () => {
                 const variables = {
-                    id: clubs[0].output.id
+                    id: get(clubs[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -349,7 +352,7 @@ describe("Clubs", () => {
         describe("and using invalid inputs", () => {
             test("should fail to update club", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
+                    id: get(clubs[0], "output.id"),
                     data: {
                         name: "Updated name"
                     }
@@ -365,8 +368,8 @@ describe("Clubs", () => {
 
             test("should fail to add club manager", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
-                    userId: users[2].output.id
+                    id: get(clubs[0], "output.id"),
+                    userId: get(users[2], "output.id")
                 };
 
                 await expect(
@@ -379,8 +382,8 @@ describe("Clubs", () => {
 
             test("should fail to remove club manager", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
-                    userId: users[1].output.id
+                    id: get(clubs[0], "output.id"),
+                    userId: get(users[1], "output.id")
                 };
 
                 await expect(
@@ -393,7 +396,7 @@ describe("Clubs", () => {
 
             test("should fail to join club if already a member", async () => {
                 const variables = {
-                    id: clubs[0].output.id
+                    id: get(clubs[0], "output.id")
                 };
 
                 await expect(
@@ -406,7 +409,7 @@ describe("Clubs", () => {
 
             test("should fail to leave club if not a member", async () => {
                 const variables = {
-                    id: clubs[1].output.id
+                    id: get(clubs[1], "output.id")
                 };
 
                 await expect(
@@ -419,8 +422,8 @@ describe("Clubs", () => {
 
             test("should fail to remove club manager", async () => {
                 const variables = {
-                    id: clubs[1].output.id,
-                    userId: users[0].output.id
+                    id: get(clubs[1], "output.id"),
+                    userId: get(users[0], "output.id")
                 };
 
                 await expect(
@@ -433,7 +436,7 @@ describe("Clubs", () => {
 
             test("should fail to delete club", async () => {
                 const variables = {
-                    id: clubs[0].output.id
+                    id: get(clubs[0], "output.id")
                 };
 
                 await expect(
@@ -450,7 +453,7 @@ describe("Clubs", () => {
         describe("and making data queries", () => {
             test("should return club by ID", async () => {
                 const variables = {
-                    id: clubs[0].output.id
+                    id: get(clubs[0], "output.id")
                 };
 
                 const { data } = await client.query({
@@ -462,7 +465,9 @@ describe("Clubs", () => {
                 expect(data.club.name).toEqual(clubs[0].input.name);
                 expect(data.club.location).toEqual(clubs[0].input.location);
                 expect(data.club.website).toEqual(clubs[0].input.website);
-                expect(data.club.managers[0].id).toEqual(users[0].output.id);
+                expect(data.club.managers[0].id).toEqual(
+                    get(users[0], "output.id")
+                );
             });
 
             test("should return a list of clubs", async () => {
@@ -480,7 +485,7 @@ describe("Clubs", () => {
                     clubs[0].input.website
                 );
                 expect(data.clubs.data[0].managers[0].id).toEqual(
-                    users[0].output.id
+                    get(users[0], "output.id")
                 );
             });
 
@@ -506,7 +511,7 @@ describe("Clubs", () => {
                     clubs[0].input.website
                 );
                 expect(data.clubs.data[0].managers[0].id).toEqual(
-                    users[0].output.id
+                    get(users[0], "output.id")
                 );
             });
 
@@ -560,7 +565,7 @@ describe("Clubs", () => {
 
             test("should fail to update club", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
+                    id: get(clubs[0], "output.id"),
                     data: {
                         name: "Updated name"
                     }
@@ -576,8 +581,8 @@ describe("Clubs", () => {
 
             test("should fail to add club manager", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
-                    userId: users[1].output.id
+                    id: get(clubs[0], "output.id"),
+                    userId: get(users[1], "output.id")
                 };
 
                 await expect(
@@ -590,8 +595,8 @@ describe("Clubs", () => {
 
             test("should fail to remove club manager", async () => {
                 const variables = {
-                    id: clubs[0].output.id,
-                    userId: users[1].output.id
+                    id: get(clubs[0], "output.id"),
+                    userId: get(users[1], "output.id")
                 };
 
                 await expect(
@@ -604,7 +609,7 @@ describe("Clubs", () => {
 
             test("should fail to join club", async () => {
                 const variables = {
-                    id: clubs[0].output.id
+                    id: get(clubs[0], "output.id")
                 };
 
                 await expect(
@@ -617,7 +622,7 @@ describe("Clubs", () => {
 
             test("should fail to leave club", async () => {
                 const variables = {
-                    id: clubs[0].output.id
+                    id: get(clubs[0], "output.id")
                 };
 
                 await expect(
@@ -630,8 +635,8 @@ describe("Clubs", () => {
 
             test("should fail to remove club member", async () => {
                 const variables = {
-                    id: clubs[1].output.id,
-                    userId: users[0].output.id
+                    id: get(clubs[1], "output.id"),
+                    userId: get(users[0], "output.id")
                 };
 
                 await expect(
@@ -644,7 +649,7 @@ describe("Clubs", () => {
 
             test("should fail to delete club", async () => {
                 const variables = {
-                    id: clubs[1].output.id
+                    id: get(clubs[1], "output.id")
                 };
 
                 await expect(

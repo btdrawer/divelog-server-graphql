@@ -1,6 +1,6 @@
 const { gql } = require("apollo-boost");
 
-exports.createDive = gql`
+export const createDive = gql`
     mutation($data: CreateDiveInput!) {
         createDive(data: $data) {
             id
@@ -29,7 +29,7 @@ exports.createDive = gql`
     }
 `;
 
-exports.getDives = gql`
+export const getDives = gql`
     query(
         $userId: ID!
         $where: DiveWhereInput
@@ -78,7 +78,7 @@ exports.getDives = gql`
     }
 `;
 
-exports.getMyDives = gql`
+export const getMyDives = gql`
     query(
         $where: MyDiveWhereInput
         $sortBy: DiveSortEnum
@@ -125,7 +125,7 @@ exports.getMyDives = gql`
     }
 `;
 
-exports.getDive = gql`
+export const getDive = gql`
     query($id: ID!) {
         dive(id: $id) {
             id
@@ -154,7 +154,7 @@ exports.getDive = gql`
     }
 `;
 
-exports.updateDive = gql`
+export const updateDive = gql`
     mutation($id: ID!, $data: UpdateDiveInput!) {
         updateDive(id: $id, data: $data) {
             id
@@ -183,7 +183,7 @@ exports.updateDive = gql`
     }
 `;
 
-exports.addGearToDive = gql`
+export const addGearToDive = gql`
     mutation($id: ID!, $gearId: ID!) {
         addGearToDive(id: $id, gearId: $gearId) {
             id
@@ -212,7 +212,7 @@ exports.addGearToDive = gql`
     }
 `;
 
-exports.removeGearFromDive = gql`
+export const removeGearFromDive = gql`
     mutation($id: ID!, $gearId: ID!) {
         removeGearFromDive(id: $id, gearId: $gearId) {
             id
@@ -241,7 +241,7 @@ exports.removeGearFromDive = gql`
     }
 `;
 
-exports.addBuddyToDive = gql`
+export const addBuddyToDive = gql`
     mutation($id: ID!, $buddyId: ID!) {
         addBuddyToDive(id: $id, buddyId: $buddyId) {
             id
@@ -270,7 +270,7 @@ exports.addBuddyToDive = gql`
     }
 `;
 
-exports.removeBuddyFromDive = gql`
+export const removeBuddyFromDive = gql`
     mutation($id: ID!, $buddyId: ID!) {
         removeBuddyFromDive(id: $id, buddyId: $buddyId) {
             id
@@ -299,7 +299,7 @@ exports.removeBuddyFromDive = gql`
     }
 `;
 
-exports.deleteDive = gql`
+export const deleteDive = gql`
     mutation($id: ID!) {
         deleteDive(id: $id) {
             id

@@ -1,5 +1,5 @@
-import { models } from "@btdrawer/divelog-server-utils";
-import { seedDatabase, users, gear } from "./utils/seedDatabase";
+import { get } from "lodash";
+import { Gear, seeder } from "@btdrawer/divelog-server-core";
 import {
     createGear,
     getGear,
@@ -7,18 +7,18 @@ import {
     updateGear,
     deleteGear
 } from "./operations/gearOperations";
-import getClient from "./utils/getClient";
+import { setup, teardown, getClient } from "./utils";
 
-const { GearModel } = models;
-
+const { seedDatabase, users, gear } = seeder;
 const client = getClient();
 
 describe("Gear", () => {
+    beforeAll(setup);
+    afterAll(teardown);
     beforeEach(
-        async () =>
-            await seedDatabase({
-                gear: true
-            })
+        seedDatabase({
+            gear: true
+        })
     );
 
     describe("When logged in", () => {
@@ -49,9 +49,7 @@ describe("Gear", () => {
                 expect(data.createGear.model).toEqual("D");
                 expect(data.createGear.type).toEqual("E");
 
-                const gearInDatabase = await GearModel.findOne({
-                    _id: data.createGear.id
-                });
+                const gearInDatabase = await Gear.get(data.createGear.id);
 
                 if (gearInDatabase) {
                     expect(gearInDatabase.name).toEqual("B");
@@ -141,13 +139,13 @@ describe("Gear", () => {
 
                 expect(requestTwoData.gear.data.length).toEqual(1);
                 expect(requestTwoData.gear.data[0].id).toEqual(
-                    gear[1].output.id
+                    get(gear[1], "output.id")
                 );
             });
 
             test("should return gear by ID", async () => {
                 const variables = {
-                    id: gear[0].output.id
+                    id: get(gear[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.query({
@@ -160,7 +158,7 @@ describe("Gear", () => {
 
             test("should update gear", async () => {
                 const variables = {
-                    id: gear[0].output.id,
+                    id: get(gear[0], "output.id"),
                     data: {
                         name: "Updated name"
                     }
@@ -176,7 +174,7 @@ describe("Gear", () => {
 
             test("should delete gear", async () => {
                 const variables = {
-                    id: gear[0].output.id
+                    id: get(gear[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -184,11 +182,11 @@ describe("Gear", () => {
                     variables
                 });
 
-                expect(data.deleteGear.id).toEqual(gear[0].output.id);
+                expect(data.deleteGear.id).toEqual(get(gear[0], "output.id"));
 
-                const gearInDatabase = await GearModel.findOne({
-                    _id: gear[0].output.id
-                });
+                const gearInDatabase = await Gear.get(
+                    get(gear[0], "output.id")
+                );
 
                 expect(gearInDatabase).toBe(null);
             });
@@ -197,7 +195,7 @@ describe("Gear", () => {
         describe("When using invalid inputs", () => {
             test("should fail to return gear by ID if it belongs to a different user", async () => {
                 const variables = {
-                    id: gear[2].output.id
+                    id: get(gear[2], "output.id")
                 };
 
                 await expect(
@@ -212,7 +210,7 @@ describe("Gear", () => {
                 const authenticatedClient = getClient(users[1].token);
 
                 const variables = {
-                    id: gear[0].output.id,
+                    id: get(gear[0], "output.id"),
                     data: {
                         name: "Updated name"
                     }
@@ -230,7 +228,7 @@ describe("Gear", () => {
                 const authenticatedClient = getClient(users[1].token);
 
                 const variables = {
-                    id: gear[0].output.id
+                    id: get(gear[0], "output.id")
                 };
 
                 await expect(
@@ -272,7 +270,7 @@ describe("Gear", () => {
 
         test("should fail to return gear by ID", async () => {
             const variables = {
-                id: gear[0].output.id
+                id: get(gear[0], "output.id")
             };
 
             await expect(
@@ -285,7 +283,7 @@ describe("Gear", () => {
 
         test("should fail to update gear", async () => {
             const variables = {
-                id: gear[0].output.id,
+                id: get(gear[0], "output.id"),
                 data: {
                     name: "Updated name"
                 }
@@ -301,7 +299,7 @@ describe("Gear", () => {
 
         test("should fail to delete gear", async () => {
             const variables = {
-                id: gear[0].output.id
+                id: get(gear[0], "output.id")
             };
 
             await expect(

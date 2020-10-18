@@ -4,8 +4,8 @@ import { config } from "dotenv";
 config();
 
 type JwtOutput = {
-    id: string
-}
+    id: string;
+};
 
 const getHeader = (req: any): string =>
     req.connection

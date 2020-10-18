@@ -1,36 +1,23 @@
 import { combineResolvers } from "graphql-resolvers";
-import { models } from "@btdrawer/divelog-server-utils";
+import { Dive } from "@btdrawer/divelog-server-core";
 import { Context } from "../../types";
 import { isAuthenticated, clearUserCache, isDiveUser } from "../middleware";
-
-const { DiveModel, UserModel } = models;
 
 export const createDive = combineResolvers(
     isAuthenticated,
     clearUserCache,
-    async (parent: any, { data }: any, { authUserId }: Context) => {
-        const dive = new DiveModel({
+    async (parent: any, { data }: any, { authUserId }: Context) =>
+        Dive.create({
             ...data,
             user: authUserId
-        });
-        await dive.save();
-        await UserModel.findByIdAndUpdate(authUserId, {
-            $push: {
-                dives: dive.id
-            }
-        });
-        return dive;
-    }
+        })
 );
 
 export const updateDive = combineResolvers(
     isAuthenticated,
     isDiveUser,
     clearUserCache,
-    (parent: any, { id, data }: any) =>
-        DiveModel.findByIdAndUpdate(id, data, {
-            new: true
-        })
+    (parent: any, { id, data }: any) => Dive.update(id, data)
 );
 
 export const addGearToDive = combineResolvers(
@@ -38,15 +25,11 @@ export const addGearToDive = combineResolvers(
     isDiveUser,
     clearUserCache,
     (parent: any, { id, gearId }: any) =>
-        DiveModel.findByIdAndUpdate(
-            id,
-            {
-                $push: {
-                    gear: gearId
-                }
-            },
-            { new: true }
-        )
+        Dive.update(id, {
+            $push: {
+                gear: gearId
+            }
+        })
 );
 
 export const removeGearFromDive = combineResolvers(
@@ -54,15 +37,11 @@ export const removeGearFromDive = combineResolvers(
     isDiveUser,
     clearUserCache,
     (parent: any, { id, gearId }: any) =>
-        DiveModel.findByIdAndUpdate(
-            id,
-            {
-                $pull: {
-                    gear: gearId
-                }
-            },
-            { new: true }
-        )
+        Dive.update(id, {
+            $pull: {
+                gear: gearId
+            }
+        })
 );
 
 export const addBuddyToDive = combineResolvers(
@@ -70,15 +49,11 @@ export const addBuddyToDive = combineResolvers(
     isDiveUser,
     clearUserCache,
     (parent: any, { id, buddyId }: any) =>
-        DiveModel.findByIdAndUpdate(
-            id,
-            {
-                $push: {
-                    buddies: buddyId
-                }
-            },
-            { new: true }
-        )
+        Dive.update(id, {
+            $push: {
+                buddies: buddyId
+            }
+        })
 );
 
 export const removeBuddyFromDive = combineResolvers(
@@ -86,28 +61,16 @@ export const removeBuddyFromDive = combineResolvers(
     isDiveUser,
     clearUserCache,
     (parent: any, { id, buddyId }: any) =>
-        DiveModel.findByIdAndUpdate(
-            id,
-            {
-                $pull: {
-                    buddies: buddyId
-                }
-            },
-            { new: true }
-        )
+        Dive.update(id, {
+            $pull: {
+                buddies: buddyId
+            }
+        })
 );
 
 export const deleteDive = combineResolvers(
     isAuthenticated,
     isDiveUser,
     clearUserCache,
-    async (parent: any, { id }: any, { authUserId }: Context) => {
-        const dive = await DiveModel.findByIdAndDelete(id);
-        await UserModel.findByIdAndUpdate(authUserId, {
-            $pull: {
-                dives: dive ? dive.id : null
-            }
-        });
-        return dive;
-    }
+    async (parent: any, { id }: any, { authUserId }: Context) => Dive.delete(id)
 );

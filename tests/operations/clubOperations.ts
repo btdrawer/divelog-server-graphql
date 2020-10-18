@@ -1,6 +1,6 @@
 const { gql } = require("apollo-boost");
 
-exports.createClub = gql`
+export const createClub = gql`
     mutation($data: CreateClubInput!) {
         createClub(data: $data) {
             id
@@ -17,7 +17,7 @@ exports.createClub = gql`
     }
 `;
 
-exports.getClubs = gql`
+export const getClubs = gql`
     query(
         $where: ClubWhereInput
         $sortBy: ClubSortEnum
@@ -52,7 +52,7 @@ exports.getClubs = gql`
     }
 `;
 
-exports.getClub = gql`
+export const getClub = gql`
     query($id: ID!) {
         club(id: $id) {
             id
@@ -69,7 +69,7 @@ exports.getClub = gql`
     }
 `;
 
-exports.updateClub = gql`
+export const updateClub = gql`
     mutation($id: ID!, $data: UpdateClubInput!) {
         updateClub(id: $id, data: $data) {
             id
@@ -86,7 +86,7 @@ exports.updateClub = gql`
     }
 `;
 
-exports.addClubManager = gql`
+export const addClubManager = gql`
     mutation($id: ID!, $userId: ID!) {
         addClubManager(id: $id, userId: $userId) {
             id
@@ -103,7 +103,7 @@ exports.addClubManager = gql`
     }
 `;
 
-exports.removeClubManager = gql`
+export const removeClubManager = gql`
     mutation($id: ID!, $userId: ID!) {
         removeClubManager(id: $id, userId: $userId) {
             id
@@ -120,7 +120,7 @@ exports.removeClubManager = gql`
     }
 `;
 
-exports.joinClub = gql`
+export const joinClub = gql`
     mutation($id: ID!) {
         joinClub(id: $id) {
             id
@@ -137,7 +137,7 @@ exports.joinClub = gql`
     }
 `;
 
-exports.leaveClub = gql`
+export const leaveClub = gql`
     mutation($id: ID!) {
         leaveClub(id: $id) {
             id
@@ -154,7 +154,7 @@ exports.leaveClub = gql`
     }
 `;
 
-exports.removeClubMember = gql`
+export const removeClubMember = gql`
     mutation($id: ID!, $userId: ID!) {
         removeClubMember(id: $id, userId: $userId) {
             id
@@ -171,7 +171,7 @@ exports.removeClubMember = gql`
     }
 `;
 
-exports.deleteClub = gql`
+export const deleteClub = gql`
     mutation($id: ID!) {
         deleteClub(id: $id) {
             id

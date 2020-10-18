@@ -1,10 +1,13 @@
-import { models } from "@btdrawer/divelog-server-utils";
-import { UserTypeDef, GroupTypeDef, MessageTypeDef } from "../../types";
-const { UserModel } = models;
+import { User } from "@btdrawer/divelog-server-core";
+import {
+    UserTypeDef,
+    GroupTypeDef,
+    MessageTypeDef,
+    UserDocument
+} from "../../types";
 
-/*
 const getParticipants = (participants: UserTypeDef[]) =>
-    UserModel.find({
+    User.find({
         _id: {
             $in: participants
         }
@@ -15,7 +18,7 @@ export const participants = getParticipants;
 export const messages = async ({ participants, messages }: GroupTypeDef) => {
     const participantsDetails = await getParticipants(participants);
     const participantsDetailsReduced = participantsDetails.reduce(
-        (acc, participant) => ({
+        (acc: any, participant: UserDocument) => ({
             ...acc,
             [participant.id]: participant
         }),
@@ -29,4 +32,3 @@ export const messages = async ({ participants, messages }: GroupTypeDef) => {
         sender: getKey(participantsDetailsReduced, sender.id)
     }));
 };
-*/

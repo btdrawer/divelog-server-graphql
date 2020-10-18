@@ -1,6 +1,5 @@
 import { Document } from "mongoose";
-import { models } from "@btdrawer/divelog-server-utils";
-const { UserModel, DiveModel, ClubModel, GearModel } = models;
+import { User, Dive, Club, Gear } from "@btdrawer/divelog-server-core";
 
 const genericBatch = async (
     model: any,
@@ -17,13 +16,13 @@ const genericBatch = async (
 };
 
 export const batchUser = async (userIds: readonly string[]) =>
-    genericBatch(UserModel, userIds);
+    genericBatch(User, userIds);
 
 export const batchDive = async (diveIds: readonly string[]) =>
-    genericBatch(DiveModel, diveIds);
+    genericBatch(Dive, diveIds);
 
 export const batchClub = async (clubIds: readonly string[]) =>
-    genericBatch(ClubModel, clubIds);
+    genericBatch(Club, clubIds);
 
 export const batchGear = async (gearIds: readonly string[]) =>
-    genericBatch(GearModel, gearIds);
+    genericBatch(Gear, gearIds);

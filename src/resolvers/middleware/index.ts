@@ -1,5 +1,5 @@
 import { skip } from "graphql-resolvers";
-import { resources, errorCodes } from "@btdrawer/divelog-server-utils";
+import { resources, errorCodes } from "@btdrawer/divelog-server-core";
 import { Context } from "../../types";
 import { generateUserHashKey, generateGroupHashKey } from "../../utils";
 
@@ -20,27 +20,27 @@ export const isAuthenticated = async (
 export const clearUserCache = async (
     parent: any,
     args: any,
-    { authUserId, cacheUtils }: Context
+    { authUserId, clearCache }: Context
 ): Promise<undefined> => {
-    cacheUtils.clearCache(generateUserHashKey(<string>authUserId));
+    clearCache(generateUserHashKey(authUserId));
     return skip;
 };
 
 export const clearClubCache = async (
     parent: any,
     args: any,
-    { cacheUtils }: Context
+    { clearCache }: Context
 ): Promise<undefined> => {
-    cacheUtils.clearCache(CLUB);
+    clearCache(CLUB);
     return skip;
 };
 
 export const clearGroupCache = async (
     parent: any,
     { id }: any,
-    { cacheUtils }: Context
+    { clearCache }: Context
 ): Promise<undefined> => {
-    cacheUtils.clearCache(generateGroupHashKey(id));
+    clearCache(generateGroupHashKey(id));
     return skip;
 };
 

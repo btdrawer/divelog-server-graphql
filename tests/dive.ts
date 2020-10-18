@@ -1,5 +1,5 @@
-import { models } from "@btdrawer/divelog-server-utils";
-import { seedDatabase, users, dives, gear } from "./utils/seedDatabase";
+import { get } from "lodash";
+import { Dive, seeder } from "@btdrawer/divelog-server-core";
 import {
     createDive,
     getDives,
@@ -12,19 +12,20 @@ import {
     removeBuddyFromDive,
     deleteDive
 } from "./operations/diveOperations";
-import getClient from "./utils/getClient";
+import { setup, teardown, getClient } from "./utils";
 
-const { DiveModel } = models;
+const { seedDatabase, users, dives, gear } = seeder;
 const client = getClient();
 
 describe.only("Dives", () => {
+    beforeAll(setup);
+    afterAll(teardown);
     beforeEach(
-        async () =>
-            await seedDatabase({
-                dives: true,
-                clubs: true,
-                gear: true
-            })
+        seedDatabase({
+            dives: true,
+            clubs: true,
+            gear: true
+        })
     );
 
     describe("When logged in", () => {
@@ -55,12 +56,12 @@ describe.only("Dives", () => {
                 });
 
                 expect(data.createDive.diveTime).toEqual(25); // bottomTime + safetyStopTime
-                expect(data.createDive.user.id).toEqual(users[0].output.id);
+                expect(data.createDive.user.id).toEqual(
+                    get(users[0], "output.id")
+                );
                 expect(data.createDive.public).toEqual(true);
 
-                const diveInDatabase = await DiveModel.findOne({
-                    _id: data.createDive.id
-                });
+                const diveInDatabase = await Dive.get(data.createDive.id);
 
                 if (diveInDatabase) {
                     expect(diveInDatabase.description).toEqual(
@@ -73,7 +74,7 @@ describe.only("Dives", () => {
 
             test("Should return a users public dives", async () => {
                 const variables = {
-                    userId: users[1].output.id
+                    userId: get(users[1], "output.id")
                 };
 
                 const { data } = await authenticatedClient.query({
@@ -86,7 +87,7 @@ describe.only("Dives", () => {
 
             test("Should limit results", async () => {
                 const variables = {
-                    userId: users[1].output.id,
+                    userId: get(users[1], "output.id"),
                     limit: 1
                 };
 
@@ -96,12 +97,14 @@ describe.only("Dives", () => {
                 });
 
                 expect(data.dives.data.length).toEqual(1);
-                expect(data.dives.data[0].id).toEqual(dives[1].output.id);
+                expect(data.dives.data[0].id).toEqual(
+                    get(dives[1], "output.id")
+                );
             });
 
             test("should return next page", async () => {
                 const requestOneVariables = {
-                    userId: users[1].output.id,
+                    userId: get(users[1], "output.id"),
                     limit: 1
                 };
 
@@ -115,7 +118,7 @@ describe.only("Dives", () => {
                 const { cursor } = requestOneData.dives.pageInfo;
 
                 const requestTwoVariables = {
-                    userId: users[1].output.id,
+                    userId: get(users[1], "output.id"),
                     cursor
                 };
 
@@ -128,7 +131,7 @@ describe.only("Dives", () => {
 
                 expect(requestTwoData.dives.data.length).toEqual(1);
                 expect(requestTwoData.dives.data[0].id).toEqual(
-                    dives[4].output.id
+                    get(dives[4], "output.id")
                 );
             });
 
@@ -151,7 +154,9 @@ describe.only("Dives", () => {
                 });
 
                 expect(data.myDives.data.length).toEqual(1);
-                expect(data.myDives.data[0].id).toEqual(dives[0].output.id);
+                expect(data.myDives.data[0].id).toEqual(
+                    get(dives[0], "output.id")
+                );
             });
 
             test("should return next page", async () => {
@@ -181,13 +186,13 @@ describe.only("Dives", () => {
 
                 expect(requestTwoData.myDives.data.length).toEqual(1);
                 expect(requestTwoData.myDives.data[0].id).toEqual(
-                    dives[2].output.id
+                    get(dives[2], "output.id")
                 );
             });
 
             test("Should return a public dive by its ID", async () => {
                 const variables = {
-                    id: dives[0].output.id
+                    id: get(dives[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.query({
@@ -202,7 +207,7 @@ describe.only("Dives", () => {
 
             test("should return a private dive by its ID if it belongs to the authenticated user", async () => {
                 const variables = {
-                    id: dives[0].output.id
+                    id: get(dives[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.query({
@@ -217,7 +222,7 @@ describe.only("Dives", () => {
 
             test("should update dive", async () => {
                 const variables = {
-                    id: dives[0].output.id,
+                    id: get(dives[0], "output.id"),
                     data: {
                         timeIn: "2020-01-04T12:30:00",
                         timeOut: "2020-01-04T13:05:00",
@@ -236,8 +241,8 @@ describe.only("Dives", () => {
 
             test("should add gear to dive", async () => {
                 const variables = {
-                    id: dives[2].output.id,
-                    gearId: gear[0].output.id
+                    id: get(dives[2], "output.id"),
+                    gearId: get(gear[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -247,14 +252,14 @@ describe.only("Dives", () => {
 
                 expect(data.addGearToDive.gear.length).toEqual(1);
                 expect(data.addGearToDive.gear[0].id).toEqual(
-                    gear[0].output.id
+                    get(gear[0], "output.id")
                 );
             });
 
             test("should remove gear from dive", async () => {
                 const variables = {
-                    id: dives[0].output.id,
-                    gearId: gear[0].output.id
+                    id: get(dives[0], "output.id"),
+                    gearId: get(gear[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -267,8 +272,8 @@ describe.only("Dives", () => {
 
             test("should add buddy to dive", async () => {
                 const variables = {
-                    id: dives[2].output.id,
-                    buddyId: users[2].output.id
+                    id: get(dives[2], "output.id"),
+                    buddyId: get(users[2], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -278,14 +283,14 @@ describe.only("Dives", () => {
 
                 expect(data.addBuddyToDive.buddies.length).toEqual(1);
                 expect(data.addBuddyToDive.buddies[0].id).toEqual(
-                    users[2].output.id
+                    get(users[2], "output.id")
                 );
             });
 
             test("should remove buddy from dive", async () => {
                 const variables = {
-                    id: dives[0].output.id,
-                    buddyId: users[1].output.id
+                    id: get(dives[0], "output.id"),
+                    buddyId: get(users[1], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -298,7 +303,7 @@ describe.only("Dives", () => {
 
             test("should delete dive", async () => {
                 const variables = {
-                    id: dives[0].output.id
+                    id: get(dives[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -306,14 +311,14 @@ describe.only("Dives", () => {
                     variables
                 });
 
-                expect(data.deleteDive.id).toEqual(dives[0].output.id);
+                expect(data.deleteDive.id).toEqual(get(dives[0], "output.id"));
             });
         });
 
         describe("and using invalid inputs", () => {
             test("should fail to return a private dive if it belongs to a different user", async () => {
                 const variables = {
-                    id: dives[3].output.id
+                    id: get(dives[3], "output.id")
                 };
 
                 await expect(
@@ -326,7 +331,7 @@ describe.only("Dives", () => {
 
             test("should fail to update another users dive", async () => {
                 const variables = {
-                    id: dives[1].output.id,
+                    id: get(dives[1], "output.id"),
                     data: {
                         timeIn: "2020-01-04T12:30:00",
                         timeOut: "2020-01-04T13:05:00",
@@ -345,8 +350,8 @@ describe.only("Dives", () => {
 
             test("should fail to add gear to another users dive", async () => {
                 const variables = {
-                    id: dives[1].output.id,
-                    gearId: gear[0].output.id
+                    id: get(dives[1], "output.id"),
+                    gearId: get(gear[0], "output.id")
                 };
 
                 await expect(
@@ -359,8 +364,8 @@ describe.only("Dives", () => {
 
             test("should fail to remove gear from another users dive", async () => {
                 const variables = {
-                    id: dives[1].output.id,
-                    gearId: gear[0].output.id
+                    id: get(dives[1], "output.id"),
+                    gearId: get(gear[0], "output.id")
                 };
 
                 await expect(
@@ -373,8 +378,8 @@ describe.only("Dives", () => {
 
             test("should fail to add buddy to another users dive", async () => {
                 const variables = {
-                    id: dives[1].output.id,
-                    buddyId: users[2].output.id
+                    id: get(dives[1], "output.id"),
+                    buddyId: get(users[2], "output.id")
                 };
 
                 await expect(
@@ -387,8 +392,8 @@ describe.only("Dives", () => {
 
             test("should fail to remove buddy from another users dive", async () => {
                 const variables = {
-                    id: dives[1].output.id,
-                    buddyId: users[0].output.id
+                    id: get(dives[1], "output.id"),
+                    buddyId: get(users[0], "output.id")
                 };
 
                 await expect(
@@ -401,7 +406,7 @@ describe.only("Dives", () => {
 
             test("should fail to delete another users dive", async () => {
                 const variables = {
-                    id: dives[1].output.id
+                    id: get(dives[1], "output.id")
                 };
 
                 await expect(
@@ -418,7 +423,7 @@ describe.only("Dives", () => {
         describe("and using valid inputs", () => {
             test("should return a users public dives", async () => {
                 const variables = {
-                    userId: users[0].output.id
+                    userId: get(users[0], "output.id")
                 };
 
                 const { data } = await client.query({
@@ -431,7 +436,7 @@ describe.only("Dives", () => {
 
             test("should limit results", async () => {
                 const variables = {
-                    userId: users[0].output.id,
+                    userId: get(users[0], "output.id"),
                     limit: 1
                 };
 
@@ -441,12 +446,14 @@ describe.only("Dives", () => {
                 });
 
                 expect(data.dives.data.length).toEqual(1);
-                expect(data.dives.data[0].id).toEqual(dives[0].output.id);
+                expect(data.dives.data[0].id).toEqual(
+                    get(dives[0], "output.id")
+                );
             });
 
             test("should return next page", async () => {
                 const requestOneVariables = {
-                    userId: users[0].output.id,
+                    userId: get(users[0], "output.id"),
                     limit: 1
                 };
 
@@ -458,7 +465,7 @@ describe.only("Dives", () => {
                 const { cursor } = requestOneData.dives.pageInfo;
 
                 const requestTwoVariables = {
-                    userId: users[0].output.id,
+                    userId: get(users[0], "output.id"),
                     cursor
                 };
 
@@ -469,13 +476,13 @@ describe.only("Dives", () => {
 
                 expect(requestTwoData.dives.data.length).toEqual(1);
                 expect(requestTwoData.dives.data[0].id).toEqual(
-                    dives[2].output.id
+                    get(dives[2], "output.id")
                 );
             });
 
             test("should return a public dive by its ID", async () => {
                 const variables = {
-                    id: dives[0].output.id
+                    id: get(dives[0], "output.id")
                 };
 
                 const { data } = await client.query({
@@ -522,7 +529,7 @@ describe.only("Dives", () => {
 
             test("Should fail to return a private dive", async () => {
                 const variables = {
-                    id: dives[3].output.id
+                    id: get(dives[3], "output.id")
                 };
 
                 await expect(
@@ -535,7 +542,7 @@ describe.only("Dives", () => {
 
             test("should fail to update dive", async () => {
                 const variables = {
-                    id: dives[0].output.id,
+                    id: get(dives[0], "output.id"),
                     data: {
                         timeIn: "2020-01-04T12:30:00",
                         timeOut: "2020-01-04T13:05:00",
@@ -554,8 +561,8 @@ describe.only("Dives", () => {
 
             test("should fail to add gear to dive", async () => {
                 const variables = {
-                    id: dives[2].output.id,
-                    gearId: gear[0].output.id
+                    id: get(dives[2], "output.id"),
+                    gearId: get(gear[0], "output.id")
                 };
 
                 await expect(
@@ -568,8 +575,8 @@ describe.only("Dives", () => {
 
             test("should fail to remove gear from dive", async () => {
                 const variables = {
-                    id: dives[0].output.id,
-                    gearId: gear[0].output.id
+                    id: get(dives[0], "output.id"),
+                    gearId: get(gear[0], "output.id")
                 };
 
                 await expect(
@@ -582,8 +589,8 @@ describe.only("Dives", () => {
 
             test("should fail to add buddy to dive", async () => {
                 const variables = {
-                    id: dives[0].output.id,
-                    buddyId: users[2].output.id
+                    id: get(dives[0], "output.id"),
+                    buddyId: get(users[2], "output.id")
                 };
 
                 await expect(
@@ -596,8 +603,8 @@ describe.only("Dives", () => {
 
             test("should fail to add buddy to dive", async () => {
                 const variables = {
-                    id: dives[0].output.id,
-                    buddyId: users[2].output.id
+                    id: get(dives[0], "output.id"),
+                    buddyId: get(users[2], "output.id")
                 };
 
                 await expect(
@@ -610,7 +617,7 @@ describe.only("Dives", () => {
 
             test("should fail to delete dive", async () => {
                 const variables = {
-                    id: dives[0].output.id
+                    id: get(dives[0], "output.id")
                 };
 
                 await expect(

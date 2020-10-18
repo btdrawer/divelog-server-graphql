@@ -1,4 +1,4 @@
-import { resources } from "@btdrawer/divelog-server-utils";
+import { resources } from "@btdrawer/divelog-server-core";
 const { USER, GROUP } = resources;
 
 export const formatAuthPayload = (result: any): any => ({

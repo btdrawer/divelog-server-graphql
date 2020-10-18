@@ -1,5 +1,12 @@
 import { skip } from "graphql-resolvers";
-import { models, errorCodes } from "@btdrawer/divelog-server-utils";
+import {
+    getResourceId,
+    Club,
+    Dive,
+    Gear,
+    Group,
+    errorCodes
+} from "@btdrawer/divelog-server-core";
 import { Context, FieldResolver } from "../../types";
 import {
     UserDocument,
@@ -9,7 +16,6 @@ import {
     GroupDocument
 } from "../../types";
 
-const { ClubModel, DiveModel, GearModel, GroupModel } = models;
 const { NOT_FOUND, FORBIDDEN } = errorCodes;
 
 const hasAccess = (model: any, predicate: Function) => async (
@@ -17,7 +23,7 @@ const hasAccess = (model: any, predicate: Function) => async (
     { id }: any,
     { authUserId }: Context
 ): Promise<FieldResolver> => {
-    const result = await model.findById(id);
+    const result = await model.get(id);
     if (!result) {
         throw new Error(NOT_FOUND);
     }
@@ -28,37 +34,43 @@ const hasAccess = (model: any, predicate: Function) => async (
 };
 
 export const isClubManager = hasAccess(
-    ClubModel,
+    Club,
     (club: ClubDocument, authUserId: string) =>
-        club.managers.some(({ id }: UserDocument) => id === authUserId)
+        club.managers.some(
+            (user: UserDocument | string) => getResourceId(user) === authUserId
+        )
 );
 
 export const isClubMember = hasAccess(
-    ClubModel,
+    Club,
     (club: ClubDocument, authUserId: string) =>
-        club.members.some(({ id }: UserDocument) => id === authUserId)
+        club.members.some(
+            (user: UserDocument | string) => getResourceId(user) === authUserId
+        )
 );
 
 export const isDiveUser = hasAccess(
-    DiveModel,
+    Dive,
     (dive: DiveDocument, authUserId: string) =>
         dive.user.toString() === authUserId
 );
 
 export const isUserOrDiveIsPublic = hasAccess(
-    DiveModel,
+    Dive,
     (dive: DiveDocument, authUserId: string) =>
         dive.user.toString() === authUserId || dive.public
 );
 
 export const isGearOwner = hasAccess(
-    GearModel,
+    Gear,
     (gear: GearDocument, authUserId: string) =>
         gear.owner.toString() === authUserId
 );
 
 export const isGroupParticipant = hasAccess(
-    GroupModel,
+    Group,
     (group: GroupDocument, authUserId: string) =>
-        group.participants.some(({ id }: UserDocument) => id === authUserId)
+        group.participants.some(
+            (user: UserDocument | string) => getResourceId(user) === authUserId
+        )
 );

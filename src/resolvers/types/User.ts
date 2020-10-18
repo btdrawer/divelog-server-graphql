@@ -1,7 +1,5 @@
-import { models } from "@btdrawer/divelog-server-utils";
+import { Club } from "@btdrawer/divelog-server-core";
 import { Context, GearTypeDef, UserTypeDef } from "../../types";
-
-const { ClubModel } = models;
 
 export const email = (
     { id, email }: UserTypeDef,
@@ -16,12 +14,12 @@ export const dives = ({ dives }: UserTypeDef, args: any, context: Context) =>
 
 export const clubs = async ({ clubs }: UserTypeDef) => {
     const [manager, member] = await Promise.all([
-        ClubModel.find({
+        Club.find({
             _id: {
                 $in: clubs.manager
             }
         }),
-        ClubModel.find({
+        Club.find({
             _id: {
                 $in: clubs.member
             }

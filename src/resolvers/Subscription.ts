@@ -1,5 +1,5 @@
 import { combineResolvers } from "graphql-resolvers";
-import { subscriptionKeys } from "@btdrawer/divelog-server-utils";
+import { subscriptionKeys } from "@btdrawer/divelog-server-core";
 import { isGroupParticipant } from "./middleware";
 
 const { newMessageSubscriptionKey } = subscriptionKeys;
@@ -18,4 +18,4 @@ const newMessage = {
 
 export default {
     newMessage
-}
+};

@@ -1,5 +1,5 @@
-import { models } from "@btdrawer/divelog-server-utils";
-import { seedDatabase, users } from "./utils/seedDatabase";
+import { get } from "lodash";
+import { User, seeder } from "@btdrawer/divelog-server-core";
 import {
     createUser,
     login,
@@ -9,19 +9,15 @@ import {
     updateUser,
     deleteUser
 } from "./operations/userOperations";
-import getClient from "./utils/getClient";
+import { setup, teardown, getClient } from "./utils";
 
-const { UserModel } = models;
-
+const { seedDatabase, users } = seeder;
 const client = getClient();
 
-describe.only("Users", () => {
-    beforeEach(
-        async () =>
-            await seedDatabase({
-                users: true
-            })
-    );
+describe("Users", () => {
+    beforeAll(setup);
+    afterAll(teardown);
+    beforeEach(seedDatabase({}));
 
     describe("When not logged in", () => {
         describe("and using valid inputs", () => {
@@ -43,9 +39,7 @@ describe.only("Users", () => {
                 expect(data.createUser.user.name).toEqual("User 5");
                 expect(data.createUser.user.username).toEqual("user5");
 
-                const user = await UserModel.findOne({
-                    _id: data.createUser.user.id
-                });
+                const user = await User.get(data.createUser.user.id);
 
                 if (user) {
                     expect(user.name).toEqual("User 5");
@@ -84,8 +78,8 @@ describe.only("Users", () => {
                     query: getUsers
                 });
 
-                data.users.data.forEach(({ email }) => {
-                    expect(email).toEqual(null);
+                data.users.data.forEach((user: any) => {
+                    expect(user.email).toEqual(null);
                 });
             });
 
@@ -136,7 +130,7 @@ describe.only("Users", () => {
 
             test("should return user by ID", async () => {
                 const variables = {
-                    id: users[1].output.id
+                    id: get(users[1], "output.id")
                 };
 
                 const { data } = await client.query({
@@ -245,7 +239,9 @@ describe.only("Users", () => {
                     query: getUsers
                 });
 
-                expect(data.users.data[0].email).toEqual(users[0].output.email);
+                expect(data.users.data[0].email).toEqual(
+                    get(users[0], "output.email")
+                );
 
                 expect(data.users.data[1].email).toEqual(null);
                 expect(data.users.data[2].email).toEqual(null);
@@ -299,7 +295,7 @@ describe.only("Users", () => {
 
             test("should return user by ID", async () => {
                 const variables = {
-                    id: users[1].output.id
+                    id: get(users[1], "output.id")
                 };
 
                 const { data } = await authenticatedClient.query({
@@ -315,7 +311,7 @@ describe.only("Users", () => {
                     query: getMe
                 });
 
-                expect(data.me.id).toEqual(users[0].output.id);
+                expect(data.me.id).toEqual(get(users[0], "output.id"));
             });
 
             test("should only return emails for logged in users", async () => {
@@ -349,9 +345,7 @@ describe.only("Users", () => {
                     mutation: deleteUser
                 });
 
-                const user = await UserModel.findOne({
-                    _id: users[0].output.id
-                });
+                const user = await User.get(get(users[0], "output.id"));
 
                 expect(user).toBe(null);
             });

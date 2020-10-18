@@ -1,5 +1,5 @@
-import { models } from "@btdrawer/divelog-server-utils";
-import { seedDatabase, users, groups } from "./utils/seedDatabase";
+import { get } from "lodash";
+import { Group, seeder } from "@btdrawer/divelog-server-core";
 import {
     createGroup,
     getMyGroups,
@@ -9,18 +9,18 @@ import {
     addGroupParticipant,
     leaveGroup
 } from "./operations/groupOperations";
-import getClient from "./utils/getClient";
+import { setup, teardown, getClient } from "./utils";
 
-const { GroupModel } = models;
-
+const { seedDatabase, users, groups } = seeder;
 const client = getClient();
 
 describe("Groups", () => {
+    beforeAll(setup);
+    afterAll(teardown);
     beforeEach(
-        async () =>
-            await seedDatabase({
-                groups: true
-            })
+        seedDatabase({
+            groups: true
+        })
     );
 
     describe("When logged in", () => {
@@ -35,7 +35,7 @@ describe("Groups", () => {
                 const variables = {
                     data: {
                         name: "New Group 1",
-                        participants: [users[1].output.id],
+                        participants: [get(users[1], "output.id")],
                         text: "Hello"
                     }
                 };
@@ -49,12 +49,10 @@ describe("Groups", () => {
                 expect(data.createGroup.participants.length).toEqual(2);
                 expect(data.createGroup.messages.length).toEqual(1);
                 expect(data.createGroup.messages[0].sender.id).toEqual(
-                    users[0].output.id
+                    get(users[0], "output.id")
                 );
 
-                const groupInDatabase = await GroupModel.findOne({
-                    _id: data.createGroup.id
-                });
+                const groupInDatabase = await Group.get(data.createGroup.id);
 
                 if (groupInDatabase) {
                     expect(groupInDatabase.name).toEqual("New Group 1");
@@ -69,12 +67,14 @@ describe("Groups", () => {
                 });
 
                 expect(data.myGroups.data.length).toEqual(2);
-                expect(data.myGroups.data[0].id).toEqual(groups[0].output.id);
+                expect(data.myGroups.data[0].id).toEqual(
+                    get(groups[0], "output.id")
+                );
             });
 
             test("should get group by ID", async () => {
                 const variables = {
-                    id: groups[0].output.id
+                    id: get(groups[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.query({
@@ -82,13 +82,13 @@ describe("Groups", () => {
                     variables
                 });
 
-                expect(data.group.id).toEqual(groups[0].output.id);
+                expect(data.group.id).toEqual(get(groups[0], "output.id"));
             });
 
             test("should filter groups by name", async () => {
                 const variables = {
                     where: {
-                        name: groups[2].output.name
+                        name: get(groups[2], "output.name")
                     }
                 };
 
@@ -98,9 +98,11 @@ describe("Groups", () => {
                 });
 
                 expect(data.myGroups.data.length).toEqual(1);
-                expect(data.myGroups.data[0].id).toEqual(groups[2].output.id);
+                expect(data.myGroups.data[0].id).toEqual(
+                    get(groups[2], "output.id")
+                );
                 expect(data.myGroups.data[0].name).toEqual(
-                    groups[2].output.name
+                    get(groups[2], "output.name")
                 );
             });
 
@@ -116,7 +118,9 @@ describe("Groups", () => {
                 });
 
                 expect(data.myGroups.data.length).toEqual(2);
-                expect(data.myGroups.data[0].id).toEqual(groups[2].output.id);
+                expect(data.myGroups.data[0].id).toEqual(
+                    get(groups[2], "output.id")
+                );
             });
 
             test("should limit results", async () => {
@@ -130,7 +134,9 @@ describe("Groups", () => {
                 });
 
                 expect(data.myGroups.data.length).toEqual(1);
-                expect(data.myGroups.data[0].id).toEqual(groups[0].output.id);
+                expect(data.myGroups.data[0].id).toEqual(
+                    get(groups[0], "output.id")
+                );
             });
 
             test("should return next page", async () => {
@@ -160,13 +166,13 @@ describe("Groups", () => {
 
                 expect(requestTwoData.myGroups.data.length).toEqual(1);
                 expect(requestTwoData.myGroups.data[0].id).toEqual(
-                    groups[2].output.id
+                    get(groups[2], "output.id")
                 );
             });
 
             test("should rename group", async () => {
                 const variables = {
-                    id: groups[0].output.id,
+                    id: get(groups[0], "output.id"),
                     name: "Updated group name"
                 };
 
@@ -180,7 +186,7 @@ describe("Groups", () => {
 
             test("should send message", async () => {
                 const variables = {
-                    id: groups[0].output.id,
+                    id: get(groups[0], "output.id"),
                     text: "New message"
                 };
 
@@ -194,14 +200,14 @@ describe("Groups", () => {
                     "New message"
                 );
                 expect(data.sendMessage.messages[1].sender.id).toEqual(
-                    users[0].output.id
+                    get(users[0], "output.id")
                 );
             });
 
             test("should add group participant", async () => {
                 const variables = {
-                    id: groups[0].output.id,
-                    userId: users[2].output.id
+                    id: get(groups[0], "output.id"),
+                    userId: get(users[2], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -211,13 +217,13 @@ describe("Groups", () => {
 
                 expect(data.addGroupParticipant.participants.length).toEqual(3);
                 expect(data.addGroupParticipant.participants[2].id).toEqual(
-                    users[2].output.id
+                    get(users[2], "output.id")
                 );
             });
 
             test("should leave group", async () => {
                 const variables = {
-                    id: groups[0].output.id
+                    id: get(groups[0], "output.id")
                 };
 
                 const { data } = await authenticatedClient.mutate({
@@ -233,7 +239,7 @@ describe("Groups", () => {
             test("should fail to create new group if name is not supplied", async () => {
                 const variables = {
                     data: {
-                        participants: [users[1].output.id],
+                        participants: [get(users[1], "output.id")],
                         text: "Hello"
                     }
                 };
@@ -266,7 +272,7 @@ describe("Groups", () => {
                 const variables = {
                     data: {
                         name: "New Group 1",
-                        participants: [users[1].output.id]
+                        participants: [get(users[1], "output.id")]
                     }
                 };
 
@@ -280,7 +286,7 @@ describe("Groups", () => {
 
             test("should fail to get group by ID that the user does not belong to", async () => {
                 const variables = {
-                    id: groups[1].output.id
+                    id: get(groups[1], "output.id")
                 };
 
                 await expect(
@@ -293,7 +299,7 @@ describe("Groups", () => {
 
             test("should fail to rename group if not a member", async () => {
                 const variables = {
-                    id: groups[1].output.id,
+                    id: get(groups[1], "output.id"),
                     name: "Updated group name"
                 };
 
@@ -307,7 +313,7 @@ describe("Groups", () => {
 
             test("should fail to send message if not a member", async () => {
                 const variables = {
-                    id: groups[1].output.id,
+                    id: get(groups[1], "output.id"),
                     text: "New message"
                 };
 
@@ -321,8 +327,8 @@ describe("Groups", () => {
 
             test("should fail to add group participant if not a member", async () => {
                 const variables = {
-                    id: groups[1].output.id,
-                    userId: users[3].output.id
+                    id: get(groups[1], "output.id"),
+                    userId: get(users[3], "output.id")
                 };
 
                 await expect(
@@ -335,7 +341,7 @@ describe("Groups", () => {
 
             test("should fail to leave group if not a member", async () => {
                 const variables = {
-                    id: groups[0].output.id
+                    id: get(groups[0], "output.id")
                 };
 
                 await expect(
@@ -353,7 +359,7 @@ describe("Groups", () => {
             const variables = {
                 data: {
                     name: "New Group 1",
-                    participants: [users[1].output.id],
+                    participants: [get(users[1], "output.id")],
                     text: "Hello"
                 }
             };
@@ -368,7 +374,7 @@ describe("Groups", () => {
 
         test("should fail list all groups the user is a member of", async () => {
             const variables = {
-                id: groups[0].output.id
+                id: get(groups[0], "output.id")
             };
 
             await expect(
@@ -381,7 +387,7 @@ describe("Groups", () => {
 
         test("should fail to get group by ID", async () => {
             const variables = {
-                id: groups[0].output.id
+                id: get(groups[0], "output.id")
             };
 
             await expect(
@@ -394,7 +400,7 @@ describe("Groups", () => {
 
         test("should fail to rename group", async () => {
             const variables = {
-                id: groups[0].output.id,
+                id: get(groups[0], "output.id"),
                 name: "Updated group name"
             };
 
@@ -408,7 +414,7 @@ describe("Groups", () => {
 
         test("should fail to send message", async () => {
             const variables = {
-                id: groups[0].output.id,
+                id: get(groups[0], "output.id"),
                 text: "New message"
             };
 
@@ -422,8 +428,8 @@ describe("Groups", () => {
 
         test("should fail to add group participant", async () => {
             const variables = {
-                id: groups[1].output.id,
-                userId: users[3].output.id
+                id: get(groups[1], "output.id"),
+                userId: get(users[3], "output.id")
             };
 
             await expect(
@@ -436,7 +442,7 @@ describe("Groups", () => {
 
         test("should fail to leave group", async () => {
             const variables = {
-                id: groups[0].output.id
+                id: get(groups[0], "output.id")
             };
 
             await expect(

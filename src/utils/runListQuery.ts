@@ -1,4 +1,4 @@
-import { convertStringToBase64, convertBase64ToString } from "./index";
+import { convertStringToBase64, convertBase64ToString } from ".";
 
 type Cursor = {
     sortBy: string;
@@ -73,8 +73,8 @@ const runListQuery = (queryWithCache: Function) => async (
     requiredArgs: any,
     hashKey = null
 ) => {
-    const { where, limit = 10, cursor } = args;
-    let { sortBy = "_id", sortOrder = "ASC" } = args;
+    const { where, limit = 10, cursor } = args || {};
+    let { sortBy = "_id", sortOrder = "ASC" } = args || {};
     let filter, options;
 
     if (cursor) {

@@ -1,10 +1,9 @@
 import { combineResolvers } from "graphql-resolvers";
-import { models, errorCodes } from "@btdrawer/divelog-server-utils";
+import { User, errorCodes } from "@btdrawer/divelog-server-core";
 import { isAuthenticated } from "../middleware";
 import { Context } from "../../types";
 import { formatAuthPayload } from "../../utils";
 
-const { UserModel } = models;
 const {
     CANNOT_ADD_YOURSELF,
     FRIEND_REQUEST_ALREADY_SENT,
@@ -12,19 +11,19 @@ const {
 } = errorCodes;
 
 export const createUser = async (parent: any, { data }: any) => {
-    const user = await new UserModel(data).save();
+    const user = await User.create(data);
     return formatAuthPayload(user);
 };
 
 export const login = async (parent: any, { username, password }: any) => {
-    const result = await UserModel.authenticate(username, password);
+    const result = await User.login(username, password);
     return formatAuthPayload(result);
 };
 
 export const updateUser = combineResolvers(
     isAuthenticated,
     (parent: any, { data }: any, { authUserId }: Context) =>
-        UserModel.findByIdAndUpdate(authUserId, data, { new: true })
+        User.update(authUserId, data)
 );
 
 export const sendOrAcceptFriendRequest = combineResolvers(
@@ -33,10 +32,7 @@ export const sendOrAcceptFriendRequest = combineResolvers(
         if (id === authUserId) {
             throw new Error(CANNOT_ADD_YOURSELF);
         }
-        const checkInbox = await UserModel.findById(authUserId, [
-            "friends",
-            "friendRequests"
-        ]);
+        const checkInbox = await User.get(authUserId);
         if (checkInbox) {
             if (checkInbox.friendRequests.sent.includes(id)) {
                 throw new Error(FRIEND_REQUEST_ALREADY_SENT);
@@ -44,22 +40,21 @@ export const sendOrAcceptFriendRequest = combineResolvers(
                 throw new Error(ALREADY_FRIENDS);
             } else if (checkInbox.friendRequests.inbox.includes(id)) {
                 // Accept request
-                return UserModel.accept(<string>authUserId, id);
+                return User.accept(authUserId, id);
             }
         }
         // Send request
-        return UserModel.add(<string>authUserId, id);
+        return User.add(authUserId, id);
     }
 );
 
 export const unfriend = combineResolvers(
     isAuthenticated,
     (parent: any, { id }: any, { authUserId }: Context) =>
-        UserModel.unfriend(<string>authUserId, id)
+        User.unfriend(authUserId, id)
 );
 
 export const deleteUser = combineResolvers(
     isAuthenticated,
-    (parent: any, args: any, { authUserId }: Context) =>
-        UserModel.findByIdAndDelete(authUserId)
+    (parent: any, args: any, { authUserId }: Context) => User.delete(authUserId)
 );

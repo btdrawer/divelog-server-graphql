@@ -1,14 +1,20 @@
 import { GraphQLResolveInfo } from "graphql";
 import { IFieldResolver } from "graphql-tools";
-import { CacheUtils, mongooseTypes } from "@btdrawer/divelog-server-utils";
+import { documentTypes } from "@btdrawer/divelog-server-core";
 import { RedisPubSub } from "graphql-redis-subscriptions";
 import DataLoader from "dataloader";
 
 export interface Context {
-    runListQuery: Function;
-    cacheUtils: CacheUtils;
+    runListQuery(
+        model: documentTypes.IResource<any, any, any>,
+        args: any,
+        requiredArgs?: any,
+        hashKey?: string
+    ): Promise<any>;
+    queryWithCache: any;
+    clearCache: any;
     pubsub: RedisPubSub;
-    authUserId: String;
+    authUserId: string;
     loaders: {
         userLoader: DataLoader<any, any>;
         diveLoader: DataLoader<any, any>;
@@ -19,11 +25,11 @@ export interface Context {
 
 export type FieldResolver = IFieldResolver<any, Context, GraphQLResolveInfo>;
 
-export type UserDocument = mongooseTypes.UserDocument;
-export type DiveDocument = mongooseTypes.DiveDocument;
-export type ClubDocument = mongooseTypes.ClubDocument;
-export type GearDocument = mongooseTypes.GearDocument;
-export type MessageDocument = mongooseTypes.MessageDocument;
-export type GroupDocument = mongooseTypes.GroupDocument;
+export type UserDocument = documentTypes.UserDocument;
+export type DiveDocument = documentTypes.DiveDocument;
+export type ClubDocument = documentTypes.ClubDocument;
+export type GearDocument = documentTypes.GearDocument;
+export type MessageDocument = documentTypes.MessageDocument;
+export type GroupDocument = documentTypes.GroupDocument;
 
 export * from "./gqlTypeDefs";

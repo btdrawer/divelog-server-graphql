@@ -1,6 +1,6 @@
 const { gql } = require("apollo-boost");
 
-exports.createGear = gql`
+export const createGear = gql`
     mutation($data: GearInput!) {
         createGear(data: $data) {
             id
@@ -12,7 +12,7 @@ exports.createGear = gql`
     }
 `;
 
-exports.getGear = gql`
+export const getGear = gql`
     query(
         $where: GearWhereInput
         $sortBy: GearSortEnum
@@ -42,7 +42,7 @@ exports.getGear = gql`
     }
 `;
 
-exports.getGearById = gql`
+export const getGearById = gql`
     query($id: ID!) {
         gearById(id: $id) {
             id
@@ -54,7 +54,7 @@ exports.getGearById = gql`
     }
 `;
 
-exports.updateGear = gql`
+export const updateGear = gql`
     mutation($id: ID!, $data: GearInput!) {
         updateGear(id: $id, data: $data) {
             id
@@ -66,7 +66,7 @@ exports.updateGear = gql`
     }
 `;
 
-exports.deleteGear = gql`
+export const deleteGear = gql`
     mutation($id: ID!) {
         deleteGear(id: $id) {
             id

@@ -1,6 +1,6 @@
 const { gql } = require("apollo-server");
 
-exports.createUser = gql`
+export const createUser = gql`
     mutation($data: CreateUserInput!) {
         createUser(data: $data) {
             user {
@@ -14,7 +14,7 @@ exports.createUser = gql`
     }
 `;
 
-exports.login = gql`
+export const login = gql`
     mutation($username: String!, $password: String!) {
         login(username: $username, password: $password) {
             user {
@@ -28,7 +28,7 @@ exports.login = gql`
     }
 `;
 
-exports.getUsers = gql`
+export const getUsers = gql`
     query(
         $where: UserWhereInput
         $sortBy: UserSortEnum
@@ -57,7 +57,7 @@ exports.getUsers = gql`
     }
 `;
 
-exports.getMe = gql`
+export const getMe = gql`
     query {
         me {
             id
@@ -68,7 +68,7 @@ exports.getMe = gql`
     }
 `;
 
-exports.getUser = gql`
+export const getUser = gql`
     query($id: ID!) {
         user(id: $id) {
             id
@@ -79,7 +79,7 @@ exports.getUser = gql`
     }
 `;
 
-exports.updateUser = gql`
+export const updateUser = gql`
     mutation($data: UpdateUserInput!) {
         updateUser(data: $data) {
             id
@@ -90,7 +90,7 @@ exports.updateUser = gql`
     }
 `;
 
-exports.deleteUser = gql`
+export const deleteUser = gql`
     mutation {
         deleteUser {
             id

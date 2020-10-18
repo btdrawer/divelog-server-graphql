@@ -3,7 +3,7 @@ import { importSchema } from "graphql-import";
 import { makeExecutableSchema } from "graphql-tools";
 import DataLoader from "dataloader";
 import { RedisPubSub } from "graphql-redis-subscriptions";
-import { Services } from "@btdrawer/divelog-server-utils";
+import { Services } from "@btdrawer/divelog-server-core";
 
 import Query from "./resolvers/Query";
 import Mutation from "./resolvers/Mutation";
@@ -34,7 +34,7 @@ class Server {
 
     static async build() {
         const services = await Services.launchServices();
-        const { redisClient, cacheUtils } = services.cache;
+        const { redisClient, queryWithCache, clearCache } = services.cache;
 
         const executableSchema = makeExecutableSchema({
             typeDefs: importSchema("src/schema.graphql"),
@@ -52,8 +52,9 @@ class Server {
         const instance = new ApolloServer({
             schema: executableSchema,
             context: request => ({
-                runListQuery: runListQuery(cacheUtils.queryWithCache),
-                cacheUtils,
+                runListQuery: runListQuery(queryWithCache),
+                queryWithCache,
+                clearCache,
                 pubsub: new RedisPubSub({
                     publisher: redisClient,
                     subscriber: redisClient

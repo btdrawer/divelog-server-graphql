@@ -24,57 +24,33 @@ export const addGearToDive = combineResolvers(
     isAuthenticated,
     isDiveUser,
     clearUserCache,
-    (parent: any, { id, gearId }: any) =>
-        Dive.update(id, {
-            // @ts-ignore
-            $push: {
-                gear: gearId
-            }
-        })
+    (parent: any, { id, gearId }: any) => Dive.addGear(id, gearId)
 );
 
 export const removeGearFromDive = combineResolvers(
     isAuthenticated,
     isDiveUser,
     clearUserCache,
-    (parent: any, { id, gearId }: any) =>
-        Dive.update(id, {
-            // @ts-ignore
-            $pull: {
-                gear: gearId
-            }
-        })
+    (parent: any, { id, gearId }: any) => Dive.removeGear(id, gearId)
 );
 
 export const addBuddyToDive = combineResolvers(
     isAuthenticated,
     isDiveUser,
     clearUserCache,
-    (parent: any, { id, buddyId }: any) =>
-        Dive.update(id, {
-            // @ts-ignore
-            $push: {
-                buddies: buddyId
-            }
-        })
+    (parent: any, { id, buddyId }: any) => Dive.addBuddy(id, buddyId)
 );
 
 export const removeBuddyFromDive = combineResolvers(
     isAuthenticated,
     isDiveUser,
     clearUserCache,
-    (parent: any, { id, buddyId }: any) =>
-        Dive.update(id, {
-            // @ts-ignore
-            $pull: {
-                buddies: buddyId
-            }
-        })
+    (parent: any, { id, buddyId }: any) => Dive.removeBuddy(id, buddyId)
 );
 
 export const deleteDive = combineResolvers(
     isAuthenticated,
     isDiveUser,
     clearUserCache,
-    async (parent: any, { id }: any, { authUserId }: Context) => Dive.delete(id)
+    async (parent: any, { id }: any) => Dive.delete(id)
 );

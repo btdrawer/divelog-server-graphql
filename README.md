@@ -2,8 +2,6 @@
 
 A GraphQL version of my [divelog-server-rest](https://github.com/btdrawer/divelog-server-rest) project, which was a REST API built using NodeJS and Express.
 
-I have also built another iteration of this project using Prisma, also utilising TypeScript: [divelog-server-prisma](https://github.com/btdrawer/divelog-server-prisma). I decided to build this MongoDB-specific one first as additional practice and evidence of my understanding of GraphQL.
-
 ## Requirements
 
 -   NodeJS

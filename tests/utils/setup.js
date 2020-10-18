@@ -1,19 +1,12 @@
-const Server = require("../../src/server");
+const Server = require("../../src/Server").default;
 
-exports.globalSetup = async done => {
-    const server = await Server.build();
-
-    global.server = server;
-
-    process.on("SIGTERM", server.close);
-    process.on("SIGINT", server.close);
-
-    server.launch();
-
+exports.setup = async done => {
+    global.server = await Server.build();
+    await global.server.launch();
     done();
 };
 
-exports.globalTeardown = done => {
-    global.server.close();
+exports.teardown = async done => {
+    await global.server.close();
     done();
 };

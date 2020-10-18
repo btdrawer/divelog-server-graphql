@@ -42,21 +42,17 @@ describe("Clubs", () => {
                         website: "example2.com"
                     }
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: createClub,
                     variables
                 });
-
                 expect(data.createClub.name).toEqual("B");
                 expect(data.createClub.location).toEqual("C");
                 expect(data.createClub.website).toEqual("example2.com");
                 expect(data.createClub.managers[0].id).toEqual(
                     get(users[0], "output.id")
                 );
-
                 const club = await Club.get(data.createClub.id);
-
                 if (club) {
                     expect(club.name).toEqual("B");
                 } else {
@@ -68,12 +64,10 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getClub,
                     variables
                 });
-
                 expect(data.club.name).toEqual(clubs[0].input.name);
                 expect(data.club.location).toEqual(clubs[0].input.location);
                 expect(data.club.website).toEqual(clubs[0].input.website);
@@ -86,9 +80,7 @@ describe("Clubs", () => {
                 const { data } = await authenticatedClient.query({
                     query: getClubs
                 });
-
                 expect(data.clubs.data.length).toEqual(2);
-
                 expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
                 expect(data.clubs.data[0].location).toEqual(
                     clubs[0].input.location
@@ -107,14 +99,11 @@ describe("Clubs", () => {
                         name: clubs[0].input.name
                     }
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getClubs,
                     variables
                 });
-
                 expect(data.clubs.data.length).toEqual(1);
-
                 expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
                 expect(data.clubs.data[0].location).toEqual(
                     clubs[0].input.location
@@ -132,12 +121,10 @@ describe("Clubs", () => {
                     sortBy: "name",
                     sortOrder: "DESC"
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getClubs,
                     variables
                 });
-
                 expect(data.clubs.data.length).toEqual(2);
                 expect(data.clubs.data[0].name).toEqual(clubs[1].input.name);
             });
@@ -146,12 +133,10 @@ describe("Clubs", () => {
                 const variables = {
                     limit: 1
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getClubs,
                     variables
                 });
-
                 expect(data.clubs.data.length).toEqual(1);
                 expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
             });
@@ -163,12 +148,10 @@ describe("Clubs", () => {
                         name: "Updated name"
                     }
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: updateClub,
                     variables
                 });
-
                 expect(data.updateClub.name).toEqual("Updated name");
             });
 
@@ -177,12 +160,10 @@ describe("Clubs", () => {
                     id: get(clubs[0], "output.id"),
                     userId: get(users[1], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: addClubManager,
                     variables
                 });
-
                 expect(data.addClubManager.managers.length).toEqual(3);
                 expect(data.addClubManager.managers[2].id).toEqual(
                     get(users[1], "output.id")
@@ -194,12 +175,10 @@ describe("Clubs", () => {
                     id: get(clubs[0], "output.id"),
                     userId: get(users[2], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: removeClubManager,
                     variables
                 });
-
                 expect(data.removeClubManager.managers.length).toEqual(1);
                 expect(data.removeClubManager.managers[0].id).toEqual(
                     get(users[0], "output.id")
@@ -211,12 +190,10 @@ describe("Clubs", () => {
                     id: get(clubs[0], "output.id"),
                     userId: get(users[1], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: removeClubMember,
                     variables
                 });
-
                 expect(data.removeClubMember.members.length).toEqual(0);
             });
 
@@ -224,12 +201,10 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: deleteClub,
                     variables
                 });
-
                 expect(data.deleteClub.id).toEqual(get(clubs[0], "output.id"));
             });
         });
@@ -242,7 +217,6 @@ describe("Clubs", () => {
                         website: "example2.com"
                     }
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: createClub,
@@ -258,7 +232,6 @@ describe("Clubs", () => {
                         website: "example2.com"
                     }
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: createClub,
@@ -272,7 +245,6 @@ describe("Clubs", () => {
                     id: get(clubs[0], "output.id"),
                     userId: get(users[0], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: addClubManager,
@@ -286,7 +258,6 @@ describe("Clubs", () => {
                     id: get(clubs[0], "output.id"),
                     userId: get(users[1], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: removeClubManager,
@@ -300,7 +271,6 @@ describe("Clubs", () => {
                     id: get(clubs[1], "output.id"),
                     userId: get(users[1], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: removeClubMember,
@@ -323,12 +293,10 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[1], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: joinClub,
                     variables
                 });
-
                 expect(data.joinClub.members.length).toEqual(2);
                 expect(data.joinClub.members[1].id).toEqual(
                     get(users[1], "output.id")
@@ -339,12 +307,10 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: leaveClub,
                     variables
                 });
-
                 expect(data.leaveClub.members.length).toEqual(0);
             });
         });
@@ -357,7 +323,6 @@ describe("Clubs", () => {
                         name: "Updated name"
                     }
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: updateClub,
@@ -371,7 +336,6 @@ describe("Clubs", () => {
                     id: get(clubs[0], "output.id"),
                     userId: get(users[2], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: addClubManager,
@@ -385,7 +349,6 @@ describe("Clubs", () => {
                     id: get(clubs[0], "output.id"),
                     userId: get(users[1], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: removeClubManager,
@@ -398,7 +361,6 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[0], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: joinClub,
@@ -411,7 +373,6 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[1], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: leaveClub,
@@ -425,7 +386,6 @@ describe("Clubs", () => {
                     id: get(clubs[1], "output.id"),
                     userId: get(users[0], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: removeClubMember,
@@ -438,7 +398,6 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[0], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: deleteClub,
@@ -455,12 +414,10 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[0], "output.id")
                 };
-
                 const { data } = await client.query({
                     query: getClub,
                     variables
                 });
-
                 expect(data).not.toBeNull();
                 expect(data.club.name).toEqual(clubs[0].input.name);
                 expect(data.club.location).toEqual(clubs[0].input.location);
@@ -474,9 +431,7 @@ describe("Clubs", () => {
                 const { data } = await client.query({
                     query: getClubs
                 });
-
                 expect(data.clubs.data.length).toEqual(2);
-
                 expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
                 expect(data.clubs.data[0].location).toEqual(
                     clubs[0].input.location
@@ -495,14 +450,11 @@ describe("Clubs", () => {
                         name: clubs[0].input.name
                     }
                 };
-
                 const { data } = await client.query({
                     query: getClubs,
                     variables
                 });
-
                 expect(data.clubs.data.length).toEqual(1);
-
                 expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
                 expect(data.clubs.data[0].location).toEqual(
                     clubs[0].input.location
@@ -520,12 +472,10 @@ describe("Clubs", () => {
                     sortBy: "name",
                     sortOrder: "DESC"
                 };
-
                 const { data } = await client.query({
                     query: getClubs,
                     variables
                 });
-
                 expect(data.clubs.data.length).toEqual(2);
                 expect(data.clubs.data[0].name).toEqual(clubs[1].input.name);
             });
@@ -534,12 +484,10 @@ describe("Clubs", () => {
                 const variables = {
                     limit: 1
                 };
-
                 const { data } = await client.query({
                     query: getClubs,
                     variables
                 });
-
                 expect(data.clubs.data.length).toEqual(1);
                 expect(data.clubs.data[0].name).toEqual(clubs[0].input.name);
             });
@@ -554,7 +502,6 @@ describe("Clubs", () => {
                         website: "example2.com"
                     }
                 };
-
                 await expect(
                     client.mutate({
                         mutation: createClub,
@@ -570,7 +517,6 @@ describe("Clubs", () => {
                         name: "Updated name"
                     }
                 };
-
                 await expect(
                     client.mutate({
                         mutation: updateClub,
@@ -584,7 +530,6 @@ describe("Clubs", () => {
                     id: get(clubs[0], "output.id"),
                     userId: get(users[1], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: addClubManager,
@@ -598,7 +543,6 @@ describe("Clubs", () => {
                     id: get(clubs[0], "output.id"),
                     userId: get(users[1], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: removeClubManager,
@@ -611,7 +555,6 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[0], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: joinClub,
@@ -624,7 +567,6 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[0], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: leaveClub,
@@ -638,7 +580,6 @@ describe("Clubs", () => {
                     id: get(clubs[1], "output.id"),
                     userId: get(users[0], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: removeClubMember,
@@ -651,7 +592,6 @@ describe("Clubs", () => {
                 const variables = {
                     id: get(clubs[1], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: deleteClub,

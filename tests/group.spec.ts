@@ -1,5 +1,5 @@
 import { get } from "lodash";
-import { Group, seeder } from "@btdrawer/divelog-server-core";
+import { Group, seeder, errorCodes } from "@btdrawer/divelog-server-core";
 import {
     createGroup,
     getMyGroups,
@@ -91,12 +91,10 @@ describe("Groups", () => {
                         name: get(groups[2], "output.name")
                     }
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getMyGroups,
                     variables
                 });
-
                 expect(data.myGroups.data.length).toEqual(1);
                 expect(data.myGroups.data[0].id).toEqual(
                     get(groups[2], "output.id")
@@ -111,12 +109,10 @@ describe("Groups", () => {
                     sortBy: "name",
                     sortOrder: "DESC"
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getMyGroups,
                     variables
                 });
-
                 expect(data.myGroups.data.length).toEqual(2);
                 expect(data.myGroups.data[0].id).toEqual(
                     get(groups[2], "output.id")
@@ -127,12 +123,10 @@ describe("Groups", () => {
                 const variables = {
                     limit: 1
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getMyGroups,
                     variables
                 });
-
                 expect(data.myGroups.data.length).toEqual(1);
                 expect(data.myGroups.data[0].id).toEqual(
                     get(groups[0], "output.id")
@@ -143,27 +137,22 @@ describe("Groups", () => {
                 const requestOneVariables = {
                     limit: 1
                 };
-
                 const {
                     data: requestOneData
                 } = await authenticatedClient.query({
                     query: getMyGroups,
                     variables: requestOneVariables
                 });
-
                 const { cursor } = requestOneData.myGroups.pageInfo;
-
                 const requestTwoVariables = {
                     cursor
                 };
-
                 const {
                     data: requestTwoData
                 } = await authenticatedClient.query({
                     query: getMyGroups,
                     variables: requestTwoVariables
                 });
-
                 expect(requestTwoData.myGroups.data.length).toEqual(1);
                 expect(requestTwoData.myGroups.data[0].id).toEqual(
                     get(groups[2], "output.id")
@@ -175,12 +164,10 @@ describe("Groups", () => {
                     id: get(groups[0], "output.id"),
                     name: "Updated group name"
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: renameGroup,
                     variables
                 });
-
                 expect(data.renameGroup.name).toEqual("Updated group name");
             });
 
@@ -189,12 +176,10 @@ describe("Groups", () => {
                     id: get(groups[0], "output.id"),
                     text: "New message"
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: sendMessage,
                     variables
                 });
-
                 expect(data.sendMessage.messages.length).toEqual(2);
                 expect(data.sendMessage.messages[1].text).toEqual(
                     "New message"
@@ -209,12 +194,10 @@ describe("Groups", () => {
                     id: get(groups[0], "output.id"),
                     userId: get(users[2], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: addGroupParticipant,
                     variables
                 });
-
                 expect(data.addGroupParticipant.participants.length).toEqual(3);
                 expect(data.addGroupParticipant.participants[2].id).toEqual(
                     get(users[2], "output.id")
@@ -225,12 +208,10 @@ describe("Groups", () => {
                 const variables = {
                     id: get(groups[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: leaveGroup,
                     variables
                 });
-
                 expect(data.leaveGroup.participants.length).toEqual(1);
             });
         });
@@ -243,7 +224,6 @@ describe("Groups", () => {
                         text: "Hello"
                     }
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: createGroup,
@@ -259,7 +239,6 @@ describe("Groups", () => {
                         text: "Hello"
                     }
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: createGroup,
@@ -275,7 +254,6 @@ describe("Groups", () => {
                         participants: [get(users[1], "output.id")]
                     }
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: createGroup,
@@ -288,13 +266,12 @@ describe("Groups", () => {
                 const variables = {
                     id: get(groups[1], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.query({
                         query: getGroup,
                         variables
                     })
-                ).rejects.toThrow();
+                ).rejects.toThrow(errorCodes.FORBIDDEN);
             });
 
             test("should fail to rename group if not a member", async () => {
@@ -302,13 +279,12 @@ describe("Groups", () => {
                     id: get(groups[1], "output.id"),
                     name: "Updated group name"
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: renameGroup,
                         variables
                     })
-                ).rejects.toThrow();
+                ).rejects.toThrow(errorCodes.FORBIDDEN);
             });
 
             test("should fail to send message if not a member", async () => {
@@ -316,13 +292,12 @@ describe("Groups", () => {
                     id: get(groups[1], "output.id"),
                     text: "New message"
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: sendMessage,
                         variables
                     })
-                ).rejects.toThrow();
+                ).rejects.toThrow(errorCodes.FORBIDDEN);
             });
 
             test("should fail to add group participant if not a member", async () => {
@@ -330,26 +305,25 @@ describe("Groups", () => {
                     id: get(groups[1], "output.id"),
                     userId: get(users[3], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: addGroupParticipant,
                         variables
                     })
-                ).rejects.toThrow();
+                ).rejects.toThrow(errorCodes.FORBIDDEN);
             });
 
             test("should fail to leave group if not a member", async () => {
+                authenticatedClient = getClient(users[3].token);
                 const variables = {
                     id: get(groups[0], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: leaveGroup,
                         variables
                     })
-                ).rejects.toThrow();
+                ).rejects.toThrow(errorCodes.FORBIDDEN);
             });
         });
     });
@@ -363,7 +337,6 @@ describe("Groups", () => {
                     text: "Hello"
                 }
             };
-
             await expect(
                 client.mutate({
                     mutation: createGroup,
@@ -376,7 +349,6 @@ describe("Groups", () => {
             const variables = {
                 id: get(groups[0], "output.id")
             };
-
             await expect(
                 client.query({
                     query: getMyGroups,
@@ -389,7 +361,6 @@ describe("Groups", () => {
             const variables = {
                 id: get(groups[0], "output.id")
             };
-
             await expect(
                 client.query({
                     query: getGroup,
@@ -403,7 +374,6 @@ describe("Groups", () => {
                 id: get(groups[0], "output.id"),
                 name: "Updated group name"
             };
-
             await expect(
                 client.mutate({
                     mutation: renameGroup,
@@ -417,7 +387,6 @@ describe("Groups", () => {
                 id: get(groups[0], "output.id"),
                 text: "New message"
             };
-
             await expect(
                 client.mutate({
                     mutation: sendMessage,
@@ -431,7 +400,6 @@ describe("Groups", () => {
                 id: get(groups[1], "output.id"),
                 userId: get(users[3], "output.id")
             };
-
             await expect(
                 client.mutate({
                     mutation: addGroupParticipant,
@@ -444,7 +412,6 @@ describe("Groups", () => {
             const variables = {
                 id: get(groups[0], "output.id")
             };
-
             await expect(
                 client.mutate({
                     mutation: leaveGroup,

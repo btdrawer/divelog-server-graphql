@@ -230,7 +230,6 @@ describe("Users", () => {
                 const { data } = await authenticatedClient.query({
                     query: getUsers
                 });
-
                 expect(data.users.data.length).toEqual(4);
             });
 
@@ -238,11 +237,9 @@ describe("Users", () => {
                 const { data } = await authenticatedClient.query({
                     query: getUsers
                 });
-
                 expect(data.users.data[0].email).toEqual(
                     get(users[0], "output.email")
                 );
-
                 expect(data.users.data[1].email).toEqual(null);
                 expect(data.users.data[2].email).toEqual(null);
                 expect(data.users.data[3].email).toEqual(null);
@@ -254,12 +251,10 @@ describe("Users", () => {
                         name: users[1].input.name
                     }
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getUsers,
                     variables
                 });
-
                 expect(data.users.data.length).toEqual(1);
                 expect(data.users.data[0].name).toEqual(users[1].input.name);
             });
@@ -269,12 +264,10 @@ describe("Users", () => {
                     sortBy: "name",
                     sortOrder: "DESC"
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getUsers,
                     variables
                 });
-
                 expect(data.users.data.length).toEqual(4);
                 expect(data.users.data[0].name).toEqual(users[3].input.name);
             });
@@ -283,12 +276,10 @@ describe("Users", () => {
                 const variables = {
                     limit: 2
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getUsers,
                     variables
                 });
-
                 expect(data.users.data.length).toEqual(2);
                 expect(data.users.data[0].name).toEqual(users[0].input.name);
             });
@@ -297,12 +288,10 @@ describe("Users", () => {
                 const variables = {
                     id: get(users[1], "output.id")
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getUser,
                     variables
                 });
-
                 expect(data.user.name).toEqual(users[1].input.name);
             });
 
@@ -310,7 +299,6 @@ describe("Users", () => {
                 const { data } = await authenticatedClient.query({
                     query: getMe
                 });
-
                 expect(data.me.id).toEqual(get(users[0], "output.id"));
             });
 
@@ -318,7 +306,6 @@ describe("Users", () => {
                 const { data } = await authenticatedClient.query({
                     query: getUsers
                 });
-
                 expect(data.users.data[0].email).toEqual(users[0].input.email);
                 expect(data.users.data[1].email).toEqual(null);
             });
@@ -330,12 +317,10 @@ describe("Users", () => {
                         username: "user1updated"
                     }
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: updateUser,
                     variables
                 });
-
                 expect(data.updateUser.name).toEqual("User 1 updated");
                 expect(data.updateUser.username).toEqual("user1updated");
             });
@@ -344,9 +329,7 @@ describe("Users", () => {
                 await authenticatedClient.mutate({
                     mutation: deleteUser
                 });
-
                 const user = await User.get(get(users[0], "output.id"));
-
                 expect(user).toBe(null);
             });
         });
@@ -358,7 +341,6 @@ describe("Users", () => {
                         username: users[0].input.username
                     }
                 };
-
                 await expect(
                     client.mutate({
                         mutation: updateUser,
@@ -373,7 +355,6 @@ describe("Users", () => {
                         email: users[0].input.email
                     }
                 };
-
                 await expect(
                     client.mutate({
                         mutation: updateUser,

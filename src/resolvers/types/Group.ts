@@ -1,10 +1,5 @@
-import { User } from "@btdrawer/divelog-server-core";
-import {
-    UserTypeDef,
-    GroupTypeDef,
-    MessageTypeDef,
-    UserDocument
-} from "../../types";
+import { getResourceId, User } from "@btdrawer/divelog-server-core";
+import { UserTypeDef, GroupTypeDef, UserDocument } from "../../types";
 
 const getParticipants = (participants: UserTypeDef[]) =>
     User.find({
@@ -13,22 +8,17 @@ const getParticipants = (participants: UserTypeDef[]) =>
         }
     });
 
-export const participants = getParticipants;
+export const participants = async ({ participants }: GroupTypeDef) =>
+    getParticipants(participants);
 
 export const messages = async ({ participants, messages }: GroupTypeDef) => {
     const participantsDetails = await getParticipants(participants);
-    const participantsDetailsReduced = participantsDetails.reduce(
-        (acc: any, participant: UserDocument) => ({
-            ...acc,
-            [participant.id]: participant
-        }),
-        {}
-    );
-    const getKey = <T extends object, U extends keyof T>(obj: T, key: U) =>
-        obj[key];
-    return messages.map(({ id, text, sender }: MessageTypeDef) => ({
+    return messages.map(({ id, text, sender }: any) => ({
         id,
         text,
-        sender: getKey(participantsDetailsReduced, sender.id)
+        sender: participantsDetails.find(
+            (participant: UserDocument | string) =>
+                getResourceId(participant).toString() === sender.toString()
+        )
     }));
 };

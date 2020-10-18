@@ -1,10 +1,11 @@
+import { getResourceId } from "@btdrawer/divelog-server-core";
 import { Context, DiveTypeDef } from "../../types";
 
 export const club = ({ club }: DiveTypeDef, args: any, { loaders }: Context) =>
     club ? loaders.clubLoader.load(club.toString()) : null;
 
 export const user = ({ user }: DiveTypeDef, args: any, { loaders }: Context) =>
-    loaders.userLoader.load(user.id);
+    loaders.userLoader.load(user.toString());
 
 export const buddies = (
     { buddies }: DiveTypeDef,

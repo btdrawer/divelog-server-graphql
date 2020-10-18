@@ -38,19 +38,15 @@ describe("Gear", () => {
                         type: "E"
                     }
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: createGear,
                     variables
                 });
-
                 expect(data.createGear.name).toEqual("B");
                 expect(data.createGear.brand).toEqual("C");
                 expect(data.createGear.model).toEqual("D");
                 expect(data.createGear.type).toEqual("E");
-
                 const gearInDatabase = await Gear.get(data.createGear.id);
-
                 if (gearInDatabase) {
                     expect(gearInDatabase.name).toEqual("B");
                 } else {
@@ -62,7 +58,6 @@ describe("Gear", () => {
                 const { data } = await authenticatedClient.query({
                     query: getGear
                 });
-
                 expect(data.gear.data.length).toEqual(2);
                 expect(data.gear.data[0].name).toEqual(gear[0].input.name);
             });
@@ -73,12 +68,10 @@ describe("Gear", () => {
                         name: gear[0].input.name
                     }
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getGear,
                     variables
                 });
-
                 expect(data.gear.data.length).toEqual(1);
                 expect(data.gear.data[0].name).toEqual(gear[0].input.name);
             });
@@ -88,12 +81,10 @@ describe("Gear", () => {
                     sortBy: "name",
                     sortOrder: "DESC"
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getGear,
                     variables
                 });
-
                 expect(data.gear.data.length).toEqual(2);
                 expect(data.gear.data[0].name).toEqual(gear[1].input.name);
             });
@@ -102,12 +93,10 @@ describe("Gear", () => {
                 const variables = {
                     limit: 1
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getGear,
                     variables
                 });
-
                 expect(data.gear.data.length).toEqual(1);
                 expect(data.gear.data[0].name).toEqual(gear[0].input.name);
             });
@@ -116,27 +105,22 @@ describe("Gear", () => {
                 const requestOneVariables = {
                     limit: 1
                 };
-
                 const {
                     data: requestOneData
                 } = await authenticatedClient.query({
                     query: getGear,
                     variables: requestOneVariables
                 });
-
                 const { cursor } = requestOneData.gear.pageInfo;
-
                 const requestTwoVariables = {
                     cursor
                 };
-
                 const {
                     data: requestTwoData
                 } = await authenticatedClient.query({
                     query: getGear,
                     variables: requestTwoVariables
                 });
-
                 expect(requestTwoData.gear.data.length).toEqual(1);
                 expect(requestTwoData.gear.data[0].id).toEqual(
                     get(gear[1], "output.id")
@@ -147,12 +131,10 @@ describe("Gear", () => {
                 const variables = {
                     id: get(gear[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getGearById,
                     variables
                 });
-
                 expect(data.gearById.name).toEqual(gear[0].input.name);
             });
 
@@ -163,12 +145,10 @@ describe("Gear", () => {
                         name: "Updated name"
                     }
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: updateGear,
                     variables
                 });
-
                 expect(data.updateGear.name).toEqual("Updated name");
             });
 
@@ -176,18 +156,14 @@ describe("Gear", () => {
                 const variables = {
                     id: get(gear[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: deleteGear,
                     variables
                 });
-
                 expect(data.deleteGear.id).toEqual(get(gear[0], "output.id"));
-
                 const gearInDatabase = await Gear.get(
                     get(gear[0], "output.id")
                 );
-
                 expect(gearInDatabase).toBe(null);
             });
         });
@@ -197,7 +173,6 @@ describe("Gear", () => {
                 const variables = {
                     id: get(gear[2], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.query({
                         query: getGearById,
@@ -208,14 +183,12 @@ describe("Gear", () => {
 
             test("should fail to update another users gear", async () => {
                 const authenticatedClient = getClient(users[1].token);
-
                 const variables = {
                     id: get(gear[0], "output.id"),
                     data: {
                         name: "Updated name"
                     }
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: updateGear,
@@ -226,11 +199,9 @@ describe("Gear", () => {
 
             test("should fail to delete another users gear", async () => {
                 const authenticatedClient = getClient(users[1].token);
-
                 const variables = {
                     id: get(gear[0], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: deleteGear,
@@ -251,7 +222,6 @@ describe("Gear", () => {
                     type: "E"
                 }
             };
-
             await expect(
                 client.mutate({
                     mutation: createGear,
@@ -272,7 +242,6 @@ describe("Gear", () => {
             const variables = {
                 id: get(gear[0], "output.id")
             };
-
             await expect(
                 client.query({
                     query: getGearById,
@@ -288,7 +257,6 @@ describe("Gear", () => {
                     name: "Updated name"
                 }
             };
-
             await expect(
                 client.mutate({
                     mutation: updateGear,
@@ -301,7 +269,6 @@ describe("Gear", () => {
             const variables = {
                 id: get(gear[0], "output.id")
             };
-
             await expect(
                 client.mutate({
                     mutation: deleteGear,

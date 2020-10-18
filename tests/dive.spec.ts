@@ -49,20 +49,16 @@ describe.only("Dives", () => {
                         public: true
                     }
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: createDive,
                     variables
                 });
-
                 expect(data.createDive.diveTime).toEqual(25); // bottomTime + safetyStopTime
                 expect(data.createDive.user.id).toEqual(
                     get(users[0], "output.id")
                 );
                 expect(data.createDive.public).toEqual(true);
-
                 const diveInDatabase = await Dive.get(data.createDive.id);
-
                 if (diveInDatabase) {
                     expect(diveInDatabase.description).toEqual(
                         "Dive description"
@@ -76,12 +72,10 @@ describe.only("Dives", () => {
                 const variables = {
                     userId: get(users[1], "output.id")
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getDives,
                     variables
                 });
-
                 expect(data.dives.data.length).toEqual(2);
             });
 
@@ -90,12 +84,10 @@ describe.only("Dives", () => {
                     userId: get(users[1], "output.id"),
                     limit: 1
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getDives,
                     variables
                 });
-
                 expect(data.dives.data.length).toEqual(1);
                 expect(data.dives.data[0].id).toEqual(
                     get(dives[1], "output.id")
@@ -107,21 +99,17 @@ describe.only("Dives", () => {
                     userId: get(users[1], "output.id"),
                     limit: 1
                 };
-
                 const {
                     data: requestOneData
                 } = await authenticatedClient.query({
                     query: getDives,
                     variables: requestOneVariables
                 });
-
                 const { cursor } = requestOneData.dives.pageInfo;
-
                 const requestTwoVariables = {
                     userId: get(users[1], "output.id"),
                     cursor
                 };
-
                 const {
                     data: requestTwoData
                 } = await authenticatedClient.query({
@@ -139,7 +127,6 @@ describe.only("Dives", () => {
                 const { data } = await authenticatedClient.query({
                     query: getMyDives
                 });
-
                 expect(data.myDives.data.length).toEqual(2);
             });
 
@@ -147,12 +134,10 @@ describe.only("Dives", () => {
                 const variables = {
                     limit: 1
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getMyDives,
                     variables
                 });
-
                 expect(data.myDives.data.length).toEqual(1);
                 expect(data.myDives.data[0].id).toEqual(
                     get(dives[0], "output.id")
@@ -163,27 +148,22 @@ describe.only("Dives", () => {
                 const requestOneVariables = {
                     limit: 1
                 };
-
                 const {
                     data: requestOneData
                 } = await authenticatedClient.query({
                     query: getMyDives,
                     variables: requestOneVariables
                 });
-
                 const { cursor } = requestOneData.myDives.pageInfo;
-
                 const requestTwoVariables = {
                     cursor
                 };
-
                 const {
                     data: requestTwoData
                 } = await authenticatedClient.query({
                     query: getMyDives,
                     variables: requestTwoVariables
                 });
-
                 expect(requestTwoData.myDives.data.length).toEqual(1);
                 expect(requestTwoData.myDives.data[0].id).toEqual(
                     get(dives[2], "output.id")
@@ -194,12 +174,10 @@ describe.only("Dives", () => {
                 const variables = {
                     id: get(dives[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getDive,
                     variables
                 });
-
                 expect(data.dive.description).toEqual(
                     dives[0].input.description
                 );
@@ -209,14 +187,12 @@ describe.only("Dives", () => {
                 const variables = {
                     id: get(dives[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.query({
                     query: getDive,
                     variables
                 });
-
                 expect(data.dive.description).toEqual(
-                    dives[1].input.description
+                    dives[0].input.description
                 );
             });
 
@@ -230,12 +206,10 @@ describe.only("Dives", () => {
                         safetyStopTime: 3.0
                     }
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: updateDive,
                     variables
                 });
-
                 expect(data.updateDive.diveTime).toEqual(35);
             });
 
@@ -244,12 +218,10 @@ describe.only("Dives", () => {
                     id: get(dives[2], "output.id"),
                     gearId: get(gear[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: addGearToDive,
                     variables
                 });
-
                 expect(data.addGearToDive.gear.length).toEqual(1);
                 expect(data.addGearToDive.gear[0].id).toEqual(
                     get(gear[0], "output.id")
@@ -261,12 +233,10 @@ describe.only("Dives", () => {
                     id: get(dives[0], "output.id"),
                     gearId: get(gear[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: removeGearFromDive,
                     variables
                 });
-
                 expect(data.removeGearFromDive.gear.length).toEqual(0);
             });
 
@@ -275,12 +245,10 @@ describe.only("Dives", () => {
                     id: get(dives[2], "output.id"),
                     buddyId: get(users[2], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: addBuddyToDive,
                     variables
                 });
-
                 expect(data.addBuddyToDive.buddies.length).toEqual(1);
                 expect(data.addBuddyToDive.buddies[0].id).toEqual(
                     get(users[2], "output.id")
@@ -292,12 +260,10 @@ describe.only("Dives", () => {
                     id: get(dives[0], "output.id"),
                     buddyId: get(users[1], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: removeBuddyFromDive,
                     variables
                 });
-
                 expect(data.removeBuddyFromDive.buddies.length).toEqual(0);
             });
 
@@ -305,12 +271,10 @@ describe.only("Dives", () => {
                 const variables = {
                     id: get(dives[0], "output.id")
                 };
-
                 const { data } = await authenticatedClient.mutate({
                     mutation: deleteDive,
                     variables
                 });
-
                 expect(data.deleteDive.id).toEqual(get(dives[0], "output.id"));
             });
         });
@@ -320,7 +284,6 @@ describe.only("Dives", () => {
                 const variables = {
                     id: get(dives[3], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.query({
                         query: getDive,
@@ -339,7 +302,6 @@ describe.only("Dives", () => {
                         safetyStopTime: 3.0
                     }
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: updateDive,
@@ -353,7 +315,6 @@ describe.only("Dives", () => {
                     id: get(dives[1], "output.id"),
                     gearId: get(gear[0], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: addGearToDive,
@@ -367,7 +328,6 @@ describe.only("Dives", () => {
                     id: get(dives[1], "output.id"),
                     gearId: get(gear[0], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: removeGearFromDive,
@@ -381,7 +341,6 @@ describe.only("Dives", () => {
                     id: get(dives[1], "output.id"),
                     buddyId: get(users[2], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: addBuddyToDive,
@@ -395,7 +354,6 @@ describe.only("Dives", () => {
                     id: get(dives[1], "output.id"),
                     buddyId: get(users[0], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: removeBuddyFromDive,
@@ -408,7 +366,6 @@ describe.only("Dives", () => {
                 const variables = {
                     id: get(dives[1], "output.id")
                 };
-
                 await expect(
                     authenticatedClient.mutate({
                         mutation: deleteDive,
@@ -425,12 +382,10 @@ describe.only("Dives", () => {
                 const variables = {
                     userId: get(users[0], "output.id")
                 };
-
                 const { data } = await client.query({
                     query: getDives,
                     variables
                 });
-
                 expect(data.dives.data.length).toEqual(2);
             });
 
@@ -439,12 +394,10 @@ describe.only("Dives", () => {
                     userId: get(users[0], "output.id"),
                     limit: 1
                 };
-
                 const { data } = await client.query({
                     query: getDives,
                     variables
                 });
-
                 expect(data.dives.data.length).toEqual(1);
                 expect(data.dives.data[0].id).toEqual(
                     get(dives[0], "output.id")
@@ -456,24 +409,19 @@ describe.only("Dives", () => {
                     userId: get(users[0], "output.id"),
                     limit: 1
                 };
-
                 const { data: requestOneData } = await client.query({
                     query: getDives,
                     variables: requestOneVariables
                 });
-
                 const { cursor } = requestOneData.dives.pageInfo;
-
                 const requestTwoVariables = {
                     userId: get(users[0], "output.id"),
                     cursor
                 };
-
                 const { data: requestTwoData } = await client.query({
                     query: getDives,
                     variables: requestTwoVariables
                 });
-
                 expect(requestTwoData.dives.data.length).toEqual(1);
                 expect(requestTwoData.dives.data[0].id).toEqual(
                     get(dives[2], "output.id")
@@ -484,12 +432,10 @@ describe.only("Dives", () => {
                 const variables = {
                     id: get(dives[0], "output.id")
                 };
-
                 const { data } = await client.query({
                     query: getDive,
                     variables
                 });
-
                 expect(data.dive.description).toEqual(
                     dives[0].input.description
                 );
@@ -510,7 +456,6 @@ describe.only("Dives", () => {
                         public: true
                     }
                 };
-
                 await expect(
                     client.mutate({
                         mutation: createDive,
@@ -531,7 +476,6 @@ describe.only("Dives", () => {
                 const variables = {
                     id: get(dives[3], "output.id")
                 };
-
                 await expect(
                     client.query({
                         query: getDive,
@@ -550,7 +494,6 @@ describe.only("Dives", () => {
                         safetyStopTime: 3.0
                     }
                 };
-
                 await expect(
                     client.mutate({
                         mutation: updateDive,
@@ -564,7 +507,6 @@ describe.only("Dives", () => {
                     id: get(dives[2], "output.id"),
                     gearId: get(gear[0], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: addGearToDive,
@@ -578,7 +520,6 @@ describe.only("Dives", () => {
                     id: get(dives[0], "output.id"),
                     gearId: get(gear[0], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: removeGearFromDive,
@@ -592,7 +533,6 @@ describe.only("Dives", () => {
                     id: get(dives[0], "output.id"),
                     buddyId: get(users[2], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: addBuddyToDive,
@@ -606,7 +546,6 @@ describe.only("Dives", () => {
                     id: get(dives[0], "output.id"),
                     buddyId: get(users[2], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: removeBuddyFromDive,
@@ -619,7 +558,6 @@ describe.only("Dives", () => {
                 const variables = {
                     id: get(dives[0], "output.id")
                 };
-
                 await expect(
                     client.mutate({
                         mutation: deleteDive,

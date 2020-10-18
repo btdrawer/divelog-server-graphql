@@ -7,10 +7,11 @@ export const email = (
     context: Context
 ) => (context.authUserId && context.authUserId === id ? email : null);
 
-export const dives = ({ dives }: UserTypeDef, args: any, context: Context) =>
-    dives.map(async (dive: any) =>
-        context.loaders.diveLoader.load(dive.toString())
-    );
+export const dives = (
+    { dives }: UserTypeDef,
+    args: any,
+    { loaders }: Context
+) => dives.map(async (dive: any) => loaders.diveLoader.load(dive.toString()));
 
 export const clubs = async ({ clubs }: UserTypeDef) => {
     const [manager, member] = await Promise.all([

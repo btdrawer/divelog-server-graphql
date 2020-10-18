@@ -32,6 +32,7 @@
         "@types/ioredis": "^4.17.5",
         "@types/jsonwebtoken": "^8.5.0",
         "@types/lodash": "^4.14.162",
+        "@types/mongoose": "^5.7.36",
         "@types/node-fetch": "^2.5.7",
         "@types/redis": "^2.8.27",
         "apollo-boost": "^0.4.7",

@@ -26,6 +26,7 @@ export const addGearToDive = combineResolvers(
     clearUserCache,
     (parent: any, { id, gearId }: any) =>
         Dive.update(id, {
+            // @ts-ignore
             $push: {
                 gear: gearId
             }
@@ -38,6 +39,7 @@ export const removeGearFromDive = combineResolvers(
     clearUserCache,
     (parent: any, { id, gearId }: any) =>
         Dive.update(id, {
+            // @ts-ignore
             $pull: {
                 gear: gearId
             }
@@ -50,6 +52,7 @@ export const addBuddyToDive = combineResolvers(
     clearUserCache,
     (parent: any, { id, buddyId }: any) =>
         Dive.update(id, {
+            // @ts-ignore
             $push: {
                 buddies: buddyId
             }
@@ -62,6 +65,7 @@ export const removeBuddyFromDive = combineResolvers(
     clearUserCache,
     (parent: any, { id, buddyId }: any) =>
         Dive.update(id, {
+            // @ts-ignore
             $pull: {
                 buddies: buddyId
             }

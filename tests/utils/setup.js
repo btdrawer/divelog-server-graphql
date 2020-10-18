@@ -1,4 +1,4 @@
-const Server = require("../../src/server").default;
+const Server = require("../../src/Server").default;
 
 exports.setup = async done => {
     global.server = await Server.build();

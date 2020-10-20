@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./built",
+        "outDir": "./dist",
         "allowJs": true,
         "target": "es6",
         "module": "CommonJS",
@@ -8,7 +8,12 @@
         "alwaysStrict": true,
         "noImplicitAny": true,
         "noImplicitReturns": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "declaration": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
     },
-    "include": ["./src/**/*"]
+    "include": [
+        "./src/**/*"
+    ]
 }

@@ -11,19 +11,18 @@ const { newMessageSubscriptionKey } = subscriptionKeys;
 
 export const createGroup = combineResolvers(
     isAuthenticated,
-    async (parent: any, { data }: any, { authUserId }: Context) => {
-        const { name, participants, text } = data;
-        return Group.create({
-            name,
-            participants: [...participants, authUserId],
+    async (parent: any, { data }: any, { authUserId }: Context) =>
+        Group.create({
+            name: data.name,
+            participants: [...data.participants, authUserId],
             messages: [
                 {
-                    text,
-                    sender: authUserId
+                    text: data.text,
+                    sender: authUserId,
+                    sent: new Date()
                 }
             ]
-        });
-    }
+        })
 );
 
 export const renameGroup = combineResolvers(
@@ -43,7 +42,8 @@ export const sendMessage = combineResolvers(
     async (parent: any, { id, text }: any, { authUserId, pubsub }: Context) => {
         const group = await Group.sendMessage(id, {
             text,
-            sender: authUserId
+            sender: authUserId,
+            sent: new Date()
         });
         if (pubsub && group) {
             const message = group.messages[group.messages.length - 1];
@@ -51,7 +51,8 @@ export const sendMessage = combineResolvers(
                 newMessage: {
                     message: {
                         text: message.text,
-                        sender: message.sender
+                        sender: message.sender,
+                        sent: new Date()
                     },
                     group: {
                         id: group._id,
@@ -59,7 +60,8 @@ export const sendMessage = combineResolvers(
                         participants: group.participants,
                         messages: group.messages.map(message => ({
                             text: message.text,
-                            sender: message.sender
+                            sender: message.sender,
+                            sent: message.sent
                         }))
                     }
                 }

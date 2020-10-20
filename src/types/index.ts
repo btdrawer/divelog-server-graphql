@@ -12,7 +12,7 @@ export interface Context {
         hashKey?: string
     ): Promise<any>;
     queryWithCache: any;
-    clearCache: any;
+    clearCache(key: string): void;
     pubsub: RedisPubSub;
     authUserId: string;
     loaders: {

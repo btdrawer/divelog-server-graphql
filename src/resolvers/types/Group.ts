@@ -1,5 +1,9 @@
-import { getResourceId, User } from "@btdrawer/divelog-server-core";
-import { UserTypeDef, GroupTypeDef, UserDocument } from "../../types";
+import {
+    getResourceId,
+    User,
+    UserDocument
+} from "@btdrawer/divelog-server-core";
+import { UserTypeDef, GroupTypeDef } from "../../types";
 
 const getParticipants = (participants: UserTypeDef[]) =>
     User.find({

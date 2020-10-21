@@ -1,6 +1,11 @@
 import { skip } from "graphql-resolvers";
 import {
     getResourceId,
+    UserDocument,
+    DiveDocument,
+    ClubDocument,
+    GearDocument,
+    GroupDocument,
     Club,
     Dive,
     Gear,
@@ -8,13 +13,6 @@ import {
     errorCodes
 } from "@btdrawer/divelog-server-core";
 import { Context, FieldResolver } from "../../types";
-import {
-    UserDocument,
-    DiveDocument,
-    ClubDocument,
-    GearDocument,
-    GroupDocument
-} from "../../types";
 
 const { NOT_FOUND, FORBIDDEN } = errorCodes;
 

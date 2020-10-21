@@ -1,6 +1,11 @@
 import { combineResolvers } from "graphql-resolvers";
-import { getResourceId, Club, errorCodes } from "@btdrawer/divelog-server-core";
-import { Context, UserDocument } from "../../types";
+import {
+    UserDocument,
+    getResourceId,
+    Club,
+    errorCodes
+} from "@btdrawer/divelog-server-core";
+import { Context } from "../../types";
 import {
     isAuthenticated,
     clearClubCache,

@@ -11,7 +11,7 @@ const { newMessageSubscriptionKey } = subscriptionKeys;
 
 export const createGroup = combineResolvers(
     isAuthenticated,
-    async (parent: any, { data }: any, { authUserId }: Context) =>
+    (parent: any, { data }: any, { authUserId }: Context) =>
         Group.create({
             name: data.name,
             participants: [...data.participants, authUserId],

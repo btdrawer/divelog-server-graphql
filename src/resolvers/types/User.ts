@@ -11,7 +11,7 @@ export const dives = (
     { dives }: UserTypeDef,
     args: any,
     { loaders }: Context
-) => dives.map(async (dive: any) => loaders.diveLoader.load(dive.toString()));
+) => dives.map((dive: any) => loaders.diveLoader.load(dive.toString()));
 
 export const clubs = async ({ clubs }: UserTypeDef) => {
     const [manager, member] = await Promise.all([

@@ -6,7 +6,7 @@ import { Context } from "../../types";
 export const createGear = combineResolvers(
     isAuthenticated,
     clearUserCache,
-    async (parent: any, { data }: any, { authUserId }: Context) =>
+    (parent: any, { data }: any, { authUserId }: Context) =>
         Gear.create({
             ...data,
             owner: authUserId
@@ -24,5 +24,5 @@ export const deleteGear = combineResolvers(
     isAuthenticated,
     isGearOwner,
     clearUserCache,
-    async (parent: any, { id }: any, { authUserId }: Context) => Gear.delete(id)
+    (parent: any, { id }: any) => Gear.delete(id)
 );

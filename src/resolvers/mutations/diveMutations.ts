@@ -6,7 +6,7 @@ import { isAuthenticated, clearUserCache, isDiveUser } from "../middleware";
 export const createDive = combineResolvers(
     isAuthenticated,
     clearUserCache,
-    async (parent: any, { data }: any, { authUserId }: Context) =>
+    (parent: any, { data }: any, { authUserId }: Context) =>
         Dive.create({
             ...data,
             user: authUserId
@@ -52,5 +52,5 @@ export const deleteDive = combineResolvers(
     isAuthenticated,
     isDiveUser,
     clearUserCache,
-    async (parent: any, { id }: any) => Dive.delete(id)
+    (parent: any, { id }: any) => Dive.delete(id)
 );

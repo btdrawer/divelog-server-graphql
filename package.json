@@ -19,7 +19,7 @@
         "apollo-server": "^2.14.2",
         "dataloader": "^2.0.0",
         "env-cmd": "^10.0.1",
-        "graphql-import": "^1.0.1",
+        "graphql-import": "^1.0.2",
         "graphql-redis-subscriptions": "^2.2.1",
         "graphql-resolvers": "^0.4.2",
         "graphql-tools": "^4.0.7",
